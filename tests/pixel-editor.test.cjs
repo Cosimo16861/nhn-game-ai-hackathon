@@ -12,10 +12,13 @@ vm.createContext(sandbox);
 vm.runInContext(source, sandbox);
 
 const listeners = new Map();
+const fillCalls = [];
 const context = {
   beginPath() {},
   clearRect() {},
-  fillRect() {},
+  fillRect(x, y, width, height) {
+    fillCalls.push({ color: this.fillStyle, x, y, width, height });
+  },
   lineTo() {},
   moveTo() {},
   stroke() {},
@@ -45,12 +48,31 @@ const editor = sandbox.window.PixelEditor.create({
   initialPlayerPixels: [null, null, "#333333", "#444444"],
   hiddenMaskA: [true, false, false, false],
   hiddenMaskB: [false, true, false, false],
+  hiddenMaskC: [false, false, false, false],
   gridSize: 2,
+  analysisGridSize: 4,
+  paintUnitSize: 2,
+  analysisPixels: Array(16).fill("#aaaaaa"),
+  analysisHiddenMaskA: [
+    true, true, false, false,
+    true, true, false, false,
+    false, false, false, false,
+    false, false, false, false,
+  ],
+  analysisHiddenMaskB: [
+    false, false, true, true,
+    false, false, true, true,
+    false, false, false, false,
+    false, false, false, false,
+  ],
+  analysisHiddenMaskC: Array(16).fill(false),
   palette: ["#ff0000", "#00ff00"],
   onChange(status) {
     latestStatus = status;
   },
 });
+assert.equal(fillCalls.length, 16);
+assert.ok(fillCalls.some((call) => call.color === "#aaaaaa"));
 
 const pointerEvent = (clientX, clientY) => ({
   button: 0,
@@ -63,6 +85,9 @@ const pointerEvent = (clientX, clientY) => ({
 listeners.get("pointerdown")(pointerEvent(25, 25));
 listeners.get("pointerup")(pointerEvent(25, 25));
 assert.equal(editor.getPlayerPixels()[0], "#ff0000");
+assert.ok(
+  fillCalls.filter((call) => call.color === "#ff0000").length >= 4,
+);
 assert.equal(latestStatus.filledCount, 1);
 assert.equal(latestStatus.canUndo, true);
 

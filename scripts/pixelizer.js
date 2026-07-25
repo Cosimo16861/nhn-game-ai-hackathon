@@ -96,15 +96,16 @@
     return closest;
   }
 
-  function loadImage(file) {
+  function loadImage(source) {
     return new Promise((resolve, reject) => {
       const image = new Image();
-      const objectUrl = URL.createObjectURL(file);
+      const usesObjectUrl = typeof source !== "string";
+      const imageUrl = usesObjectUrl ? URL.createObjectURL(source) : source;
 
       image.addEventListener(
         "load",
         () => {
-          URL.revokeObjectURL(objectUrl);
+          if (usesObjectUrl) URL.revokeObjectURL(imageUrl);
           resolve(image);
         },
         { once: true },
@@ -112,12 +113,12 @@
       image.addEventListener(
         "error",
         () => {
-          URL.revokeObjectURL(objectUrl);
+          if (usesObjectUrl) URL.revokeObjectURL(imageUrl);
           reject(new Error("이미지를 읽을 수 없습니다."));
         },
         { once: true },
       );
-      image.src = objectUrl;
+      image.src = imageUrl;
     });
   }
 
@@ -167,6 +168,56 @@
     return colors;
   }
 
+  function expandPixelGrid(pixels, gridSize, scale) {
+    if (
+      pixels.length !== gridSize * gridSize ||
+      !Number.isInteger(scale) ||
+      scale < 1
+    ) {
+      throw new Error("확대할 픽셀 데이터와 배율이 올바르지 않습니다.");
+    }
+
+    const expandedGridSize = gridSize * scale;
+    const expandedPixels = new Array(expandedGridSize * expandedGridSize);
+
+    for (let row = 0; row < gridSize; row++) {
+      for (let column = 0; column < gridSize; column++) {
+        const color = pixels[row * gridSize + column];
+        for (let offsetY = 0; offsetY < scale; offsetY++) {
+          const targetRow = row * scale + offsetY;
+          for (let offsetX = 0; offsetX < scale; offsetX++) {
+            const targetColumn = column * scale + offsetX;
+            expandedPixels[targetRow * expandedGridSize + targetColumn] =
+              color;
+          }
+        }
+      }
+    }
+
+    return expandedPixels;
+  }
+
+  function composePixelLayers(
+    referencePixels,
+    expandedPlayerPixels,
+    hiddenMasks,
+  ) {
+    const pixelCount = referencePixels.length;
+    const hasValidLayers =
+      expandedPlayerPixels.length === pixelCount &&
+      hiddenMasks.length > 0 &&
+      hiddenMasks.every((mask) => mask.length === pixelCount);
+
+    if (!hasValidLayers) {
+      throw new Error("합성할 이미지와 마스크 크기가 일치하지 않습니다.");
+    }
+
+    return referencePixels.map((referenceColor, index) => {
+      const isHidden = hiddenMasks.some((mask) => mask[index]);
+      return isHidden ? expandedPlayerPixels[index] : referenceColor;
+    });
+  }
+
   function renderPixelGrid(canvas, pixels, gridSize) {
     const context = canvas.getContext("2d");
     const cellWidth = canvas.width / gridSize;
@@ -194,7 +245,9 @@
     pixels,
     hiddenMaskA,
     hiddenMaskB,
+    hiddenMaskC,
     gridSize,
+    regionsPerSide = 4,
   ) {
     const context = canvas.getContext("2d");
     const cellWidth = canvas.width / gridSize;
@@ -213,6 +266,9 @@
       } else if (hiddenMaskB[index]) {
         context.fillStyle =
           (column + row) % 2 === 0 ? "#392342" : "#22162b";
+      } else if (hiddenMaskC[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#244039" : "#152620";
       } else {
         context.fillStyle = color;
       }
@@ -224,31 +280,212 @@
         Math.ceil(cellHeight),
       );
     });
+
+    context.beginPath();
+    context.strokeStyle = "rgba(255, 255, 255, 0.55)";
+    context.lineWidth = 2;
+    for (let line = 1; line < regionsPerSide; line++) {
+      const x = (canvas.width / regionsPerSide) * line;
+      const y = (canvas.height / regionsPerSide) * line;
+      context.moveTo(x, 0);
+      context.lineTo(x, canvas.height);
+      context.moveTo(0, y);
+      context.lineTo(canvas.width, y);
+    }
+    context.stroke();
   }
 
-  async function pixelize(file, options) {
-    const image = await loadImage(file);
-    const sourceColors = readDownscaledPixels(image, options.gridSize);
-    const paletteRgb = createPalette(sourceColors, options.paletteSize);
-    const quantizedRgb = sourceColors.map((color) =>
+  function renderPlayerGrid(
+    canvas,
+    targetPixels,
+    playerPixels,
+    hiddenMaskA,
+    hiddenMaskB,
+    hiddenMaskC,
+    gridSize,
+  ) {
+    const context = canvas.getContext("2d");
+    const cellWidth = canvas.width / gridSize;
+    const cellHeight = canvas.height / gridSize;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.imageSmoothingEnabled = false;
+
+    targetPixels.forEach((targetColor, index) => {
+      const column = index % gridSize;
+      const row = Math.floor(index / gridSize);
+      const playerColor = playerPixels[index];
+
+      if (playerColor) {
+        context.fillStyle = playerColor;
+      } else if (hiddenMaskA[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#20283a" : "#121827";
+      } else if (hiddenMaskB[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#392342" : "#22162b";
+      } else if (hiddenMaskC[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#244039" : "#152620";
+      } else {
+        context.fillStyle = targetColor;
+      }
+
+      context.fillRect(
+        column * cellWidth,
+        row * cellHeight,
+        Math.ceil(cellWidth),
+        Math.ceil(cellHeight),
+      );
+    });
+  }
+
+  function renderCompositeGrid(
+    canvas,
+    analysisPixels,
+    expandedPlayerPixels,
+    hiddenMaskA,
+    hiddenMaskB,
+    hiddenMaskC,
+    analysisGridSize,
+    regionsPerSide = 4,
+  ) {
+    const context = canvas.getContext("2d");
+    const cellWidth = canvas.width / analysisGridSize;
+    const cellHeight = canvas.height / analysisGridSize;
+    const compositePixels = composePixelLayers(
+      analysisPixels,
+      expandedPlayerPixels,
+      [hiddenMaskA, hiddenMaskB, hiddenMaskC],
+    );
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.imageSmoothingEnabled = false;
+
+    compositePixels.forEach((color, index) => {
+      const column = index % analysisGridSize;
+      const row = Math.floor(index / analysisGridSize);
+
+      if (color) {
+        context.fillStyle = color;
+      } else if (hiddenMaskA[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#20283a" : "#121827";
+      } else if (hiddenMaskB[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#392342" : "#22162b";
+      } else if (hiddenMaskC[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#244039" : "#152620";
+      }
+
+      context.fillRect(
+        column * cellWidth,
+        row * cellHeight,
+        Math.ceil(cellWidth),
+        Math.ceil(cellHeight),
+      );
+    });
+
+    context.beginPath();
+    context.strokeStyle = "rgba(255, 255, 255, 0.55)";
+    context.lineWidth = 2;
+    for (let line = 1; line < regionsPerSide; line++) {
+      const x = (canvas.width / regionsPerSide) * line;
+      const y = (canvas.height / regionsPerSide) * line;
+      context.moveTo(x, 0);
+      context.lineTo(x, canvas.height);
+      context.moveTo(0, y);
+      context.lineTo(canvas.width, y);
+    }
+    context.stroke();
+  }
+
+  function createResolutionPlan(options) {
+    const analysisGridSize = Number(
+      options.analysisGridSize ?? options.gridSize,
+    );
+    const paintGridSize = Number(
+      options.paintGridSize ?? options.gridSize,
+    );
+    const paletteSize = Number(options.paletteSize);
+    const hasValidSizes =
+      Number.isInteger(analysisGridSize) &&
+      Number.isInteger(paintGridSize) &&
+      analysisGridSize > 0 &&
+      paintGridSize > 0 &&
+      analysisGridSize >= paintGridSize &&
+      analysisGridSize % paintGridSize === 0;
+
+    if (!hasValidSizes) {
+      throw new Error(
+        "원본 처리 해상도는 색칠판 해상도의 정수 배수여야 합니다.",
+      );
+    }
+    if (
+      !Number.isInteger(paletteSize) ||
+      paletteSize < 2 ||
+      paletteSize > 256
+    ) {
+      throw new Error("팔레트 색상 수는 2~256 사이여야 합니다.");
+    }
+
+    return Object.freeze({
+      analysisGridSize,
+      paintGridSize,
+      paintUnitSize: analysisGridSize / paintGridSize,
+      paletteSize,
+    });
+  }
+
+  async function pixelize(source, options) {
+    const plan = createResolutionPlan(options);
+    const image = await loadImage(source);
+    const analysisSourceColors = readDownscaledPixels(
+      image,
+      plan.analysisGridSize,
+    );
+    const paintSourceColors = readDownscaledPixels(
+      image,
+      plan.paintGridSize,
+    );
+    const paletteRgb = createPalette(
+      analysisSourceColors,
+      plan.paletteSize,
+    );
+    const analysisQuantizedRgb = analysisSourceColors.map((color) =>
       findClosestPaletteColor(color, paletteRgb),
     );
+    const paintQuantizedRgb = paintSourceColors.map((color) =>
+      findClosestPaletteColor(color, paletteRgb),
+    );
+    const paintPixels = paintQuantizedRgb.map(rgbToHex);
 
     return {
       image,
-      width: options.gridSize,
-      height: options.gridSize,
+      width: plan.paintGridSize,
+      height: plan.paintGridSize,
+      analysisWidth: plan.analysisGridSize,
+      analysisHeight: plan.analysisGridSize,
+      paintUnitSize: plan.paintUnitSize,
       sourceWidth: image.naturalWidth,
       sourceHeight: image.naturalHeight,
       palette: paletteRgb.map(rgbToHex),
-      pixels: quantizedRgb.map(rgbToHex),
+      analysisPixels: analysisQuantizedRgb.map(rgbToHex),
+      paintPixels,
+      pixels: paintPixels,
     };
   }
 
   window.Pixelizer = Object.freeze({
+    composePixelLayers,
+    createResolutionPlan,
     drawSquareCrop,
+    expandPixelGrid,
     pixelize,
+    renderCompositeGrid,
     renderPixelGrid,
     renderSplitMaskGrid,
+    renderPlayerGrid,
   });
 })();

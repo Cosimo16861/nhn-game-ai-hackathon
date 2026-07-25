@@ -304,9 +304,135 @@
     };
   }
 
+  function calculatePaletteScore(targetPixels, playerPixels, hiddenMask) {
+    if (
+      targetPixels.length !== playerPixels.length ||
+      targetPixels.length !== hiddenMask.length
+    ) {
+      throw new Error("팔레트 채점 배열의 길이가 일치하지 않습니다.");
+    }
+
+    const targetCounts = new Map();
+    const playerCounts = new Map();
+    let hiddenCount = 0;
+
+    hiddenMask.forEach((hidden, index) => {
+      if (!hidden) return;
+      hiddenCount++;
+
+      const targetColor = targetPixels[index].toLowerCase();
+      targetCounts.set(targetColor, (targetCounts.get(targetColor) || 0) + 1);
+
+      const playerColor = playerPixels[index];
+      if (playerColor) {
+        const normalized = playerColor.toLowerCase();
+        playerCounts.set(
+          normalized,
+          (playerCounts.get(normalized) || 0) + 1,
+        );
+      }
+    });
+
+    if (hiddenCount === 0) {
+      return {
+        score: 100,
+        hiddenCount: 0,
+        targetColorCount: 0,
+        playerColorCount: 0,
+      };
+    }
+
+    const allColors = new Set([
+      ...targetCounts.keys(),
+      ...playerCounts.keys(),
+    ]);
+    let histogramIntersection = 0;
+
+    allColors.forEach((color) => {
+      const targetRatio = (targetCounts.get(color) || 0) / hiddenCount;
+      const playerRatio = (playerCounts.get(color) || 0) / hiddenCount;
+      histogramIntersection += Math.min(targetRatio, playerRatio);
+    });
+
+    return {
+      score: Math.round(histogramIntersection * 1000) / 10,
+      hiddenCount,
+      targetColorCount: targetCounts.size,
+      playerColorCount: playerCounts.size,
+    };
+  }
+
+  function calculateFinalScore(scores, weights) {
+    const keys = ["color", "edge", "structure", "palette"];
+    const weightTotal = keys.reduce((total, key) => total + weights[key], 0);
+
+    if (Math.abs(weightTotal - 1) > 0.000001) {
+      throw new Error("최종 점수 가중치의 합은 1이어야 합니다.");
+    }
+
+    const score = keys.reduce(
+      (total, key) => total + scores[key] * weights[key],
+      0,
+    );
+
+    return Math.round(score * 10) / 10;
+  }
+
+  function calculateRestorationScores(
+    targetPixels,
+    playerPixels,
+    hiddenMask,
+    gridSize,
+    weights,
+  ) {
+    const color = calculateColorScore(
+      targetPixels,
+      playerPixels,
+      hiddenMask,
+    );
+    const edge = calculateEdgeScore(
+      targetPixels,
+      playerPixels,
+      hiddenMask,
+      gridSize,
+    );
+    const structure = calculateStructureScore(
+      targetPixels,
+      playerPixels,
+      hiddenMask,
+      gridSize,
+    );
+    const palette = calculatePaletteScore(
+      targetPixels,
+      playerPixels,
+      hiddenMask,
+    );
+    const finalScore = calculateFinalScore(
+      {
+        color: color.score,
+        edge: edge.score,
+        structure: structure.score,
+        palette: palette.score,
+      },
+      weights,
+    );
+
+    return Object.freeze({
+      color,
+      edge,
+      structure,
+      palette,
+      finalScore,
+      gridSize,
+    });
+  }
+
   window.PixelScoring = Object.freeze({
     calculateColorScore,
     calculateEdgeScore,
+    calculateRestorationScores,
     calculateStructureScore,
+    calculatePaletteScore,
+    calculateFinalScore,
   });
 })();

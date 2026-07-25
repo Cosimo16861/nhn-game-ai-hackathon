@@ -8,13 +8,43 @@
       initialPlayerPixels,
       hiddenMaskA,
       hiddenMaskB,
+      hiddenMaskC,
       gridSize,
+      regionsPerSide = 4,
       palette,
       onChange,
     } = options;
     const context = canvas.getContext("2d");
+    const analysisGridSize = options.analysisGridSize ?? gridSize;
+    const paintUnitSize =
+      options.paintUnitSize ?? analysisGridSize / gridSize;
+    const analysisPixels = options.analysisPixels ?? targetPixels;
+    const analysisHiddenMaskA =
+      options.analysisHiddenMaskA ?? hiddenMaskA;
+    const analysisHiddenMaskB =
+      options.analysisHiddenMaskB ?? hiddenMaskB;
+    const analysisHiddenMaskC =
+      options.analysisHiddenMaskC ?? hiddenMaskC;
+    const expectedAnalysisPixelCount =
+      analysisGridSize * analysisGridSize;
+    const hasValidAnalysisLayers =
+      Number.isInteger(paintUnitSize) &&
+      paintUnitSize >= 1 &&
+      analysisGridSize === gridSize * paintUnitSize &&
+      analysisPixels.length === expectedAnalysisPixelCount &&
+      analysisHiddenMaskA.length === expectedAnalysisPixelCount &&
+      analysisHiddenMaskB.length === expectedAnalysisPixelCount &&
+      analysisHiddenMaskC.length === expectedAnalysisPixelCount;
+
+    if (!hasValidAnalysisLayers) {
+      throw new Error(
+        "분석 화면 데이터와 색칠판 데이터의 크기가 일치하지 않습니다.",
+      );
+    }
+
     const hiddenMask = targetPixels.map(
-      (_, index) => hiddenMaskA[index] || hiddenMaskB[index],
+      (_, index) =>
+        hiddenMaskA[index] || hiddenMaskB[index] || hiddenMaskC[index],
     );
     let playerPixels = initialPlayerPixels.slice();
     let selectedColor = palette[0];
@@ -39,23 +69,33 @@
       });
     }
 
-    function drawCell(index) {
-      const cellWidth = canvas.width / gridSize;
-      const cellHeight = canvas.height / gridSize;
-      const column = index % gridSize;
-      const row = Math.floor(index / gridSize);
-      const color = playerPixels[index];
+    function drawAnalysisCell(index) {
+      const cellWidth = canvas.width / analysisGridSize;
+      const cellHeight = canvas.height / analysisGridSize;
+      const column = index % analysisGridSize;
+      const row = Math.floor(index / analysisGridSize);
+      const paintColumn = Math.floor(column / paintUnitSize);
+      const paintRow = Math.floor(row / paintUnitSize);
+      const paintIndex = paintRow * gridSize + paintColumn;
+      const playerColor = playerPixels[paintIndex];
 
-      if (color) {
-        context.fillStyle = color;
-      } else if (hiddenMaskA[index]) {
+      if (
+        !analysisHiddenMaskA[index] &&
+        !analysisHiddenMaskB[index] &&
+        !analysisHiddenMaskC[index]
+      ) {
+        context.fillStyle = analysisPixels[index];
+      } else if (playerColor) {
+        context.fillStyle = playerColor;
+      } else if (analysisHiddenMaskA[index]) {
         context.fillStyle =
           (column + row) % 2 === 0 ? "#20283a" : "#121827";
-      } else if (hiddenMaskB[index]) {
+      } else if (analysisHiddenMaskB[index]) {
         context.fillStyle =
           (column + row) % 2 === 0 ? "#392342" : "#22162b";
-      } else {
-        context.fillStyle = targetPixels[index];
+      } else if (analysisHiddenMaskC[index]) {
+        context.fillStyle =
+          (column + row) % 2 === 0 ? "#244039" : "#152620";
       }
 
       context.fillRect(
@@ -66,20 +106,39 @@
       );
     }
 
+    function drawPaintCell(index) {
+      const paintColumn = index % gridSize;
+      const paintRow = Math.floor(index / gridSize);
+
+      for (let offsetY = 0; offsetY < paintUnitSize; offsetY++) {
+        const analysisRow = paintRow * paintUnitSize + offsetY;
+        for (let offsetX = 0; offsetX < paintUnitSize; offsetX++) {
+          const analysisColumn =
+            paintColumn * paintUnitSize + offsetX;
+          drawAnalysisCell(
+            analysisRow * analysisGridSize + analysisColumn,
+          );
+        }
+      }
+    }
+
     function render() {
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.imageSmoothingEnabled = false;
 
-      targetPixels.forEach((_, index) => drawCell(index));
+      analysisPixels.forEach((_, index) => drawAnalysisCell(index));
 
-      const half = canvas.width / 2;
       context.beginPath();
       context.strokeStyle = "rgba(255, 255, 255, 0.55)";
       context.lineWidth = 2;
-      context.moveTo(half, 0);
-      context.lineTo(half, canvas.height);
-      context.moveTo(0, half);
-      context.lineTo(canvas.width, half);
+      for (let line = 1; line < regionsPerSide; line++) {
+        const x = (canvas.width / regionsPerSide) * line;
+        const y = (canvas.height / regionsPerSide) * line;
+        context.moveTo(x, 0);
+        context.lineTo(x, canvas.height);
+        context.moveTo(0, y);
+        context.lineTo(canvas.width, y);
+      }
       context.stroke();
     }
 
@@ -107,7 +166,7 @@
         currentStroke.set(index, playerPixels[index]);
       }
       playerPixels[index] = nextColor;
-      drawCell(index);
+      drawPaintCell(index);
     }
 
     function finishStroke() {

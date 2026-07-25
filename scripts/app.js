@@ -1,9 +1,10 @@
 const GAME_CONFIG = Object.freeze({
-  gridSize: 64,
+  analysisGridSize: 256,
+  paintGridSize: 128,
+  paintUnitSize: 2,
   paletteSize: 8,
-  hiddenQuadrantCount: 2,
-  maxFileSizeBytes: 10 * 1024 * 1024,
-  acceptedMimeTypes: ["image/png", "image/jpeg"],
+  regionsPerSide: 4,
+  hiddenRegionCount: 3,
   scoreWeights: Object.freeze({
     color: 0.5,
     edge: 0.3,
@@ -12,13 +13,12 @@ const GAME_CONFIG = Object.freeze({
   }),
 });
 
-const imageInput = document.querySelector("#imageInput");
-const fileMessage = document.querySelector("#fileMessage");
-const continueButton = document.querySelector("#continueButton");
+const caseGrid = document.querySelector("#caseGrid");
+const configSection = document.querySelector("#config");
+const caseSelectionMessage = document.querySelector("#caseSelectionMessage");
+const loadCaseButton = document.querySelector("#loadCaseButton");
 const appStatus = document.querySelector("#appStatus");
 const pixelResult = document.querySelector("#pixelResult");
-const sourcePreview = document.querySelector("#sourcePreview");
-const pixelPreview = document.querySelector("#pixelPreview");
 const puzzlePreview = document.querySelector("#puzzlePreview");
 const resultMeta = document.querySelector("#resultMeta");
 const paletteList = document.querySelector("#paletteList");
@@ -27,37 +27,264 @@ const editorSection = document.querySelector("#editorSection");
 const editorCanvas = document.querySelector("#editorCanvas");
 const editorPalette = document.querySelector("#editorPalette");
 const editorProgress = document.querySelector("#editorProgress");
+const editorTimer = document.querySelector("#editorTimer");
+const caseTitleDisplay = document.querySelector("#caseTitleDisplay");
+const witnessList = document.querySelector("#witnessList");
 const eraserButton = document.querySelector("#eraserButton");
 const undoButton = document.querySelector("#undoButton");
 const resetButton = document.querySelector("#resetButton");
 const scoreButton = document.querySelector("#scoreButton");
 const scoreResult = document.querySelector("#scoreResult");
-const colorScoreValue = document.querySelector("#colorScoreValue");
+const scoreGuide = document.querySelector("#scoreGuide");
+const finalScoreValue = document.querySelector("#finalScoreValue");
 const scoreMessage = document.querySelector("#scoreMessage");
 const scoreGrade = document.querySelector("#scoreGrade");
+const colorDetail = document.querySelector("#colorDetail");
 const edgeDetail = document.querySelector("#edgeDetail");
 const structureDetail = document.querySelector("#structureDetail");
+const paletteDetail = document.querySelector("#paletteDetail");
+const timeDetail = document.querySelector("#timeDetail");
 const filledDetail = document.querySelector("#filledDetail");
 const exactDetail = document.querySelector("#exactDetail");
 const deltaDetail = document.querySelector("#deltaDetail");
 const answerPreview = document.querySelector("#answerPreview");
 const playerPreview = document.querySelector("#playerPreview");
 const continueEditingButton = document.querySelector("#continueEditingButton");
-let selectedFile = null;
+const retryPuzzleButton = document.querySelector("#retryPuzzleButton");
+const newImageButton = document.querySelector("#newImageButton");
+const aiAnalyzeButton = document.querySelector("#aiAnalyzeButton");
+const aiScore = document.querySelector("#aiScore");
+const aiScoreFlow = document.querySelector("#aiScoreFlow");
+const aiBaselineScore = document.querySelector("#aiBaselineScore");
+const aiRestoredScore = document.querySelector("#aiRestoredScore");
+const aiStatus = document.querySelector("#aiStatus");
+let selectedCaseDefinition = null;
 let puzzleSource = null;
 let editorController = null;
+let solveSeconds = 0;
+let timerId = null;
 
-function formatMegabytes(bytes) {
-  return `${(bytes / 1024 / 1024).toFixed(2)}MB`;
+const GAME_SCREENS = Object.freeze({
+  cases: configSection,
+  preview: pixelResult,
+  editor: editorSection,
+  result: scoreResult,
+});
+
+function showScreen(screenName, { scroll = true } = {}) {
+  const activeScreen = GAME_SCREENS[screenName];
+  if (!activeScreen) {
+    throw new Error(`알 수 없는 게임 화면입니다: ${screenName}`);
+  }
+
+  Object.entries(GAME_SCREENS).forEach(([name, section]) => {
+    section.hidden = name !== screenName;
+  });
+  scoreGuide.hidden = screenName !== "cases";
+
+  if (scroll) {
+    activeScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function validateGameConfig() {
+  const expectedAnalysisSize =
+    GAME_CONFIG.paintGridSize * GAME_CONFIG.paintUnitSize;
+  if (GAME_CONFIG.analysisGridSize !== expectedAnalysisSize) {
+    throw new Error(
+      "원본 처리 해상도와 색칠 단위 설정이 일치하지 않습니다.",
+    );
+  }
+}
+
+function formatTime(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function renderTimer() {
+  editorTimer.textContent = formatTime(solveSeconds);
+}
+
+function startTimer() {
+  if (timerId !== null) return;
+  timerId = window.setInterval(() => {
+    solveSeconds++;
+    renderTimer();
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerId === null) return;
+  window.clearInterval(timerId);
+  timerId = null;
+}
+
+function renderCaseSelection() {
+  const cases = window.CaseData?.cases || [];
+  const difficultyLabels = {
+    easy: "쉬움",
+    normal: "보통",
+    hard: "어려움",
+  };
+
+  if (cases.length === 0) {
+    appStatus.textContent = "사건 없음";
+    caseSelectionMessage.textContent = "등록된 사건이 없습니다.";
+    return;
+  }
+
+  caseGrid.replaceChildren(
+    ...cases.map((caseDefinition, index) => {
+      const card = document.createElement("button");
+      const imageWrap = document.createElement("span");
+      const image = document.createElement("img");
+      const body = document.createElement("span");
+      const caseIndex = document.createElement("span");
+      const title = document.createElement("h3");
+      const metadata = document.createElement("span");
+      const difficulty = document.createElement("span");
+      const passingScore = document.createElement("span");
+      const selectLabel = document.createElement("span");
+
+      card.type = "button";
+      card.className = "case-card";
+      card.dataset.caseId = caseDefinition.id;
+      card.setAttribute("aria-pressed", "false");
+      imageWrap.className = "case-card-image";
+      image.src = caseDefinition.imageSrc;
+      image.alt = "";
+      image.setAttribute("aria-hidden", "true");
+      body.className = "case-card-body";
+      caseIndex.className = "case-card-index";
+      caseIndex.textContent = `CASE ${String(index + 1).padStart(2, "0")}`;
+      title.textContent = caseDefinition.title;
+      metadata.className = "case-card-meta";
+      difficulty.textContent =
+        `난이도 ${difficultyLabels[caseDefinition.difficulty]}`;
+      passingScore.textContent = `통과 ${caseDefinition.passingScore}점`;
+      selectLabel.className = "case-card-select";
+      selectLabel.textContent = "사건 선택";
+
+      metadata.append(difficulty, passingScore);
+      body.append(caseIndex, title, metadata, selectLabel);
+      imageWrap.append(image);
+      card.append(imageWrap, body);
+
+      card.addEventListener("click", () => {
+        caseGrid.querySelectorAll(".case-card").forEach((caseCard) => {
+          caseCard.classList.remove("is-selected");
+          caseCard.setAttribute("aria-pressed", "false");
+          caseCard.querySelector(".case-card-select").textContent = "사건 선택";
+        });
+        card.classList.add("is-selected");
+        card.setAttribute("aria-pressed", "true");
+        selectLabel.textContent = "선택됨";
+        selectedCaseDefinition = caseDefinition;
+        loadCaseButton.disabled = false;
+        appStatus.textContent = "사건 선택됨";
+        caseSelectionMessage.textContent =
+          `${caseDefinition.title}을 선택했습니다.`;
+      });
+
+      return card;
+    }),
+  );
+}
+
+async function prepareSelectedCase() {
+  if (!selectedCaseDefinition) return;
+
+  const caseDefinition = selectedCaseDefinition;
+  const caseCards = Array.from(caseGrid.querySelectorAll(".case-card"));
+  stopTimer();
+  editorController?.destroy();
+  editorController = null;
+  puzzleSource = null;
+  solveSeconds = 0;
+  renderTimer();
+  showScreen("cases", { scroll: false });
+  loadCaseButton.disabled = true;
+  loadCaseButton.textContent = "사건 이미지 분석 중…";
+  caseCards.forEach((card) => {
+    card.disabled = true;
+  });
+  appStatus.textContent = "퍼즐 생성 중";
+  caseSelectionMessage.textContent =
+    `${caseDefinition.title}의 증거 이미지를 분석하고 있습니다.`;
+
+  try {
+    puzzleSource = await window.Pixelizer.pixelize(caseDefinition.imageSrc, {
+      analysisGridSize: GAME_CONFIG.analysisGridSize,
+      paintGridSize: GAME_CONFIG.paintGridSize,
+      paletteSize: GAME_CONFIG.paletteSize,
+    });
+    puzzleSource.caseDefinition = caseDefinition;
+    puzzleSource.caseInfo = caseDefinition;
+
+    const puzzleMasks =
+      window.MaskGenerator.generateDualResolutionMasks(
+      puzzleSource.analysisPixels,
+      puzzleSource.paintPixels,
+      {
+        analysisGridSize: GAME_CONFIG.analysisGridSize,
+        paintGridSize: GAME_CONFIG.paintGridSize,
+        regionsPerSide: GAME_CONFIG.regionsPerSide,
+        hiddenRegionCount: GAME_CONFIG.hiddenRegionCount,
+        hiddenRegions: caseDefinition.hiddenRegions,
+      },
+    );
+    const analysisMask = puzzleMasks.analysisMask;
+    const paintMask = puzzleMasks.paintMask;
+    puzzleSource.analysisHiddenMaskA = analysisMask.hiddenMaskA;
+    puzzleSource.analysisHiddenMaskB = analysisMask.hiddenMaskB;
+    puzzleSource.analysisHiddenMaskC = analysisMask.hiddenMaskC;
+    puzzleSource.analysisHiddenMask = analysisMask.hiddenMask;
+    puzzleSource.hiddenMaskA = paintMask.hiddenMaskA;
+    puzzleSource.hiddenMaskB = paintMask.hiddenMaskB;
+    puzzleSource.hiddenMaskC = paintMask.hiddenMaskC;
+    puzzleSource.hiddenMask = paintMask.hiddenMask;
+    puzzleSource.playerPixels = paintMask.playerPixels;
+    puzzleSource.analysisMaskMetadata = analysisMask;
+    puzzleSource.maskMetadata = paintMask;
+
+    renderCompositePlayer(puzzlePreview, puzzleSource.playerPixels);
+    renderPalette(puzzleSource.palette);
+
+    resultMeta.textContent =
+      `${caseDefinition.title} · ${puzzleSource.analysisWidth} × ` +
+      `${puzzleSource.analysisHeight} 분석 · ${puzzleSource.width} × ` +
+      `${puzzleSource.height} 색칠판 · ${puzzleSource.palette.length}색 · ` +
+      `영역 ${puzzleMasks.hiddenRegions
+        .map((region) => region + 1)
+        .join(", ")} 가림`;
+    showScreen("preview");
+    appStatus.textContent = "퍼즐 준비 완료";
+    caseSelectionMessage.textContent =
+      `${caseDefinition.title}의 퍼즐이 준비되었습니다.`;
+  } catch (error) {
+    puzzleSource = null;
+    appStatus.textContent = "불러오기 실패";
+    caseSelectionMessage.textContent =
+      error.message || "사건 이미지를 불러오지 못했습니다.";
+  } finally {
+    caseCards.forEach((card) => {
+      card.disabled = false;
+    });
+    loadCaseButton.disabled = selectedCaseDefinition === null;
+    loadCaseButton.textContent = "선택한 사건 수사하기";
+  }
 }
 
 function renderRules() {
   document.querySelector("#gridRule").textContent =
-    `${GAME_CONFIG.gridSize} × ${GAME_CONFIG.gridSize}`;
+    `${GAME_CONFIG.analysisGridSize} × ${GAME_CONFIG.analysisGridSize} 분석 · ` +
+    `${GAME_CONFIG.paintGridSize} × ${GAME_CONFIG.paintGridSize} 색칠`;
   document.querySelector("#paletteRule").textContent =
     `${GAME_CONFIG.paletteSize}색`;
   document.querySelector("#hiddenRule").textContent =
-    `4개 중 ${GAME_CONFIG.hiddenQuadrantCount}개 · 50%`;
+    `16개 중 ${GAME_CONFIG.hiddenRegionCount}개 · 18.75%`;
 
   const labels = {
     color: "색상",
@@ -77,26 +304,6 @@ function renderRules() {
       return item;
     }),
   );
-}
-
-function showFileState(message, type = "") {
-  fileMessage.textContent = message;
-  fileMessage.className = "file-message";
-  if (type) {
-    fileMessage.classList.add(`is-${type}`);
-  }
-}
-
-function validateImage(file) {
-  if (!GAME_CONFIG.acceptedMimeTypes.includes(file.type)) {
-    return "PNG 또는 JPG 이미지만 선택할 수 있습니다.";
-  }
-
-  if (file.size > GAME_CONFIG.maxFileSizeBytes) {
-    return "이미지 크기는 10MB 이하여야 합니다.";
-  }
-
-  return "";
 }
 
 function renderPalette(palette) {
@@ -141,6 +348,22 @@ function renderEditorPalette(palette) {
   );
 }
 
+function renderCaseBriefing(caseInfo) {
+  caseTitleDisplay.textContent = caseInfo.title;
+  witnessList.replaceChildren(
+    ...caseInfo.witnesses.map((witness, index) => {
+      const item = document.createElement("li");
+      const label = document.createElement("strong");
+      const statement = document.createElement("span");
+      label.className = "witness-label";
+      label.textContent = `목격담 ${String.fromCharCode(65 + index)}`;
+      statement.textContent = witness;
+      item.append(label, statement);
+      return item;
+    }),
+  );
+}
+
 function updateEditorStatus(status) {
   editorProgress.textContent =
     `${status.filledCount.toLocaleString("ko-KR")} / ` +
@@ -148,6 +371,71 @@ function updateEditorStatus(status) {
   undoButton.disabled = !status.canUndo;
   resetButton.disabled = !status.canReset;
   scoreButton.disabled = status.filledCount === 0;
+}
+
+function createBlankPlayerPixels() {
+  return puzzleSource.pixels.map((color, index) =>
+    puzzleSource.hiddenMask[index] ? null : color,
+  );
+}
+
+function expandPlayerPixels(playerPixels) {
+  return window.Pixelizer.expandPixelGrid(
+    playerPixels,
+    GAME_CONFIG.paintGridSize,
+    GAME_CONFIG.paintUnitSize,
+  );
+}
+
+function renderCompositePlayer(canvas, playerPixels) {
+  const expandedPlayerPixels = expandPlayerPixels(playerPixels);
+  window.Pixelizer.renderCompositeGrid(
+    canvas,
+    puzzleSource.analysisPixels,
+    expandedPlayerPixels,
+    puzzleSource.analysisHiddenMaskA,
+    puzzleSource.analysisHiddenMaskB,
+    puzzleSource.analysisHiddenMaskC,
+    GAME_CONFIG.analysisGridSize,
+    GAME_CONFIG.regionsPerSide,
+  );
+}
+
+function openEditor({ reset = false } = {}) {
+  if (!puzzleSource) return;
+
+  if (reset) {
+    solveSeconds = 0;
+    puzzleSource.playerPixels = createBlankPlayerPixels();
+  }
+
+  editorController?.destroy();
+  renderCaseBriefing(puzzleSource.caseInfo);
+  renderEditorPalette(puzzleSource.palette);
+  eraserButton.classList.remove("is-selected");
+  editorController = window.PixelEditor.create({
+    canvas: editorCanvas,
+    targetPixels: puzzleSource.pixels,
+    initialPlayerPixels: puzzleSource.playerPixels,
+    hiddenMaskA: puzzleSource.hiddenMaskA,
+    hiddenMaskB: puzzleSource.hiddenMaskB,
+    hiddenMaskC: puzzleSource.hiddenMaskC,
+    gridSize: GAME_CONFIG.paintGridSize,
+    analysisGridSize: GAME_CONFIG.analysisGridSize,
+    paintUnitSize: GAME_CONFIG.paintUnitSize,
+    analysisPixels: puzzleSource.analysisPixels,
+    analysisHiddenMaskA: puzzleSource.analysisHiddenMaskA,
+    analysisHiddenMaskB: puzzleSource.analysisHiddenMaskB,
+    analysisHiddenMaskC: puzzleSource.analysisHiddenMaskC,
+    regionsPerSide: GAME_CONFIG.regionsPerSide,
+    palette: puzzleSource.palette,
+    onChange: updateEditorStatus,
+  });
+
+  renderTimer();
+  startTimer();
+  showScreen("editor");
+  appStatus.textContent = "복원 중";
 }
 
 function getGrade(score) {
@@ -158,72 +446,20 @@ function getGrade(score) {
   return "D";
 }
 
-function getScoreMessage(result) {
-  const blankCount = result.hiddenCount - result.filledCount;
+function getScoreMessage(colorResult, finalScore) {
+  const blankCount = colorResult.hiddenCount - colorResult.filledCount;
   if (blankCount > 0) {
     return `${blankCount.toLocaleString("ko-KR")}칸이 비어 있어 0점으로 반영되었습니다. 계속 수정하면 점수를 높일 수 있습니다.`;
   }
-  if (result.score >= 90) return "원본의 색상을 거의 완벽하게 복원했습니다.";
-  if (result.score >= 65) return "주요 색상은 잘 복원했지만 일부 영역의 색이 다릅니다.";
-  return "원본과 다른 색상이 많습니다. 비교 결과를 확인하고 다시 도전해 보세요.";
+  if (finalScore >= 90) return "색상, 윤곽선과 지역 구조를 거의 완벽하게 복원했습니다.";
+  if (finalScore >= 65) return "주요 특징은 잘 복원했지만 일부 색상이나 형태가 다릅니다.";
+  return "원본과 다른 부분이 많습니다. 항목별 점수를 확인하고 다시 도전해 보세요.";
 }
 
-imageInput.addEventListener("change", () => {
-  const [file] = imageInput.files;
-  selectedFile = null;
-  puzzleSource = null;
-  continueButton.disabled = true;
-  pixelResult.hidden = true;
-  editorSection.hidden = true;
-  scoreResult.hidden = true;
-  editorController?.destroy();
-  editorController = null;
-
-  if (!file) {
-    appStatus.textContent = "준비됨";
-    showFileState("선택된 이미지가 없습니다.");
-    return;
-  }
-
-  const error = validateImage(file);
-  if (error) {
-    imageInput.value = "";
-    appStatus.textContent = "확인 필요";
-    showFileState(error, "error");
-    return;
-  }
-
-  appStatus.textContent = "이미지 선택됨";
-  selectedFile = file;
-  showFileState(
-    `${file.name} · ${formatMegabytes(file.size)}`,
-    "success",
-  );
-  continueButton.disabled = false;
-});
+loadCaseButton.addEventListener("click", prepareSelectedCase);
 
 startPuzzleButton.addEventListener("click", () => {
-  if (!puzzleSource) return;
-
-  editorController?.destroy();
-  renderEditorPalette(puzzleSource.palette);
-  eraserButton.classList.remove("is-selected");
-  editorController = window.PixelEditor.create({
-    canvas: editorCanvas,
-    targetPixels: puzzleSource.pixels,
-    initialPlayerPixels: puzzleSource.playerPixels,
-    hiddenMaskA: puzzleSource.hiddenMaskA,
-    hiddenMaskB: puzzleSource.hiddenMaskB,
-    gridSize: GAME_CONFIG.gridSize,
-    palette: puzzleSource.palette,
-    onChange: updateEditorStatus,
-  });
-
-  pixelResult.hidden = true;
-  scoreResult.hidden = true;
-  editorSection.hidden = false;
-  appStatus.textContent = "복원 중";
-  editorSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  openEditor({ reset: true });
 });
 
 eraserButton.addEventListener("click", () => {
@@ -246,125 +482,141 @@ resetButton.addEventListener("click", () => {
 scoreButton.addEventListener("click", () => {
   if (!editorController || !puzzleSource) return;
 
+  stopTimer();
   puzzleSource.playerPixels = editorController.getPlayerPixels();
-  const result = window.PixelScoring.calculateColorScore(
+  const logicalResult = window.PixelScoring.calculateColorScore(
     puzzleSource.pixels,
     puzzleSource.playerPixels,
     puzzleSource.hiddenMask,
   );
-  const edgeResult = window.PixelScoring.calculateEdgeScore(
-    puzzleSource.pixels,
+  const expandedPlayerPixels = expandPlayerPixels(
     puzzleSource.playerPixels,
-    puzzleSource.hiddenMask,
-    GAME_CONFIG.gridSize,
   );
-  const structureResult = window.PixelScoring.calculateStructureScore(
-    puzzleSource.pixels,
-    puzzleSource.playerPixels,
-    puzzleSource.hiddenMask,
-    GAME_CONFIG.gridSize,
+  const analysisScores =
+    window.PixelScoring.calculateRestorationScores(
+    puzzleSource.analysisPixels,
+    expandedPlayerPixels,
+    puzzleSource.analysisHiddenMask,
+    GAME_CONFIG.analysisGridSize,
+    GAME_CONFIG.scoreWeights,
   );
+  const result = analysisScores.color;
+  const edgeResult = analysisScores.edge;
+  const structureResult = analysisScores.structure;
+  const paletteResult = analysisScores.palette;
+  const finalScore = analysisScores.finalScore;
+  puzzleSource.logicalColorScore = logicalResult;
   puzzleSource.colorScore = result;
   puzzleSource.edgeScore = edgeResult;
   puzzleSource.structureScore = structureResult;
+  puzzleSource.paletteScore = paletteResult;
+  puzzleSource.finalScore = finalScore;
 
-  colorScoreValue.textContent = result.score.toFixed(1);
-  scoreGrade.textContent = getGrade(result.score);
+  finalScoreValue.textContent = finalScore.toFixed(1);
+  scoreGrade.textContent = getGrade(finalScore);
+  colorDetail.textContent = `${result.score.toFixed(1)}점`;
   edgeDetail.textContent = `${edgeResult.score.toFixed(1)}점`;
   structureDetail.textContent = `${structureResult.score.toFixed(1)}점`;
+  paletteDetail.textContent = `${paletteResult.score.toFixed(1)}점`;
+  timeDetail.textContent = formatTime(solveSeconds);
   filledDetail.textContent =
-    `${result.filledCount.toLocaleString("ko-KR")} / ` +
-    result.hiddenCount.toLocaleString("ko-KR");
+    `${logicalResult.filledCount.toLocaleString("ko-KR")} / ` +
+    logicalResult.hiddenCount.toLocaleString("ko-KR");
   exactDetail.textContent =
-    `${result.exactMatchCount.toLocaleString("ko-KR")}칸`;
+    `${logicalResult.exactMatchCount.toLocaleString("ko-KR")}칸`;
   deltaDetail.textContent =
     result.averageDeltaE === null ? "-" : `ΔE ${result.averageDeltaE.toFixed(1)}`;
-  scoreMessage.textContent = getScoreMessage(result);
+  scoreMessage.textContent = getScoreMessage(logicalResult, finalScore);
+  aiAnalyzeButton.disabled = false;
+  aiAnalyzeButton.textContent = "AI로 분석하기";
+  aiScore.hidden = true;
+  aiScoreFlow.hidden = true;
+  aiStatus.textContent = "분석 전";
 
   window.Pixelizer.renderPixelGrid(
     answerPreview,
-    puzzleSource.pixels,
-    GAME_CONFIG.gridSize,
+    puzzleSource.analysisPixels,
+    GAME_CONFIG.analysisGridSize,
   );
-  window.Pixelizer.renderPixelGrid(
-    playerPreview,
-    puzzleSource.playerPixels,
-    GAME_CONFIG.gridSize,
-  );
+  renderCompositePlayer(playerPreview, puzzleSource.playerPixels);
 
-  editorSection.hidden = true;
-  scoreResult.hidden = false;
+  showScreen("result");
   appStatus.textContent = "채점 완료";
-  scoreResult.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 continueEditingButton.addEventListener("click", () => {
-  scoreResult.hidden = true;
-  editorSection.hidden = false;
+  showScreen("editor");
   appStatus.textContent = "복원 중";
-  editorSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  startTimer();
 });
 
-continueButton.addEventListener("click", async () => {
-  if (!selectedFile) return;
+retryPuzzleButton.addEventListener("click", () => {
+  openEditor({ reset: true });
+});
 
-  editorSection.hidden = true;
-  scoreResult.hidden = true;
+newImageButton.addEventListener("click", () => {
+  stopTimer();
   editorController?.destroy();
   editorController = null;
-  continueButton.disabled = true;
-  continueButton.textContent = "픽셀로 변환하는 중…";
-  appStatus.textContent = "변환 중";
+  selectedCaseDefinition = null;
+  puzzleSource = null;
+  solveSeconds = 0;
+  showScreen("cases");
+  caseGrid.querySelectorAll(".case-card").forEach((caseCard) => {
+    caseCard.classList.remove("is-selected");
+    caseCard.setAttribute("aria-pressed", "false");
+    caseCard.querySelector(".case-card-select").textContent = "사건 선택";
+  });
+  loadCaseButton.disabled = true;
+  appStatus.textContent = "사건 준비됨";
+  caseSelectionMessage.textContent =
+    "사건 카드를 선택해 수사 기록을 확인하세요.";
+  renderTimer();
+});
+
+aiAnalyzeButton.addEventListener("click", async () => {
+  if (!puzzleSource) return;
+
+  aiAnalyzeButton.disabled = true;
+  aiAnalyzeButton.textContent = "분석 중…";
+  aiScore.hidden = true;
+  aiScoreFlow.hidden = true;
 
   try {
-    puzzleSource = await window.Pixelizer.pixelize(selectedFile, {
-      gridSize: GAME_CONFIG.gridSize,
-      paletteSize: GAME_CONFIG.paletteSize,
-    });
+    const baselineCanvas = document.createElement("canvas");
+    baselineCanvas.width = answerPreview.width;
+    baselineCanvas.height = answerPreview.height;
+    const baselinePixels = createBlankPlayerPixels();
+    renderCompositePlayer(baselineCanvas, baselinePixels);
 
-    window.Pixelizer.drawSquareCrop(puzzleSource.image, sourcePreview);
-    window.Pixelizer.renderPixelGrid(
-      pixelPreview,
-      puzzleSource.pixels,
-      GAME_CONFIG.gridSize,
-    );
-    const puzzleMask = window.MaskGenerator.generateMask(
-      puzzleSource.pixels,
-      {
-        gridSize: GAME_CONFIG.gridSize,
-        hiddenQuadrantCount: GAME_CONFIG.hiddenQuadrantCount,
+    const analysis = await window.AIImageAnalyzer.analyzeRecovery(
+      answerPreview,
+      baselineCanvas,
+      playerPreview,
+      (message) => {
+        aiStatus.textContent = message;
       },
     );
-    puzzleSource.hiddenMaskA = puzzleMask.hiddenMaskA;
-    puzzleSource.hiddenMaskB = puzzleMask.hiddenMaskB;
-    puzzleSource.hiddenMask = puzzleMask.hiddenMask;
-    puzzleSource.playerPixels = puzzleMask.playerPixels;
-    puzzleSource.maskMetadata = puzzleMask;
-    window.Pixelizer.renderSplitMaskGrid(
-      puzzlePreview,
-      puzzleSource.pixels,
-      puzzleSource.hiddenMaskA,
-      puzzleSource.hiddenMaskB,
-      GAME_CONFIG.gridSize,
-    );
-    renderPalette(puzzleSource.palette);
-
-    resultMeta.textContent =
-      `${puzzleSource.sourceWidth} × ${puzzleSource.sourceHeight}px 원본 · ` +
-      `${puzzleSource.palette.length}색 · ` +
-      `영역 ${puzzleMask.hiddenQuadrants.map((index) => index + 1).join(", ")} ` +
-      `숨김 (${puzzleMask.hiddenCount.toLocaleString("ko-KR")}칸)`;
-    pixelResult.hidden = false;
-    appStatus.textContent = "변환 완료";
-    showFileState("픽셀 이미지 데이터가 준비되었습니다.", "success");
-    pixelResult.scrollIntoView({ behavior: "smooth", block: "start" });
+    puzzleSource.aiRecognitionRecovery = analysis;
+    const improvementSign = analysis.improvement > 0 ? "+" : "";
+    aiScore.textContent =
+      `${improvementSign}${analysis.improvement.toFixed(1)}p`;
+    aiBaselineScore.textContent = `${analysis.baselineScore.toFixed(1)}%`;
+    aiRestoredScore.textContent = `${analysis.restoredScore.toFixed(1)}%`;
+    aiScore.hidden = false;
+    aiScoreFlow.hidden = false;
+    aiStatus.textContent =
+      `${analysis.model} · 특징 ${analysis.featureCount.toLocaleString("ko-KR")}개`;
   } catch (error) {
-    appStatus.textContent = "변환 실패";
-    showFileState(error.message || "이미지 변환에 실패했습니다.", "error");
+    aiStatus.textContent =
+      error.message || "AI 분석을 사용할 수 없습니다. 인터넷 연결을 확인하세요.";
   } finally {
-    continueButton.disabled = false;
-    continueButton.textContent = "다시 픽셀화하기";
+    aiAnalyzeButton.disabled = false;
+    aiAnalyzeButton.textContent = "다시 분석하기";
   }
 });
 
+validateGameConfig();
+renderCaseSelection();
 renderRules();
+showScreen("cases", { scroll: false });
