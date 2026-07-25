@@ -1,534 +1,206 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Block Breaker</title>
-  <style>
-    /* ---------- Global layout ---------- */
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: #10131a;
-      color: #e8ecf3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="사진의 빈 픽셀을 복원하고 원본과의 유사도를 확인하는 퍼즐 게임"
+    />
+    <title>픽셀 리콜</title>
+    <link rel="stylesheet" href="./styles/game.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">PIXEL RECONSTRUCTION LAB</p>
+        <h1>픽셀 리콜</h1>
+        <p class="hero-copy">
+          사진을 픽셀 퍼즐로 바꾸고, 사라진 색을 기억해 원본을 복원하세요.
+        </p>
+      </header>
 
-    h1 {
-      margin: 0 0 20px;
-      font-size: 2rem;
-      letter-spacing: 1px;
-    }
+      <section class="panel" aria-labelledby="setup-title">
+        <div class="panel-heading">
+          <div>
+            <p class="step-label">STEP 01</p>
+            <h2 id="setup-title">복원할 이미지 선택</h2>
+          </div>
+          <span class="status-badge" id="appStatus">준비됨</span>
+        </div>
 
-    /* ---------- Config panel ---------- */
-    #config {
-      background: #1b2130;
-      border: 1px solid #2c3550;
-      border-radius: 12px;
-      padding: 28px 32px;
-      width: 480px;
-      max-width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-    .field { margin-bottom: 22px; }
-    .field > label.field-label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    #speed { width: 100%; }
-    .speed-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    #speedValue {
-      min-width: 2ch;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #4fd1c5;
-    }
-    .layouts { display: flex; gap: 18px; flex-wrap: wrap; }
-    .layouts label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-    button {
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 24px;
-      background: #4fd1c5;
-      color: #0b1017;
-      transition: filter 0.15s ease;
-    }
-    button:hover { filter: brightness(1.1); }
-    #startBtn { width: 100%; font-size: 1.05rem; }
+        <label class="upload-zone" for="imageInput">
+          <span class="upload-icon" aria-hidden="true">＋</span>
+          <span class="upload-title">사진을 선택하세요</span>
+          <span class="upload-help">PNG 또는 JPG · 최대 10MB</span>
+          <input
+            id="imageInput"
+            type="file"
+            accept="image/png,image/jpeg"
+          />
+        </label>
 
-    /* ---------- Game area ---------- */
-    #game { display: none; flex-direction: column; align-items: center; }
-    #hud {
-      display: flex;
-      justify-content: space-between;
-      width: 480px;
-      max-width: 100%;
-      margin-bottom: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    #hud span { color: #4fd1c5; }
+        <p class="file-message" id="fileMessage" role="status">
+          선택된 이미지가 없습니다.
+        </p>
 
-    /* container is position:relative so overlay can cover the canvas */
-    #canvasWrap { position: relative; }
-    #board {
-      display: block;
-      background: #0b1017;
-      border: 2px solid #2c3550;
-      border-radius: 6px;
-    }
+        <div class="rules" aria-label="퍼즐 기본 설정">
+          <div class="rule-card">
+            <span>격자</span>
+            <strong id="gridRule">64 × 64</strong>
+          </div>
+          <div class="rule-card">
+            <span>팔레트</span>
+            <strong id="paletteRule">8색</strong>
+          </div>
+          <div class="rule-card">
+            <span>빈칸</span>
+            <strong id="hiddenRule">4개 중 2개 · 50%</strong>
+          </div>
+        </div>
 
-    /* ---------- Overlay ---------- */
-    #overlay {
-      display: none; /* shown on win/lose */
-      position: absolute;
-      inset: 0;
-      background: rgba(9, 12, 18, 0.85);
-      border-radius: 6px;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 22px;
-    }
-    #overlayText {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-    .hint { margin-top: 14px; font-size: 0.85rem; color: #8b96ad; }
-  </style>
-</head>
-<body>
-  <h1>Block Breaker</h1>
+        <button id="continueButton" type="button" disabled>
+          픽셀 퍼즐 만들기
+        </button>
+        <p class="phase-note">
+          이미지는 브라우저 안에서만 처리되며 외부 서버로 전송되지 않습니다.
+        </p>
+      </section>
 
-  <!-- ============ CONFIG PANEL ============ -->
-  <div id="config">
-    <div class="field">
-      <label class="field-label" for="speed">Ball Speed</label>
-      <div class="speed-row">
-        <span>1</span>
-        <input type="range" id="speed" min="1" max="10" step="1" value="5" />
-        <span>10</span>
-        <span id="speedValue">5</span>
-      </div>
-    </div>
+      <section class="pixel-result" id="pixelResult" aria-labelledby="result-title" hidden>
+        <div class="result-heading">
+          <div>
+            <p class="step-label">STEP 02</p>
+            <h2 id="result-title">64 × 64 픽셀 변환 결과</h2>
+          </div>
+          <p id="resultMeta"></p>
+        </div>
 
-    <div class="field">
-      <span class="field-label">Block Layout</span>
-      <div class="layouts">
-        <label><input type="radio" name="layout" value="full" checked /> Full Grid</label>
-        <label><input type="radio" name="layout" value="pyramid" /> Pyramid</label>
-        <label><input type="radio" name="layout" value="checker" /> Checkerboard</label>
-      </div>
-    </div>
+        <div class="preview-grid">
+          <figure>
+            <figcaption>중앙 정사각형 원본</figcaption>
+            <canvas id="sourcePreview" width="512" height="512"></canvas>
+          </figure>
+          <figure>
+            <figcaption>8색 픽셀 이미지</figcaption>
+            <canvas id="pixelPreview" width="512" height="512"></canvas>
+          </figure>
+          <figure>
+            <figcaption>네 영역 중 두 영역이 가려진 퍼즐</figcaption>
+            <canvas id="puzzlePreview" width="512" height="512"></canvas>
+            <div class="mask-legend" aria-label="가림 그룹 범례">
+              <span><i class="mask-a"></i>가림 영역 A · 25%</span>
+              <span><i class="mask-b"></i>가림 영역 B · 25%</span>
+            </div>
+          </figure>
+        </div>
 
-    <button id="startBtn">Start Game</button>
-    <div class="hint">Move the paddle with &larr; / &rarr; (or A / D), or the mouse.</div>
-  </div>
+        <div class="palette-section">
+          <h3>추출된 팔레트</h3>
+          <div class="palette-list" id="paletteList"></div>
+        </div>
+        <button class="secondary-action" id="startPuzzleButton" type="button">
+          복원 시작하기
+        </button>
+      </section>
 
-  <!-- ============ GAME AREA ============ -->
-  <div id="game">
-    <div id="hud">
-      <div>Blocks left: <span id="blocksLeft">0</span></div>
-      <div>Score: <span id="score">0</span></div>
-    </div>
-    <div id="canvasWrap">
-      <canvas id="board" width="480" height="640"></canvas>
-      <div id="overlay">
-        <div id="overlayText">YOU WIN 🎉</div>
-        <button id="playAgainBtn">Play Again</button>
-      </div>
-    </div>
-  </div>
+      <section class="editor-section" id="editorSection" aria-labelledby="editor-title" hidden>
+        <div class="result-heading">
+          <div>
+            <p class="step-label">STEP 04</p>
+            <h2 id="editor-title">빈 영역을 복원하세요</h2>
+          </div>
+          <p id="editorProgress">0 / 2,048칸 채움</p>
+        </div>
 
-  <script>
-  (function () {
-    "use strict";
+        <div class="editor-layout">
+          <div class="editor-canvas-wrap">
+            <canvas
+              id="editorCanvas"
+              width="640"
+              height="640"
+              aria-label="64 × 64 픽셀 복원 편집기"
+            ></canvas>
+          </div>
 
-    // ---------- Constants ----------
-    const canvas = document.getElementById("board");
-    const ctx = canvas.getContext("2d");
-    const W = canvas.width;   // 480
-    const H = canvas.height;  // 640
+          <aside class="editor-controls" aria-label="그리기 도구">
+            <div>
+              <h3>색상 팔레트</h3>
+              <div class="editor-palette" id="editorPalette"></div>
+            </div>
 
-    const COLS = 8;
-    const ROWS = 6;
-    const BLOCK_TOP = 60;      // top offset before first block row
-    const BLOCK_PADDING = 6;   // gap between blocks
-    const SIDE_MARGIN = 10;    // left/right margin for the block field
-    // Derived block size so the grid fits neatly across the width.
-    const BLOCK_W = (W - SIDE_MARGIN * 2 - BLOCK_PADDING * (COLS - 1)) / COLS;
-    const BLOCK_H = 22;
+            <div>
+              <h3>도구</h3>
+              <div class="tool-buttons">
+                <button id="eraserButton" type="button">지우개</button>
+                <button id="undoButton" type="button" disabled>실행 취소</button>
+                <button id="resetButton" type="button" disabled>모두 지우기</button>
+              </div>
+            </div>
 
-    const PADDLE_W = 90;
-    const PADDLE_H = 14;
-    const PADDLE_SPEED = 7;      // px per frame for keyboard control
-    const PADDLE_BOTTOM_GAP = 30; // paddle distance from bottom
+            <p class="editor-help">
+              색상을 선택한 뒤 가려진 영역을 클릭하거나 드래그하세요. 이미 공개된
+              영역은 수정할 수 없습니다.
+            </p>
+            <button class="score-action" id="scoreButton" type="button" disabled>
+              현재 상태 채점하기
+            </button>
+          </aside>
+        </div>
+      </section>
 
-    const BALL_R = 7;
-    const MIN_SPEED = 2.5;
-    const STEP = 0.6;
-    const MIN_VY = 1.2; // ensure the ball never travels near-horizontal forever
+      <section class="score-result" id="scoreResult" aria-labelledby="score-result-title" hidden>
+        <div class="score-summary">
+          <div>
+            <p class="step-label">STEP 05</p>
+            <h2 id="score-result-title">복원 분석 결과</h2>
+          </div>
+          <div class="score-number">
+            <small>색상</small>
+            <strong id="colorScoreValue">0</strong>
+            <span>점</span>
+          </div>
+        </div>
 
-    // Single unified color for every block.
-    const BLOCK_COLOR = "#4fd1c5";
-    const BLOCK_STROKE = "#2b8a80";
+        <p class="score-message" id="scoreMessage"></p>
+        <div class="score-details">
+          <div><span>등급</span><strong id="scoreGrade">D</strong></div>
+          <div><span>윤곽선 유사도</span><strong id="edgeDetail">0점</strong></div>
+          <div><span>주변 구조</span><strong id="structureDetail">0점</strong></div>
+          <div><span>채운 칸</span><strong id="filledDetail">0 / 2,048</strong></div>
+          <div><span>정확히 일치</span><strong id="exactDetail">0칸</strong></div>
+          <div><span>평균 색상 차이</span><strong id="deltaDetail">-</strong></div>
+        </div>
 
-    // ---------- State ----------
-    let paddle = { x: 0, y: 0, w: PADDLE_W, h: PADDLE_H };
-    let ball = { x: 0, y: 0, vx: 0, vy: 0, r: BALL_R, speed: MIN_SPEED };
-    let blocks = [];
-    let bricksRemaining = 0;
-    let score = 0;
-    let gameState = "config"; // 'config' | 'running' | 'won' | 'lost'
-    let leftPressed = false;
-    let rightPressed = false;
-    let animationId = null;
+        <div class="preview-grid result-comparison">
+          <figure>
+            <figcaption>원본 픽셀 이미지</figcaption>
+            <canvas id="answerPreview" width="512" height="512"></canvas>
+          </figure>
+          <figure>
+            <figcaption>나의 복원 결과</figcaption>
+            <canvas id="playerPreview" width="512" height="512"></canvas>
+          </figure>
+        </div>
 
-    // ---------- DOM refs ----------
-    const configEl = document.getElementById("config");
-    const gameEl = document.getElementById("game");
-    const overlayEl = document.getElementById("overlay");
-    const overlayText = document.getElementById("overlayText");
-    const speedInput = document.getElementById("speed");
-    const speedValue = document.getElementById("speedValue");
-    const startBtn = document.getElementById("startBtn");
-    const playAgainBtn = document.getElementById("playAgainBtn");
-    const blocksLeftEl = document.getElementById("blocksLeft");
-    const scoreEl = document.getElementById("score");
+        <button class="secondary-action" id="continueEditingButton" type="button">
+          계속 수정하기
+        </button>
+      </section>
 
-    // Live-update the speed value display.
-    speedInput.addEventListener("input", function () {
-      speedValue.textContent = speedInput.value;
-    });
+      <section class="score-guide" aria-labelledby="score-title">
+        <div>
+          <p class="step-label">SCORING PLAN</p>
+          <h2 id="score-title">복원 점수 기준</h2>
+        </div>
+        <ul id="scoreWeights"></ul>
+      </section>
+    </main>
 
-    // ---------- Layout predicates ----------
-    // Returns true when a block should exist at (row, col).
-    function layoutPredicate(name, row, col) {
-      if (name === "full") {
-        return true;
-      }
-      if (name === "checker") {
-        return (row + col) % 2 === 0;
-      }
-      if (name === "pyramid") {
-        // Centered triangle widening downward: row r keeps columns whose
-        // distance from the center is <= r. Center = (COLS-1)/2 = 3.5.
-        const center = (COLS - 1) / 2;
-        return Math.abs(col - center) <= row;
-      }
-      return true;
-    }
-
-    // ---------- Build blocks ----------
-    function buildBlocks(layoutName) {
-      blocks = [];
-      for (let row = 0; row < ROWS; row++) {
-        for (let col = 0; col < COLS; col++) {
-          if (!layoutPredicate(layoutName, row, col)) continue;
-          const x = SIDE_MARGIN + col * (BLOCK_W + BLOCK_PADDING);
-          const y = BLOCK_TOP + row * (BLOCK_H + BLOCK_PADDING);
-          blocks.push({ x: x, y: y, w: BLOCK_W, h: BLOCK_H, alive: true });
-        }
-      }
-      bricksRemaining = blocks.length;
-    }
-
-    // ---------- Speed mapping ----------
-    function computeSpeed(sliderValue) {
-      const s = parseInt(sliderValue, 10);
-      return MIN_SPEED + (s - 1) * STEP;
-    }
-
-    // ---------- Init a new game ----------
-    function initGame() {
-      const layoutName = document.querySelector('input[name="layout"]:checked').value;
-      buildBlocks(layoutName);
-
-      score = 0;
-
-      // Paddle centered at the bottom.
-      paddle.w = PADDLE_W;
-      paddle.h = PADDLE_H;
-      paddle.x = (W - paddle.w) / 2;
-      paddle.y = H - PADDLE_BOTTOM_GAP - paddle.h;
-
-      // Ball starts just above the paddle, heading up.
-      const speed = computeSpeed(speedInput.value);
-      ball.speed = speed;
-      ball.r = BALL_R;
-      ball.x = W / 2;
-      ball.y = paddle.y - BALL_R - 2;
-      // Launch angle ~ 60 degrees above horizontal, random left/right.
-      const angle = (Math.PI / 3) + (Math.random() * 0.2 - 0.1); // ~ up-ish
-      const dir = Math.random() < 0.5 ? -1 : 1;
-      ball.vx = dir * speed * Math.cos(angle);
-      ball.vy = -Math.abs(speed * Math.sin(angle)); // negative = upward
-
-      leftPressed = false;
-      rightPressed = false;
-      gameState = "running";
-    }
-
-    // ---------- Keyboard ----------
-    function onKeyDown(e) {
-      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
-        leftPressed = true;
-      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
-        rightPressed = true;
-      }
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        e.preventDefault(); // stop the page from scrolling
-      }
-    }
-    function onKeyUp(e) {
-      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
-        leftPressed = false;
-      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
-        rightPressed = false;
-      }
-    }
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("keyup", onKeyUp);
-
-    // ---------- Mouse ----------
-    canvas.addEventListener("mousemove", function (e) {
-      if (gameState !== "running") return;
-      const rect = canvas.getBoundingClientRect();
-      // Account for any CSS scaling of the canvas.
-      const scaleX = canvas.width / rect.width;
-      const mouseX = (e.clientX - rect.left) * scaleX;
-      paddle.x = mouseX - paddle.w / 2;
-      clampPaddle();
-    });
-
-    function clampPaddle() {
-      if (paddle.x < 0) paddle.x = 0;
-      if (paddle.x + paddle.w > W) paddle.x = W - paddle.w;
-    }
-
-    // ---------- Helpers ----------
-    // Re-normalize the ball velocity so its magnitude stays exactly `speed`,
-    // and guard against a near-horizontal trajectory that could loop forever.
-    function normalizeVelocity() {
-      let mag = Math.hypot(ball.vx, ball.vy);
-      if (mag === 0) {
-        ball.vx = 0;
-        ball.vy = -ball.speed;
-        return;
-      }
-      ball.vx = (ball.vx / mag) * ball.speed;
-      ball.vy = (ball.vy / mag) * ball.speed;
-
-      // Prevent an almost-horizontal ball from bouncing endlessly side to side.
-      if (Math.abs(ball.vy) < MIN_VY) {
-        const sign = ball.vy < 0 ? -1 : 1;
-        ball.vy = sign * MIN_VY;
-        // Recompute vx to preserve the overall speed magnitude.
-        const vxMag = Math.sqrt(Math.max(0, ball.speed * ball.speed - ball.vy * ball.vy));
-        ball.vx = (ball.vx < 0 ? -1 : 1) * vxMag;
-      }
-    }
-
-    // ---------- Collision handling for a single ball step ----------
-    function stepBall(dt) {
-      ball.x += ball.vx * dt;
-      ball.y += ball.vy * dt;
-
-      // Wall collisions: flip and reposition just inside the boundary.
-      if (ball.x - ball.r < 0) {
-        ball.x = ball.r;
-        ball.vx = Math.abs(ball.vx);
-      } else if (ball.x + ball.r > W) {
-        ball.x = W - ball.r;
-        ball.vx = -Math.abs(ball.vx);
-      }
-      if (ball.y - ball.r < 0) {
-        ball.y = ball.r;
-        ball.vy = Math.abs(ball.vy);
-      }
-
-      // Paddle collision: only when moving down and overlapping the paddle.
-      if (ball.vy > 0 &&
-          ball.y + ball.r >= paddle.y &&
-          ball.y - ball.r <= paddle.y + paddle.h &&
-          ball.x + ball.r >= paddle.x &&
-          ball.x - ball.r <= paddle.x + paddle.w) {
-        // Hit offset in -1..1 based on where the ball struck the paddle.
-        const paddleCenter = paddle.x + paddle.w / 2;
-        let offset = (ball.x - paddleCenter) / (paddle.w / 2);
-        offset = Math.max(-1, Math.min(1, offset));
-        // Map offset to a bounce angle: edge hits go more sideways.
-        const maxAngle = Math.PI / 3; // 60 degrees from vertical
-        const bounceAngle = offset * maxAngle;
-        ball.vx = ball.speed * Math.sin(bounceAngle);
-        ball.vy = -Math.abs(ball.speed * Math.cos(bounceAngle)); // force upward
-        // Snap the ball just above the paddle to avoid sticking.
-        ball.y = paddle.y - ball.r - 0.1;
-        normalizeVelocity();
-      }
-
-      // Block collisions: AABB test against alive blocks; handle first hit only.
-      for (let i = 0; i < blocks.length; i++) {
-        const b = blocks[i];
-        if (!b.alive) continue;
-        if (ball.x + ball.r < b.x || ball.x - ball.r > b.x + b.w ||
-            ball.y + ball.r < b.y || ball.y - ball.r > b.y + b.h) {
-          continue; // no overlap
-        }
-
-        // Hit! Decide which axis to flip based on penetration depth.
-        b.alive = false;
-        bricksRemaining--;
-        score += 10;
-
-        // Compute overlap on each axis to choose the reflection direction.
-        const ballCenterX = ball.x;
-        const ballCenterY = ball.y;
-        const blockCenterX = b.x + b.w / 2;
-        const blockCenterY = b.y + b.h / 2;
-
-        // Overlap amounts (positive when overlapping).
-        const overlapX = (ball.r + b.w / 2) - Math.abs(ballCenterX - blockCenterX);
-        const overlapY = (ball.r + b.h / 2) - Math.abs(ballCenterY - blockCenterY);
-
-        if (overlapX < overlapY) {
-          // Shallower on X → reflect horizontally.
-          ball.vx = (ballCenterX < blockCenterX) ? -Math.abs(ball.vx) : Math.abs(ball.vx);
-          // Nudge the ball out of the block.
-          ball.x += (ballCenterX < blockCenterX ? -1 : 1) * overlapX;
-        } else {
-          // Reflect vertically.
-          ball.vy = (ballCenterY < blockCenterY) ? -Math.abs(ball.vy) : Math.abs(ball.vy);
-          ball.y += (ballCenterY < blockCenterY ? -1 : 1) * overlapY;
-        }
-        break; // only one block per frame
-      }
-    }
-
-    // ---------- Update ----------
-    function update() {
-      // Paddle movement via keyboard.
-      if (leftPressed) paddle.x -= PADDLE_SPEED;
-      if (rightPressed) paddle.x += PADDLE_SPEED;
-      clampPaddle();
-
-      // Sub-step the ball in two half-steps to reduce high-speed tunneling.
-      stepBall(0.5);
-      stepBall(0.5);
-
-      // Keep the ball's speed constant and non-horizontal.
-      normalizeVelocity();
-
-      // Win check.
-      if (bricksRemaining === 0) {
-        endGame("won");
-        return;
-      }
-
-      // Lose check: ball fell below the bottom.
-      if (ball.y - ball.r > H) {
-        endGame("lost");
-        return;
-      }
-    }
-
-    // ---------- Render ----------
-    function render() {
-      ctx.clearRect(0, 0, W, H);
-
-      // Blocks (all one unified color).
-      ctx.fillStyle = BLOCK_COLOR;
-      ctx.strokeStyle = BLOCK_STROKE;
-      ctx.lineWidth = 1;
-      for (let i = 0; i < blocks.length; i++) {
-        const b = blocks[i];
-        if (!b.alive) continue;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
-      }
-
-      // Paddle.
-      ctx.fillStyle = "#e8ecf3";
-      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
-
-      // Ball.
-      ctx.fillStyle = "#ffd166";
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-      ctx.fill();
-
-      // HUD.
-      blocksLeftEl.textContent = bricksRemaining;
-      scoreEl.textContent = score;
-    }
-
-    // ---------- Game loop ----------
-    function loop() {
-      if (gameState !== "running") return;
-      update();
-      // update() may have ended the game; only render while still running.
-      if (gameState === "running") {
-        render();
-        animationId = requestAnimationFrame(loop);
-      }
-    }
-
-    // ---------- Start / End ----------
-    function startGame() {
-      cancelAnimationFrame(animationId); // always clear any prior loop
-      initGame();
-      configEl.style.display = "none";
-      gameEl.style.display = "flex";
-      overlayEl.style.display = "none";
-      render(); // draw the initial frame
-      animationId = requestAnimationFrame(loop);
-    }
-
-    function endGame(result) {
-      gameState = result;
-      cancelAnimationFrame(animationId);
-      render(); // final frame
-      overlayText.textContent = result === "won" ? "YOU WIN 🎉" : "GAME OVER";
-      overlayEl.style.display = "flex";
-    }
-
-    function backToConfig() {
-      cancelAnimationFrame(animationId);
-      gameState = "config";
-      overlayEl.style.display = "none";
-      gameEl.style.display = "none";
-      configEl.style.display = "block";
-    }
-
-    startBtn.addEventListener("click", startGame);
-    playAgainBtn.addEventListener("click", backToConfig);
-  })();
-  </script>
-</body>
+    <script defer src="./scripts/pixelizer.js"></script>
+    <script defer src="./scripts/mask-generator.js"></script>
+    <script defer src="./scripts/pixel-editor.js"></script>
+    <script defer src="./scripts/scoring.js"></script>
+    <script defer src="./scripts/app.js"></script>
+  </body>
 </html>
