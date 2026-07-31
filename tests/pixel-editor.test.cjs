@@ -3,13 +3,15 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 
-const source = fs.readFileSync(
-  path.join(__dirname, "..", "scripts", "pixel-editor.js"),
-  "utf8",
-);
 const sandbox = { window: {} };
 vm.createContext(sandbox);
-vm.runInContext(source, sandbox);
+["pixelizer.js", "pixel-editor.js"].forEach((fileName) => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "..", "scripts", fileName),
+    "utf8",
+  );
+  vm.runInContext(source, sandbox);
+});
 
 const listeners = new Map();
 const fillCalls = [];
@@ -46,25 +48,20 @@ const editor = sandbox.window.PixelEditor.create({
   canvas,
   targetPixels: ["#111111", "#222222", "#333333", "#444444"],
   initialPlayerPixels: [null, null, "#333333", "#444444"],
-  hiddenMaskA: [true, false, false, false],
-  hiddenMaskB: [false, true, false, false],
+  hiddenMaskA: [true, true, false, false],
+  hiddenMaskB: [false, false, false, false],
   hiddenMaskC: [false, false, false, false],
   gridSize: 2,
   analysisGridSize: 4,
   paintUnitSize: 2,
   analysisPixels: Array(16).fill("#aaaaaa"),
   analysisHiddenMaskA: [
-    true, true, false, false,
-    true, true, false, false,
+    true, true, true, true,
+    true, true, true, true,
     false, false, false, false,
     false, false, false, false,
   ],
-  analysisHiddenMaskB: [
-    false, false, true, true,
-    false, false, true, true,
-    false, false, false, false,
-    false, false, false, false,
-  ],
+  analysisHiddenMaskB: Array(16).fill(false),
   analysisHiddenMaskC: Array(16).fill(false),
   palette: ["#ff0000", "#00ff00"],
   onChange(status) {
@@ -107,6 +104,37 @@ assert.equal(editor.getPlayerPixels()[1], "#00ff00");
 editor.reset();
 assert.equal(editor.getPlayerPixels()[1], null);
 assert.equal(latestStatus.filledCount, 0);
+
+editor.setColor("#ff0000");
+editor.setTool("fill");
+assert.equal(editor.getTool(), "fill");
+listeners.get("pointerdown")(pointerEvent(25, 25));
+assert.deepEqual(
+  Array.from(editor.getPlayerPixels()),
+  ["#ff0000", "#ff0000", "#333333", "#444444"],
+);
+assert.equal(latestStatus.filledCount, 2);
+editor.undo();
+assert.deepEqual(
+  Array.from(editor.getPlayerPixels()),
+  [null, null, "#333333", "#444444"],
+);
+
+const keyboardEvent = (key) => ({
+  key,
+  preventDefault() {},
+});
+editor.setTool("brush");
+editor.setColor("#00ff00");
+listeners.get("focus")();
+listeners.get("keydown")(keyboardEvent("Enter"));
+listeners.get("keydown")(keyboardEvent("ArrowRight"));
+listeners.get("keydown")(keyboardEvent(" "));
+assert.deepEqual(
+  Array.from(editor.getPlayerPixels()),
+  ["#00ff00", "#00ff00", "#333333", "#444444"],
+);
+listeners.get("blur")();
 
 editor.destroy();
 assert.equal(listeners.size, 0);

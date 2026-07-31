@@ -32,9 +32,15 @@ const regionPixelCount = (gridSize / options.regionsPerSide) ** 2;
 
 assert.equal(first.hiddenMask.length, gridSize * gridSize);
 assert.equal(first.playerPixels.length, gridSize * gridSize);
-assert.equal(first.hiddenCountA, regionPixelCount);
-assert.equal(first.hiddenCountB, regionPixelCount);
-assert.equal(first.hiddenCountC, regionPixelCount);
+for (const hiddenCount of [
+  first.hiddenCountA,
+  first.hiddenCountB,
+  first.hiddenCountC,
+]) {
+  assert.ok(hiddenCount > regionPixelCount * 0.45);
+  assert.ok(hiddenCount < regionPixelCount * 0.8);
+}
+assert.equal(first.maskStyle, "irregular");
 assert.equal(
   first.hiddenCount,
   first.hiddenCountA + first.hiddenCountB + first.hiddenCountC,
@@ -85,6 +91,7 @@ assert.deepEqual(
   Array.from(fixed.hiddenRegions),
   [0, 4, 15],
 );
+assert.ok(fixed.hiddenCount < regionPixelCount * 3);
 
 const dual = sandbox.window.MaskGenerator.generateDualResolutionMasks(
   Array(256 * 256).fill("#112233"),
@@ -104,13 +111,51 @@ assert.deepEqual(
 );
 assert.equal(dual.analysisMask.hiddenMask.length, 256 * 256);
 assert.equal(dual.paintMask.hiddenMask.length, 128 * 128);
-assert.equal(dual.analysisMask.hiddenCountA, 64 * 64);
-assert.equal(dual.analysisMask.hiddenCountB, 64 * 64);
-assert.equal(dual.analysisMask.hiddenCountC, 64 * 64);
-assert.equal(dual.paintMask.hiddenCountA, 32 * 32);
-assert.equal(dual.paintMask.hiddenCountB, 32 * 32);
-assert.equal(dual.paintMask.hiddenCountC, 32 * 32);
-assert.equal(dual.paintMask.hiddenCount, 3072);
+assert.equal(dual.scale, 2);
+assert.equal(
+  dual.analysisMask.hiddenCountA,
+  dual.paintMask.hiddenCountA * 4,
+);
+assert.equal(
+  dual.analysisMask.hiddenCountB,
+  dual.paintMask.hiddenCountB * 4,
+);
+assert.equal(
+  dual.analysisMask.hiddenCountC,
+  dual.paintMask.hiddenCountC * 4,
+);
+assert.equal(
+  dual.analysisMask.hiddenCount,
+  dual.paintMask.hiddenCount * 4,
+);
+assert.ok(dual.paintMask.hiddenCount < 3072);
+assert.ok(dual.paintMask.hiddenCount > 3072 * 0.45);
+for (let paintIndex = 0; paintIndex < 128 * 128; paintIndex++) {
+  const paintRow = Math.floor(paintIndex / 128);
+  const paintColumn = paintIndex % 128;
+  const expected = dual.paintMask.hiddenMask[paintIndex];
+  for (let rowOffset = 0; rowOffset < 2; rowOffset++) {
+    for (let columnOffset = 0; columnOffset < 2; columnOffset++) {
+      const analysisIndex =
+        (paintRow * 2 + rowOffset) * 256 +
+        paintColumn * 2 +
+        columnOffset;
+      assert.equal(
+        dual.analysisMask.hiddenMask[analysisIndex],
+        expected,
+      );
+    }
+  }
+}
+
+const block = sandbox.window.MaskGenerator.generateMask(pixels, {
+  ...options,
+  maskStyle: "block",
+});
+assert.equal(block.hiddenCountA, regionPixelCount);
+assert.equal(block.hiddenCountB, regionPixelCount);
+assert.equal(block.hiddenCountC, regionPixelCount);
+assert.equal(block.maskStyle, "block");
 
 assert.throws(
   () =>

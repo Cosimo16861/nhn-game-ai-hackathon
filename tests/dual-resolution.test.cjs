@@ -60,7 +60,10 @@ const perfect = sandbox.window.PixelScoring.calculateRestorationScores(
   weights,
 );
 assert.equal(perfect.finalScore, 100);
-assert.equal(perfect.color.hiddenCount, 3 * 64 * 64);
+assert.equal(
+  perfect.color.hiddenCount,
+  masks.analysisMask.hiddenCount,
+);
 
 const blankAnalysisPixels = sandbox.window.Pixelizer.expandPixelGrid(
   Array(paintGridSize * paintGridSize).fill(null),

@@ -14,6 +14,8 @@
       palette,
       onChange,
     } = options;
+    const labelMinimumBlankRatio =
+      options.labelMinimumBlankRatio ?? 0.55;
     const context = canvas.getContext("2d");
     const analysisGridSize = options.analysisGridSize ?? gridSize;
     const paintUnitSize =
@@ -49,9 +51,12 @@
     let playerPixels = initialPlayerPixels.slice();
     let selectedColor = palette[0];
     let erasing = false;
+    let activeTool = "brush";
     let drawing = false;
     let activePointerId = null;
     let currentStroke = null;
+    let keyboardFocused = false;
+    let keyboardCursorIndex = hiddenMask.findIndex(Boolean);
     const undoStack = [];
 
     function notify() {
@@ -89,13 +94,13 @@
         context.fillStyle = playerColor;
       } else if (analysisHiddenMaskA[index]) {
         context.fillStyle =
-          (column + row) % 2 === 0 ? "#20283a" : "#121827";
+          window.Pixelizer.getMaskFillColor(0, column + row);
       } else if (analysisHiddenMaskB[index]) {
         context.fillStyle =
-          (column + row) % 2 === 0 ? "#392342" : "#22162b";
+          window.Pixelizer.getMaskFillColor(1, column + row);
       } else if (analysisHiddenMaskC[index]) {
         context.fillStyle =
-          (column + row) % 2 === 0 ? "#244039" : "#152620";
+          window.Pixelizer.getMaskFillColor(2, column + row);
       }
 
       context.fillRect(
@@ -140,6 +145,42 @@
         context.lineTo(canvas.width, y);
       }
       context.stroke();
+      window.Pixelizer.renderMaskLabels(
+        context,
+        canvas,
+        [
+          analysisHiddenMaskA,
+          analysisHiddenMaskB,
+          analysisHiddenMaskC,
+        ],
+        window.Pixelizer.expandPixelGrid(
+          playerPixels,
+          gridSize,
+          paintUnitSize,
+        ),
+        analysisGridSize,
+        labelMinimumBlankRatio,
+      );
+      if (
+        keyboardFocused &&
+        keyboardCursorIndex >= 0 &&
+        typeof context.strokeRect === "function"
+      ) {
+        const column = keyboardCursorIndex % gridSize;
+        const row = Math.floor(keyboardCursorIndex / gridSize);
+        const width = canvas.width / gridSize;
+        const height = canvas.height / gridSize;
+        context.save?.();
+        context.strokeStyle = "#ffffff";
+        context.lineWidth = Math.max(2, canvas.width / 320);
+        context.strokeRect(
+          column * width,
+          row * height,
+          width,
+          height,
+        );
+        context.restore?.();
+      }
     }
 
     function eventToIndex(event) {
@@ -169,6 +210,52 @@
       drawPaintCell(index);
     }
 
+    function getMaskGroup(index) {
+      if (hiddenMaskA[index]) return hiddenMaskA;
+      if (hiddenMaskB[index]) return hiddenMaskB;
+      if (hiddenMaskC[index]) return hiddenMaskC;
+      return null;
+    }
+
+    function fillConnectedArea(startIndex) {
+      const activeMask = getMaskGroup(startIndex);
+      if (!activeMask) return;
+
+      const sourceColor = playerPixels[startIndex];
+      const nextColor = erasing ? null : selectedColor;
+      if (sourceColor === nextColor) return;
+
+      const queue = [startIndex];
+      const visited = new Set([startIndex]);
+      let queueIndex = 0;
+      while (queueIndex < queue.length) {
+        const index = queue[queueIndex++];
+        if (
+          !activeMask[index] ||
+          playerPixels[index] !== sourceColor
+        ) {
+          continue;
+        }
+
+        currentStroke.set(index, playerPixels[index]);
+        playerPixels[index] = nextColor;
+        const row = Math.floor(index / gridSize);
+        const column = index % gridSize;
+        const neighbors = [
+          row > 0 ? index - gridSize : -1,
+          row < gridSize - 1 ? index + gridSize : -1,
+          column > 0 ? index - 1 : -1,
+          column < gridSize - 1 ? index + 1 : -1,
+        ];
+        neighbors.forEach((neighbor) => {
+          if (neighbor >= 0 && !visited.has(neighbor)) {
+            visited.add(neighbor);
+            queue.push(neighbor);
+          }
+        });
+      }
+    }
+
     function finishStroke() {
       if (!drawing) return;
       drawing = false;
@@ -195,11 +282,23 @@
       activePointerId = event.pointerId;
       currentStroke = new Map();
       canvas.setPointerCapture?.(event.pointerId);
-      paint(eventToIndex(event));
+      const index = eventToIndex(event);
+      if (activeTool === "fill") {
+        fillConnectedArea(index);
+        finishStroke();
+      } else {
+        paint(index);
+      }
     }
 
     function handlePointerMove(event) {
-      if (!drawing || event.pointerId !== activePointerId) return;
+      if (
+        activeTool !== "brush" ||
+        !drawing ||
+        event.pointerId !== activePointerId
+      ) {
+        return;
+      }
       event.preventDefault();
       paint(eventToIndex(event));
     }
@@ -209,10 +308,61 @@
       finishStroke();
     }
 
+    function handleKeyDown(event) {
+      if (keyboardCursorIndex < 0) return;
+      const row = Math.floor(keyboardCursorIndex / gridSize);
+      const column = keyboardCursorIndex % gridSize;
+      const movements = {
+        ArrowUp: [-1, 0],
+        ArrowDown: [1, 0],
+        ArrowLeft: [0, -1],
+        ArrowRight: [0, 1],
+      };
+      if (movements[event.key]) {
+        event.preventDefault();
+        const [rowOffset, columnOffset] = movements[event.key];
+        const nextRow = Math.max(
+          0,
+          Math.min(gridSize - 1, row + rowOffset),
+        );
+        const nextColumn = Math.max(
+          0,
+          Math.min(gridSize - 1, column + columnOffset),
+        );
+        keyboardCursorIndex = nextRow * gridSize + nextColumn;
+        render();
+        return;
+      }
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      drawing = true;
+      activePointerId = "keyboard";
+      currentStroke = new Map();
+      if (activeTool === "fill") {
+        fillConnectedArea(keyboardCursorIndex);
+      } else {
+        paint(keyboardCursorIndex);
+      }
+      finishStroke();
+    }
+
+    function handleFocus() {
+      keyboardFocused = true;
+      render();
+    }
+
+    function handleBlur() {
+      keyboardFocused = false;
+      render();
+    }
+
     canvas.addEventListener("pointerdown", handlePointerDown);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerup", handlePointerEnd);
     canvas.addEventListener("pointercancel", handlePointerEnd);
+    canvas.addEventListener("keydown", handleKeyDown);
+    canvas.addEventListener("focus", handleFocus);
+    canvas.addEventListener("blur", handleBlur);
 
     render();
     notify();
@@ -225,6 +375,13 @@
       },
       setEraser(enabled) {
         erasing = enabled;
+      },
+      setTool(tool) {
+        if (!["brush", "fill"].includes(tool)) return;
+        activeTool = tool;
+      },
+      getTool() {
+        return activeTool;
       },
       undo() {
         const changes = undoStack.pop();
@@ -254,6 +411,9 @@
         canvas.removeEventListener("pointermove", handlePointerMove);
         canvas.removeEventListener("pointerup", handlePointerEnd);
         canvas.removeEventListener("pointercancel", handlePointerEnd);
+        canvas.removeEventListener("keydown", handleKeyDown);
+        canvas.removeEventListener("focus", handleFocus);
+        canvas.removeEventListener("blur", handleBlur);
       },
     });
   }

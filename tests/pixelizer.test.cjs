@@ -67,6 +67,38 @@ assert.equal(blankComposite[0], null);
 assert.equal(blankComposite[1], null);
 assert.equal(blankComposite[2], "r2");
 
+const renderedLabels = [];
+const labelContext = {
+  fillRect() {},
+  fillText(label) {
+    renderedLabels.push(label);
+  },
+  restore() {},
+  save() {},
+};
+sandbox.window.Pixelizer.renderMaskLabels(
+  labelContext,
+  { width: 200, height: 200 },
+  [
+    [true, false, false, false],
+    [false, true, false, false],
+    [false, false, true, false],
+  ],
+  [null, null, null, "visible"],
+  2,
+);
+assert.deepEqual(renderedLabels, ["A", "B", "C"]);
+
+renderedLabels.length = 0;
+sandbox.window.Pixelizer.renderMaskLabels(
+  labelContext,
+  { width: 200, height: 200 },
+  [[true, false, false, false]],
+  ["#ffffff", null, null, null],
+  2,
+);
+assert.deepEqual(renderedLabels, []);
+
 assert.throws(
   () =>
     sandbox.window.Pixelizer.createResolutionPlan({

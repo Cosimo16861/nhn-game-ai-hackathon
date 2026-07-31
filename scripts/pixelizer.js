@@ -261,14 +261,11 @@
       const row = Math.floor(index / gridSize);
 
       if (hiddenMaskA[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#20283a" : "#121827";
+        context.fillStyle = getMaskFillColor(0, column + row);
       } else if (hiddenMaskB[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#392342" : "#22162b";
+        context.fillStyle = getMaskFillColor(1, column + row);
       } else if (hiddenMaskC[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#244039" : "#152620";
+        context.fillStyle = getMaskFillColor(2, column + row);
       } else {
         context.fillStyle = color;
       }
@@ -293,6 +290,13 @@
       context.lineTo(canvas.width, y);
     }
     context.stroke();
+    renderMaskLabels(
+      context,
+      canvas,
+      [hiddenMaskA, hiddenMaskB, hiddenMaskC],
+      Array(pixels.length).fill(null),
+      gridSize,
+    );
   }
 
   function renderPlayerGrid(
@@ -319,14 +323,11 @@
       if (playerColor) {
         context.fillStyle = playerColor;
       } else if (hiddenMaskA[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#20283a" : "#121827";
+        context.fillStyle = getMaskFillColor(0, column + row);
       } else if (hiddenMaskB[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#392342" : "#22162b";
+        context.fillStyle = getMaskFillColor(1, column + row);
       } else if (hiddenMaskC[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#244039" : "#152620";
+        context.fillStyle = getMaskFillColor(2, column + row);
       } else {
         context.fillStyle = targetColor;
       }
@@ -337,6 +338,94 @@
         Math.ceil(cellWidth),
         Math.ceil(cellHeight),
       );
+    });
+    renderMaskLabels(
+      context,
+      canvas,
+      [hiddenMaskA, hiddenMaskB, hiddenMaskC],
+      playerPixels,
+      gridSize,
+    );
+  }
+
+  const MASK_FILL_COLORS = Object.freeze([
+    Object.freeze(["#3d351d", "#2d2819"]),
+    Object.freeze(["#193a31", "#122c26"]),
+    Object.freeze(["#452524", "#311c1b"]),
+  ]);
+  const MASK_LABEL_COLORS = Object.freeze([
+    "#f5c761",
+    "#6fc9aa",
+    "#e8736c",
+  ]);
+
+  function getMaskFillColor(maskIndex, parity) {
+    const palette =
+      MASK_FILL_COLORS[maskIndex] || MASK_FILL_COLORS[0];
+    return palette[Math.abs(parity) % 2];
+  }
+
+  function renderMaskLabels(
+    context,
+    canvas,
+    hiddenMasks,
+    playerPixels,
+    gridSize,
+    minimumBlankRatio = 0.55,
+  ) {
+    if (
+      typeof context.fillText !== "function" ||
+      !Array.isArray(hiddenMasks) ||
+      !Array.isArray(playerPixels)
+    ) {
+      return;
+    }
+
+    hiddenMasks.forEach((mask, maskIndex) => {
+      let hiddenCount = 0;
+      let blankCount = 0;
+      let columnTotal = 0;
+      let rowTotal = 0;
+
+      mask.forEach((hidden, index) => {
+        if (!hidden) return;
+        hiddenCount++;
+        if (playerPixels[index] !== null) return;
+        blankCount++;
+        columnTotal += index % gridSize;
+        rowTotal += Math.floor(index / gridSize);
+      });
+      if (
+        blankCount === 0 ||
+        blankCount / hiddenCount < minimumBlankRatio
+      ) {
+        return;
+      }
+
+      const x =
+        ((columnTotal / blankCount + 0.5) / gridSize) *
+        canvas.width;
+      const y =
+        ((rowTotal / blankCount + 0.5) / gridSize) *
+        canvas.height;
+      const size = Math.max(
+        22,
+        Math.min(34, canvas.width / 18),
+      );
+
+      context.save?.();
+      context.fillStyle = MASK_LABEL_COLORS[maskIndex];
+      context.fillRect(x - size / 2, y - size / 2, size, size);
+      context.fillStyle = "#20312b";
+      context.font = `900 ${Math.round(size * 0.56)}px sans-serif`;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText(
+        String.fromCharCode(65 + maskIndex),
+        x,
+        y + 1,
+      );
+      context.restore?.();
     });
   }
 
@@ -349,6 +438,7 @@
     hiddenMaskC,
     analysisGridSize,
     regionsPerSide = 4,
+    labelMinimumBlankRatio = 0.55,
   ) {
     const context = canvas.getContext("2d");
     const cellWidth = canvas.width / analysisGridSize;
@@ -369,14 +459,11 @@
       if (color) {
         context.fillStyle = color;
       } else if (hiddenMaskA[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#20283a" : "#121827";
+        context.fillStyle = getMaskFillColor(0, column + row);
       } else if (hiddenMaskB[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#392342" : "#22162b";
+        context.fillStyle = getMaskFillColor(1, column + row);
       } else if (hiddenMaskC[index]) {
-        context.fillStyle =
-          (column + row) % 2 === 0 ? "#244039" : "#152620";
+        context.fillStyle = getMaskFillColor(2, column + row);
       }
 
       context.fillRect(
@@ -399,6 +486,14 @@
       context.lineTo(canvas.width, y);
     }
     context.stroke();
+    renderMaskLabels(
+      context,
+      canvas,
+      [hiddenMaskA, hiddenMaskB, hiddenMaskC],
+      expandedPlayerPixels,
+      analysisGridSize,
+      labelMinimumBlankRatio,
+    );
   }
 
   function createResolutionPlan(options) {
@@ -482,7 +577,9 @@
     createResolutionPlan,
     drawSquareCrop,
     expandPixelGrid,
+    getMaskFillColor,
     pixelize,
+    renderMaskLabels,
     renderCompositeGrid,
     renderPixelGrid,
     renderSplitMaskGrid,
