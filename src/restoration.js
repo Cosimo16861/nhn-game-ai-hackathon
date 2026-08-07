@@ -11,8 +11,9 @@
   const UNDO_LIMIT = 60;
 
   function createWorkbench(root, options) {
-    const quest = options.quest;
-    const size = quest.gridSize;
+    let quest = options.quest;
+    let onCleared = options.onCleared;
+    let size = quest.gridSize;
     const canvas = root.querySelector("[data-role=canvas]");
     const context = canvas.getContext("2d");
     const paletteEl = root.querySelector("[data-role=palette]");
@@ -21,7 +22,7 @@
     const cluesEl = root.querySelector("[data-role=clues]");
     const resultEl = root.querySelector("[data-role=result]");
 
-    const cellSize = canvas.width / size;
+    let cellSize = canvas.width / size;
 
     let pixels = quest.lockedPixels.slice();
     let undoStack = [];
@@ -32,9 +33,17 @@
 
     /** 증언으로 해금된 필수 특징만 목표·채점 대상이 된다(00_SYSTEM 4.1). */
     function activeFeatures() {
-      return quest.requiredFeatures.filter((feature) =>
-        window.GameState.has(feature.clue),
-      );
+      return quest.requiredFeatures.filter((feature) => {
+        if (feature.always) return true;
+        if (feature.clue && window.GameState.has(feature.clue)) return true;
+        if (
+          feature.cluesAny &&
+          feature.cluesAny.some((clue) => window.GameState.has(clue))
+        ) {
+          return true;
+        }
+        return false;
+      });
     }
 
     function pushUndo() {
@@ -167,16 +176,21 @@
     }
 
     function renderClues() {
-      const cards = [
-        { flag: "CLUE_CAT_FUR", text: "온몸이 옅은 회색이에요." },
-        { flag: "CLUE_CAT_EAR", text: "귀 한쪽만 하얘요. 나머지는 몸과 같은 회색이고요." },
-        { flag: "CLUE_CAT_RIBBON", text: "붉은 리본을 목에 매 줬어요." },
-      ].filter((card) => window.GameState.has(card.flag));
+      const cards = (quest.clueCards || []).filter(
+        (card) =>
+          (!card.flag && !card.flagsAny) ||
+          (card.flag && window.GameState.has(card.flag)) ||
+          (card.flagsAny && card.flagsAny.some((flag) => window.GameState.has(flag))),
+      );
 
       cluesEl.innerHTML = "";
       cards.forEach((card) => {
         const li = document.createElement("li");
-        li.innerHTML = `<strong>코라</strong><span>${card.text}</span>`;
+        const speaker = document.createElement("strong");
+        speaker.textContent = card.speaker;
+        const text = document.createElement("span");
+        text.textContent = card.text;
+        li.append(speaker, text);
         cluesEl.appendChild(li);
       });
     }
@@ -221,10 +235,12 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "primary";
-      button.textContent = outcome.cleared ? "전단을 들고 코라에게 간다" : "계속 수정하기";
+      button.textContent = outcome.cleared
+        ? quest.clearedLabel || "복원 결과를 확인한다"
+        : "계속 수정하기";
       button.addEventListener("click", () => {
         resultEl.hidden = true;
-        if (outcome.cleared) options.onCleared();
+        if (outcome.cleared) onCleared();
       });
       resultEl.appendChild(button);
       // 결과가 화면 밖에 있으면 아무 일도 없었던 것처럼 보인다.
@@ -279,7 +295,22 @@
       draw();
     }
 
-    return { refresh };
+    function setQuest(nextQuest, nextOptions = {}) {
+      quest = nextQuest;
+      onCleared = nextOptions.onCleared || onCleared;
+      size = quest.gridSize;
+      cellSize = canvas.width / size;
+      pixels = quest.lockedPixels.slice();
+      undoStack = [];
+      redoStack = [];
+      activeColor = quest.palette[0].hex;
+      activeTool = "pencil";
+      painting = false;
+      resultEl.hidden = true;
+      refresh();
+    }
+
+    return { refresh, setQuest };
   }
 
   window.Restoration = Object.freeze({ create: createWorkbench });

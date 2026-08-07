@@ -107,6 +107,7 @@
   window.QuestCat = Object.freeze({
     id: "REST_CAT",
     title: "고양이 '안개'의 초상",
+    clearedLabel: "전단을 들고 코라에게 간다",
     mode: "부분채색형",
     gridSize: GRID_SIZE,
     targetPixels: Object.freeze(targetPixels),
@@ -115,6 +116,15 @@
     paintable: Object.freeze(paintable),
     palette: Object.freeze(PALETTE),
     requiredFeatures: Object.freeze(requiredFeatures),
+    clueCards: Object.freeze([
+      { flag: "CLUE_CAT_FUR", speaker: "코라", text: "온몸이 옅은 회색이에요." },
+      {
+        flag: "CLUE_CAT_EAR",
+        speaker: "코라",
+        text: "귀 한쪽만 하얘요. 나머지는 몸과 같은 회색이고요.",
+      },
+      { flag: "CLUE_CAT_RIBBON", speaker: "코라", text: "붉은 리본을 목에 매 줬어요." },
+    ]),
     // 숨은 채점 설정 — 플레이어에게 절대 노출하지 않는다.
     weights: Object.freeze({ color: 0.4, edge: 0.15, structure: 0.15, palette: 0.3 }),
     passingScore: 82,

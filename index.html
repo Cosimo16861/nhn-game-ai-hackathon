@@ -66,6 +66,32 @@
       .hud .objective { flex: 1; }
       .hud button { margin-left: auto; }
 
+      .location-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        background: var(--panel-deep);
+        border: 2px solid var(--ink);
+        border-radius: 4px;
+        padding: 9px 12px;
+        margin-bottom: 14px;
+      }
+      .location-nav .label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .location-nav button {
+        flex: 0 0 auto;
+        padding: 5px 10px;
+      }
+      .location-nav button[aria-current="location"] {
+        color: #fff;
+        border-color: var(--gold);
+      }
+
       /* ── 공통 패널 ─────────────────────────── */
       .panel {
         background: var(--panel);
@@ -253,20 +279,28 @@
 
   <body>
     <div class="frame">
-      <h1>안개항의 상속자 · 수직 슬라이스 — 서브 퀘스트 «안개라는 고양이»</h1>
+      <h1 data-role="game-title">안개항의 상속자 · 그레이박스</h1>
 
       <div class="hud">
         <span class="label">현재 목표</span>
         <span class="objective" data-role="objective">—</span>
-        <button type="button" data-action="to-workbench" hidden>작업대로</button>
-        <button type="button" data-action="to-tavern" hidden>선술집으로</button>
         <button type="button" class="ghost" data-action="restart">처음부터</button>
       </div>
 
-      <!-- 선술집: 대화 -->
-      <section data-scene="tavern" hidden>
+      <nav class="location-nav" aria-label="장소 이동">
+        <span class="label">장소 이동</span>
+        <button type="button" data-location="office">사무소</button>
+        <button type="button" data-location="police">경찰서</button>
+        <button type="button" data-location="mansion">저택</button>
+        <button type="button" data-location="school">학교</button>
+        <button type="button" data-location="tavern">선술집</button>
+        <button type="button" data-location="dock">부두·창고</button>
+      </nav>
+
+      <!-- 공통 대화 화면 -->
+      <section data-scene="dialogue" hidden>
         <div class="stage">
-          선 술 집
+          <span data-role="scene-location">—</span>
           <div class="portrait" data-role="portrait" data-face="평상"></div>
         </div>
         <div class="dialogue" data-role="dialogue-box">
@@ -319,6 +353,12 @@
           여기까지가 이번 수직 슬라이스의 범위다.
         </p>
       </section>
+
+      <!-- 이후 단계의 장면 데이터가 연결되기 전 사용하는 임시 장소 화면 -->
+      <section data-scene="placeholder" class="panel" hidden>
+        <p class="col-title" data-role="placeholder-title"></p>
+        <p data-role="placeholder-message"></p>
+      </section>
     </div>
 
     <!-- 게임 내 확인창 (네이티브 confirm 대체) -->
@@ -338,11 +378,20 @@
     <!-- 게임 -->
     <script src="src/ui.js"></script>
     <script src="src/state.js"></script>
+    <script src="src/ending.js"></script>
     <script src="src/feedback.js"></script>
     <script src="src/dialogue.js"></script>
     <script src="src/restoration.js"></script>
     <script src="src/data/quest-cat.js"></script>
+    <script src="src/data/quest-portrait.js"></script>
+    <script src="src/data/quest-seal.js"></script>
+    <script src="src/data/quest-dock.js"></script>
     <script src="src/data/dialogue-cat.js"></script>
+    <script src="src/data/dialogue-prologue.js"></script>
+    <script src="src/data/dialogue-act1.js"></script>
+    <script src="src/data/dialogue-act2.js"></script>
+    <script src="src/data/dialogue-act3.js"></script>
+    <script src="src/data/dialogue-finale.js"></script>
     <script src="src/game.js"></script>
   </body>
 </html>

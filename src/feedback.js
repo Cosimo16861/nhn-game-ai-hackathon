@@ -66,9 +66,9 @@
     return categories.sort((a, b) => a.score - b.score)[0];
   }
 
-  function unpaintedCount(quest, playerPixels) {
+  function unpaintedCount(hiddenMask, playerPixels) {
     let count = 0;
-    quest.hiddenMask.forEach((hidden, index) => {
+    hiddenMask.forEach((hidden, index) => {
       if (hidden && !playerPixels[index]) count++;
     });
     return count;
@@ -78,17 +78,24 @@
    * @returns {{tier, cleared, headline, notes:string[]}} 숫자 없는 결과
    */
   function evaluate(quest, playerPixels, activeFeatures) {
+    // 근거가 없는 특징은 목표뿐 아니라 채점 대상에서도 제외한다.
+    const activeIndices = new Set(
+      activeFeatures.flatMap((feature) => feature.indices),
+    );
+    const scoringMask = quest.hiddenMask.map(
+      (hidden, index) => hidden && activeIndices.has(index),
+    );
     const scores = window.PixelScoring.calculateRestorationScores(
       quest.targetPixels,
       playerPixels,
-      quest.hiddenMask,
+      scoringMask,
       quest.gridSize,
       quest.weights,
     );
 
     const features = checkFeatures(quest, playerPixels, activeFeatures);
     const missing = features.filter((feature) => !feature.satisfied);
-    const blanks = unpaintedCount(quest, playerPixels);
+    const blanks = unpaintedCount(scoringMask, playerPixels);
 
     // 필수 특징을 놓치면 점수가 높아도 증거로 쓸 수 없다.
     const meetsFeatures = missing.length === 0;

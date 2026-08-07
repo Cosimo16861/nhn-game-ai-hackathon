@@ -7,6 +7,7 @@
   "use strict";
 
   const STORAGE_KEY = "haven.save.v1";
+  const CHECKPOINT_KEY = "haven.checkpoints.v1";
   const listeners = new Set();
 
   let flags = Object.create(null);
@@ -100,7 +101,56 @@
   function reset() {
     flags = Object.create(null);
     save();
+    try {
+      window.localStorage.removeItem(CHECKPOINT_KEY);
+    } catch (error) {
+      console.warn("체크포인트 초기화에 실패했습니다.", error);
+    }
     notify();
+  }
+
+  /** 핵심 판단 선택 직전의 전체 플래그를 별도 저장한다. */
+  function saveCheckpoint(name) {
+    try {
+      const raw = window.localStorage.getItem(CHECKPOINT_KEY);
+      const checkpoints = raw ? JSON.parse(raw) : {};
+      checkpoints[name] = { ...flags };
+      window.localStorage.setItem(CHECKPOINT_KEY, JSON.stringify(checkpoints));
+      return Object.freeze({ ...checkpoints[name] });
+    } catch (error) {
+      console.warn("체크포인트 저장에 실패했습니다.", error);
+      return null;
+    }
+  }
+
+  function getCheckpoint(name) {
+    try {
+      const raw = window.localStorage.getItem(CHECKPOINT_KEY);
+      const checkpoint = raw ? JSON.parse(raw)[name] : null;
+      return checkpoint ? Object.freeze({ ...checkpoint }) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * 엔딩 후 분기 재시작용 API. 엔딩 기록은 기본적으로 현재 값이 보존된다.
+   * 2단계에서는 저장만 사용하며 실제 복귀 UI는 최종 단계에서 연결한다.
+   */
+  function restoreCheckpoint(
+    name,
+    { preserve = ["SEEN_END_A", "SEEN_END_B"] } = {},
+  ) {
+    const checkpoint = getCheckpoint(name);
+    if (!checkpoint) return false;
+    const kept = Object.create(null);
+    preserve.forEach((key) => {
+      if (has(key)) kept[key] = flags[key];
+    });
+    flags = Object.assign(Object.create(null), checkpoint, kept);
+    save();
+    notify();
+    return true;
   }
 
   function subscribe(listener) {
@@ -119,6 +169,9 @@
     countOf,
     load,
     reset,
+    saveCheckpoint,
+    getCheckpoint,
+    restoreCheckpoint,
     save,
     subscribe,
     snapshot,
