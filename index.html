@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>안개항의 상속자 — 수직 슬라이스</title>
+    <style>
+      /* 색 기준: GAME_DESIGN 9·10장 */
+      :root {
+        --ink: #2e241e;
+        --panel: #3a2f26;
+        --panel-deep: #2a221c;
+        --cream: #d9cdb5;
+        --gold: #d8a94b;
+        --teal: #4a7471;
+        --terracotta: #a05c43;
+        --muted: #9a8b74;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #1d1814;
+        color: var(--cream);
+        font-family: "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 16px 48px;
+      }
+
+      h1 {
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+        margin: 0 0 12px;
+      }
+
+      .frame {
+        width: 100%;
+        max-width: 940px;
+      }
+
+      /* ── HUD ─────────────────────────────── */
+      .hud {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--panel-deep);
+        border: 2px solid var(--ink);
+        border-radius: 4px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+      }
+      .hud .label {
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .hud .objective { flex: 1; }
+      .hud button { margin-left: auto; }
+
+      /* ── 공통 패널 ─────────────────────────── */
+      .panel {
+        background: var(--panel);
+        border: 2px solid var(--ink);
+        border-radius: 4px;
+        padding: 16px;
+      }
+
+      button {
+        font: inherit;
+        font-size: 14px;
+        color: var(--cream);
+        background: var(--panel-deep);
+        border: 2px solid var(--ink);
+        border-radius: 3px;
+        padding: 7px 14px;
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) { border-color: var(--gold); color: #fff; }
+      button:disabled { opacity: 0.45; cursor: not-allowed; }
+      button.primary { background: var(--teal); border-color: var(--ink); }
+      button.ghost { background: transparent; color: var(--muted); }
+
+      /* ── 대화 화면 ─────────────────────────── */
+      .stage {
+        position: relative;
+        height: 200px;
+        background:
+          linear-gradient(180deg, #4a3b30 0%, #2f2620 100%);
+        border: 2px solid var(--ink);
+        border-radius: 4px 4px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6d5b49;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+      }
+      .portrait {
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        width: 96px;
+        height: 96px;
+        display: grid;
+        place-items: center;
+        font-size: 40px;
+        font-weight: 700;
+        color: var(--cream);
+        background: #55443a;
+        border: 2px solid var(--ink);
+        border-radius: 3px;
+      }
+      .portrait[data-face="긴장"] { background: #5b4038; }
+      .portrait[data-face="고조"] { background: #6b543f; }
+
+      .dialogue {
+        background: var(--panel-deep);
+        border: 2px solid var(--ink);
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        padding: 14px 18px 18px;
+      }
+      .speaker { color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+      .lines p { margin: 0 0 2px; }
+      .choices { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+      .choice {
+        text-align: left;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        background: #241d18;
+      }
+      .choice-mark { color: var(--gold); }
+      .choice:disabled .choice-mark { color: var(--muted); }
+      .choice-hint { color: var(--muted); font-size: 12px; font-style: normal; }
+
+      /* ── 복원 작업대 ───────────────────────── */
+      .workbench { display: grid; grid-template-columns: 240px 1fr 190px; gap: 14px; }
+      .col-title {
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        margin: 0 0 10px;
+      }
+      .clues, .goals { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+      .clues li {
+        background: #2c241e;
+        border-left: 3px solid var(--terracotta);
+        padding: 8px 10px;
+        font-size: 13px;
+        display: grid;
+        gap: 2px;
+      }
+      .clues strong { color: var(--gold); font-size: 11px; }
+      .goals li {
+        font-size: 13px;
+        padding-left: 14px;
+        position: relative;
+      }
+      .goals li::before {
+        content: "◆";
+        position: absolute;
+        left: 0;
+        color: var(--teal);
+      }
+      .goals li.muted { color: var(--muted); }
+      .goals li.muted::before { content: "·"; }
+
+      .easel { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+      canvas {
+        width: 384px;
+        height: 384px;
+        image-rendering: pixelated;
+        background: #2a221c;
+        border: 2px solid var(--ink);
+        cursor: crosshair;
+        touch-action: none;
+      }
+      .is-developing canvas { filter: brightness(0.25) sepia(0.4); transition: filter 0.2s; }
+
+      .toolbar { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+      .tool.is-active { border-color: var(--gold); color: #fff; }
+      .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+      .swatch {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border: 2px solid var(--ink);
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .swatch.is-active { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(216,169,75,0.35); }
+
+      .result {
+        margin-top: 4px;
+        width: 100%;
+        background: #241d18;
+        border: 2px solid var(--ink);
+        border-left: 4px solid var(--muted);
+        border-radius: 3px;
+        padding: 12px 14px;
+      }
+      .result[data-tier="pass"] { border-left-color: var(--teal); }
+      .result[data-tier="near"] { border-left-color: var(--gold); }
+      .result[data-tier="partial"] { border-left-color: var(--terracotta); }
+      .result[data-tier="far"] { border-left-color: #7a4038; }
+      .result-headline { margin: 0 0 6px; font-weight: 700; }
+      .result-note { margin: 0 0 4px; color: var(--muted); font-size: 13px; }
+      .result button { margin-top: 10px; }
+
+      .section-gap { margin-top: 16px; }
+      .note { color: var(--muted); font-size: 12px; }
+
+      /* ── 게임 내 확인창 ─────────────────────── */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(12, 9, 7, 0.72);
+        display: grid;
+        place-items: center;
+        z-index: 50;
+        padding: 20px;
+      }
+      .modal[hidden] { display: none; }
+      .modal-panel {
+        width: min(420px, 100%);
+        background: var(--panel);
+        border: 2px solid var(--ink);
+        border-top: 3px solid var(--gold);
+        border-radius: 4px;
+        padding: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+      }
+      .modal-message p { margin: 0 0 4px; }
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="frame">
+      <h1>안개항의 상속자 · 수직 슬라이스 — 서브 퀘스트 «안개라는 고양이»</h1>
+
+      <div class="hud">
+        <span class="label">현재 목표</span>
+        <span class="objective" data-role="objective">—</span>
+        <button type="button" data-action="to-workbench" hidden>작업대로</button>
+        <button type="button" data-action="to-tavern" hidden>선술집으로</button>
+        <button type="button" class="ghost" data-action="restart">처음부터</button>
+      </div>
+
+      <!-- 선술집: 대화 -->
+      <section data-scene="tavern" hidden>
+        <div class="stage">
+          선 술 집
+          <div class="portrait" data-role="portrait" data-face="평상"></div>
+        </div>
+        <div class="dialogue" data-role="dialogue-box">
+          <div class="speaker" data-role="speaker"></div>
+          <div class="lines" data-role="lines"></div>
+          <div class="choices" data-role="choices"></div>
+        </div>
+      </section>
+
+      <!-- 탐정 사무소: 복원 작업대 -->
+      <section data-scene="workbench" hidden>
+        <div class="workbench">
+          <div class="panel">
+            <p class="col-title">증언 카드</p>
+            <ul class="clues" data-role="clues"></ul>
+          </div>
+
+          <div class="panel easel">
+            <canvas data-role="canvas" width="384" height="384"></canvas>
+            <div class="toolbar" data-role="tools"></div>
+            <div class="toolbar">
+              <button type="button" data-action="undo">실행 취소</button>
+              <button type="button" data-action="redo">다시 실행</button>
+              <button type="button" data-action="reset">초기화</button>
+              <button type="button" class="primary" data-action="submit">제출</button>
+            </div>
+            <div class="result" data-role="result" hidden></div>
+          </div>
+
+          <div class="panel">
+            <p class="col-title">복원 목표</p>
+            <ul class="goals" data-role="goals"></ul>
+            <div class="section-gap">
+              <p class="col-title">팔레트</p>
+              <div class="swatches" data-role="palette"></div>
+            </div>
+            <p class="note section-gap">
+              증언으로 알게 된 특징만 목표에 나타난다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 후일담 -->
+      <section data-scene="epilogue" class="panel" hidden>
+        <p class="col-title">전단 게시</p>
+        <p>안개의 전단이 선술집 창문에 붙었다. 코라가 사례와 함께 힌트 한 번을 약속했다.</p>
+        <p class="note">
+          플래그 <code>CAT_POSTER</code> 설정됨 — 3막 부두 창고에서 안개를 알아보는 조건이다.
+          여기까지가 이번 수직 슬라이스의 범위다.
+        </p>
+      </section>
+    </div>
+
+    <!-- 게임 내 확인창 (네이티브 confirm 대체) -->
+    <div class="modal" data-role="modal" hidden>
+      <div class="modal-panel">
+        <div class="modal-message" data-role="modal-message"></div>
+        <div class="modal-actions">
+          <button type="button" data-action="modal-cancel">취소</button>
+          <button type="button" class="primary" data-action="modal-ok">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 기존 채점 모듈 (의존성 없음, 그대로 재사용) -->
+    <script src="scripts/scoring.js"></script>
+
+    <!-- 게임 -->
+    <script src="src/ui.js"></script>
+    <script src="src/state.js"></script>
+    <script src="src/feedback.js"></script>
+    <script src="src/dialogue.js"></script>
+    <script src="src/restoration.js"></script>
+    <script src="src/data/quest-cat.js"></script>
+    <script src="src/data/dialogue-cat.js"></script>
+    <script src="src/game.js"></script>
+  </body>
+</html>
