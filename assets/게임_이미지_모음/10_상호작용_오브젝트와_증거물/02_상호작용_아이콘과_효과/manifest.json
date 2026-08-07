@@ -1,0 +1,111 @@
+{
+  "icon_size": [
+    32,
+    32
+  ],
+  "effect_size": [
+    64,
+    64
+  ],
+  "transparent_background": true,
+  "world_icon_offset": [
+    0,
+    -36
+  ],
+  "animations": {
+    "interaction-ring": {
+      "frames": [
+        "16-ring-small",
+        "17-ring-medium",
+        "18-ring-large"
+      ],
+      "frame_ms": 150,
+      "loop": true
+    },
+    "evidence-glint": {
+      "frames": [
+        "19-evidence-glint-dim",
+        "20-evidence-glint-bright"
+      ],
+      "frame_ms": 120,
+      "loop": true
+    }
+  },
+  "icons": [
+    {
+      "index": 1,
+      "name": "01-examine",
+      "file": "icons-32px/01-examine.png"
+    },
+    {
+      "index": 2,
+      "name": "02-talk",
+      "file": "icons-32px/02-talk.png"
+    },
+    {
+      "index": 3,
+      "name": "03-pick-up",
+      "file": "icons-32px/03-pick-up.png"
+    },
+    {
+      "index": 4,
+      "name": "04-open-enter",
+      "file": "icons-32px/04-open-enter.png"
+    },
+    {
+      "index": 5,
+      "name": "05-unlock",
+      "file": "icons-32px/05-unlock.png"
+    },
+    {
+      "index": 6,
+      "name": "06-draw-sketch",
+      "file": "icons-32px/06-draw-sketch.png"
+    },
+    {
+      "index": 7,
+      "name": "07-compare-evidence",
+      "file": "icons-32px/07-compare-evidence.png"
+    },
+    {
+      "index": 8,
+      "name": "08-observe",
+      "file": "icons-32px/08-observe.png"
+    },
+    {
+      "index": 9,
+      "name": "09-listen",
+      "file": "icons-32px/09-listen.png"
+    },
+    {
+      "index": 10,
+      "name": "10-push-pull",
+      "file": "icons-32px/10-push-pull.png"
+    },
+    {
+      "index": 11,
+      "name": "11-uncertain-clue",
+      "file": "icons-32px/11-uncertain-clue.png"
+    },
+    {
+      "index": 12,
+      "name": "12-discovery",
+      "file": "icons-32px/12-discovery.png"
+    },
+    {
+      "index": 13,
+      "name": "13-sparkling-clue",
+      "file": "icons-32px/13-sparkling-clue.png"
+    },
+    {
+      "index": 14,
+      "name": "14-evidence-added",
+      "file": "icons-32px/14-evidence-added.png"
+    },
+    {
+      "index": 15,
+      "name": "15-interaction-locked",
+      "file": "icons-32px/15-interaction-locked.png"
+    }
+  ]
+}

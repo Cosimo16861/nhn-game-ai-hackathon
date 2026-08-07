@@ -1,0 +1,539 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "anchor": "bottom-center",
+  "push_step_pixels": 32,
+  "push_animation_ms": [
+    120,
+    110,
+    140
+  ],
+  "effects": {
+    "direction_arrows": {
+      "north": "effects/push-arrow-north.png",
+      "east": "effects/push-arrow-east.png",
+      "south": "effects/push-arrow-south.png",
+      "west": "effects/push-arrow-west.png"
+    },
+    "push_dust": [
+      "effects/push-dust-01.png",
+      "effects/push-dust-02.png",
+      "effects/push-dust-03.png"
+    ]
+  },
+  "groups": {
+    "oak-crate": [
+      "01-oak-crate-closed",
+      "02-oak-crate-open-empty",
+      "03-oak-crate-straw",
+      "04-oak-crate-hidden-token",
+      "05-oak-crate-broken"
+    ],
+    "travel-trunk": [
+      "06-travel-trunk-closed",
+      "07-travel-trunk-open-empty",
+      "08-travel-trunk-clothes",
+      "09-travel-trunk-hidden-envelope",
+      "10-travel-trunk-damaged"
+    ],
+    "bedside-cabinet": [
+      "11-bedside-cabinet-closed",
+      "12-bedside-cabinet-upper-open",
+      "13-bedside-cabinet-lower-open",
+      "14-bedside-cabinet-secret-key",
+      "15-bedside-cabinet-damaged"
+    ],
+    "bookcase": [
+      "16-bookcase-front",
+      "17-bookcase-angled-left",
+      "18-bookcase-side",
+      "19-bookcase-hidden-parcel",
+      "20-bookcase-collapsed"
+    ]
+  },
+  "objects": [
+    {
+      "id": "01-oak-crate-closed",
+      "file": "objects/01-oak-crate-closed.png",
+      "size": [
+        80,
+        80
+      ],
+      "group": "oak-crate",
+      "state": "closed",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        40,
+        76
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "02-oak-crate-open-empty",
+      "file": "objects/02-oak-crate-open-empty.png",
+      "size": [
+        80,
+        80
+      ],
+      "group": "oak-crate",
+      "state": "open-empty",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        40,
+        76
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "03-oak-crate-straw",
+      "file": "objects/03-oak-crate-straw.png",
+      "size": [
+        80,
+        80
+      ],
+      "group": "oak-crate",
+      "state": "straw",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        40,
+        76
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "04-oak-crate-hidden-token",
+      "file": "objects/04-oak-crate-hidden-token.png",
+      "size": [
+        80,
+        80
+      ],
+      "group": "oak-crate",
+      "state": "hidden-token",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        40,
+        76
+      ],
+      "weight": "medium",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "05-oak-crate-broken",
+      "file": "objects/05-oak-crate-broken.png",
+      "size": [
+        80,
+        80
+      ],
+      "group": "oak-crate",
+      "state": "broken",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        40,
+        76
+      ],
+      "weight": "medium",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "06-travel-trunk-closed",
+      "file": "objects/06-travel-trunk-closed.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "travel-trunk",
+      "state": "closed",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        3,
+        2
+      ],
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "07-travel-trunk-open-empty",
+      "file": "objects/07-travel-trunk-open-empty.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "travel-trunk",
+      "state": "open-empty",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        3,
+        2
+      ],
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "08-travel-trunk-clothes",
+      "file": "objects/08-travel-trunk-clothes.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "travel-trunk",
+      "state": "clothes",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        3,
+        2
+      ],
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "09-travel-trunk-hidden-envelope",
+      "file": "objects/09-travel-trunk-hidden-envelope.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "travel-trunk",
+      "state": "hidden-envelope",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        3,
+        2
+      ],
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "weight": "medium",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "10-travel-trunk-damaged",
+      "file": "objects/10-travel-trunk-damaged.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "travel-trunk",
+      "state": "damaged",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        3,
+        2
+      ],
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "weight": "medium",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "11-bedside-cabinet-closed",
+      "file": "objects/11-bedside-cabinet-closed.png",
+      "size": [
+        64,
+        80
+      ],
+      "group": "bedside-cabinet",
+      "state": "closed",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        32,
+        76
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "12-bedside-cabinet-upper-open",
+      "file": "objects/12-bedside-cabinet-upper-open.png",
+      "size": [
+        64,
+        80
+      ],
+      "group": "bedside-cabinet",
+      "state": "upper-open",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        32,
+        76
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "13-bedside-cabinet-lower-open",
+      "file": "objects/13-bedside-cabinet-lower-open.png",
+      "size": [
+        64,
+        80
+      ],
+      "group": "bedside-cabinet",
+      "state": "lower-open",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        32,
+        76
+      ],
+      "weight": "medium",
+      "pushable": true,
+      "rotatable": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "14-bedside-cabinet-secret-key",
+      "file": "objects/14-bedside-cabinet-secret-key.png",
+      "size": [
+        64,
+        80
+      ],
+      "group": "bedside-cabinet",
+      "state": "secret-key",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        32,
+        76
+      ],
+      "weight": "medium",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "15-bedside-cabinet-damaged",
+      "file": "objects/15-bedside-cabinet-damaged.png",
+      "size": [
+        64,
+        80
+      ],
+      "group": "bedside-cabinet",
+      "state": "damaged",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        2
+      ],
+      "interaction_anchor": [
+        32,
+        76
+      ],
+      "weight": "medium",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "16-bookcase-front",
+      "file": "objects/16-bookcase-front.png",
+      "size": [
+        80,
+        96
+      ],
+      "group": "bookcase",
+      "state": "front",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        3
+      ],
+      "interaction_anchor": [
+        40,
+        92
+      ],
+      "weight": "heavy",
+      "pushable": true,
+      "rotatable": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "17-bookcase-angled-left",
+      "file": "objects/17-bookcase-angled-left.png",
+      "size": [
+        80,
+        96
+      ],
+      "group": "bookcase",
+      "state": "angled-left",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        3
+      ],
+      "interaction_anchor": [
+        40,
+        92
+      ],
+      "weight": "heavy",
+      "pushable": true,
+      "rotatable": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "18-bookcase-side",
+      "file": "objects/18-bookcase-side.png",
+      "size": [
+        80,
+        96
+      ],
+      "group": "bookcase",
+      "state": "side",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        3
+      ],
+      "interaction_anchor": [
+        40,
+        92
+      ],
+      "weight": "heavy",
+      "pushable": true,
+      "rotatable": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "19-bookcase-hidden-parcel",
+      "file": "objects/19-bookcase-hidden-parcel.png",
+      "size": [
+        80,
+        96
+      ],
+      "group": "bookcase",
+      "state": "hidden-parcel",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        3
+      ],
+      "interaction_anchor": [
+        40,
+        92
+      ],
+      "weight": "heavy",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "20-bookcase-collapsed",
+      "file": "objects/20-bookcase-collapsed.png",
+      "size": [
+        80,
+        96
+      ],
+      "group": "bookcase",
+      "state": "collapsed",
+      "collision": "solid",
+      "collision_footprint_tiles": [
+        2,
+        3
+      ],
+      "interaction_anchor": [
+        40,
+        92
+      ],
+      "weight": "heavy",
+      "pushable": false,
+      "rotatable": false,
+      "search_reveal": false,
+      "usable": false
+    }
+  ]
+}

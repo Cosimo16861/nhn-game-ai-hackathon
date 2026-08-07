@@ -1,0 +1,473 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "anchor": "bottom-center",
+  "state_change_method": "swap-individual-png",
+  "well_animation_ms": [
+    190,
+    180,
+    210
+  ],
+  "effects": {
+    "water_ripple": [
+      "effects/water-ripple-01.png",
+      "effects/water-ripple-02.png",
+      "effects/water-ripple-03.png"
+    ]
+  },
+  "groups": {
+    "pillar-box": [
+      "01-pillar-box-closed",
+      "02-pillar-box-letter-inserted",
+      "03-pillar-box-collection-open",
+      "04-pillar-box-clue-parcel",
+      "05-pillar-box-damaged"
+    ],
+    "wall-box": [
+      "06-wall-box-closed",
+      "07-wall-box-open-empty",
+      "08-wall-box-open-mail",
+      "09-wall-box-hidden-key",
+      "10-wall-box-damaged"
+    ],
+    "roofed-well": [
+      "11-roofed-well-idle",
+      "12-roofed-well-lowering",
+      "13-roofed-well-bucket-down",
+      "14-roofed-well-clue-bucket",
+      "15-roofed-well-damaged"
+    ],
+    "old-well": [
+      "16-old-well-idle",
+      "17-old-well-lowering",
+      "18-old-well-water-raised",
+      "19-old-well-hidden-tin",
+      "20-old-well-damaged"
+    ]
+  },
+  "objects": [
+    {
+      "id": "01-pillar-box-closed",
+      "file": "objects/01-pillar-box-closed.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "pillar-box",
+      "state": "closed",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": true,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "02-pillar-box-letter-inserted",
+      "file": "objects/02-pillar-box-letter-inserted.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "pillar-box",
+      "state": "letter-inserted",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": true,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "03-pillar-box-collection-open",
+      "file": "objects/03-pillar-box-collection-open.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "pillar-box",
+      "state": "collection-open",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": true,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "04-pillar-box-clue-parcel",
+      "file": "objects/04-pillar-box-clue-parcel.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "pillar-box",
+      "state": "clue-parcel",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "05-pillar-box-damaged",
+      "file": "objects/05-pillar-box-damaged.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "pillar-box",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "06-wall-box-closed",
+      "file": "objects/06-wall-box-closed.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "wall-box",
+      "state": "closed",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": true,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "07-wall-box-open-empty",
+      "file": "objects/07-wall-box-open-empty.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "wall-box",
+      "state": "open-empty",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": true,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "08-wall-box-open-mail",
+      "file": "objects/08-wall-box-open-mail.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "wall-box",
+      "state": "open-mail",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": true,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "09-wall-box-hidden-key",
+      "file": "objects/09-wall-box-hidden-key.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "wall-box",
+      "state": "hidden-key",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "10-wall-box-damaged",
+      "file": "objects/10-wall-box-damaged.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "wall-box",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "11-roofed-well-idle",
+      "file": "objects/11-roofed-well-idle.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "roofed-well",
+      "state": "idle",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "12-roofed-well-lowering",
+      "file": "objects/12-roofed-well-lowering.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "roofed-well",
+      "state": "lowering",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "13-roofed-well-bucket-down",
+      "file": "objects/13-roofed-well-bucket-down.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "roofed-well",
+      "state": "bucket-down",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "14-roofed-well-clue-bucket",
+      "file": "objects/14-roofed-well-clue-bucket.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "roofed-well",
+      "state": "clue-bucket",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "15-roofed-well-damaged",
+      "file": "objects/15-roofed-well-damaged.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "roofed-well",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "16-old-well-idle",
+      "file": "objects/16-old-well-idle.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "old-well",
+      "state": "idle",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "17-old-well-lowering",
+      "file": "objects/17-old-well-lowering.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "old-well",
+      "state": "lowering",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "18-old-well-water-raised",
+      "file": "objects/18-old-well-water-raised.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "old-well",
+      "state": "water-raised",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "19-old-well-hidden-tin",
+      "file": "objects/19-old-well-hidden-tin.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "old-well",
+      "state": "hidden-tin",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": true,
+      "water_available": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "20-old-well-damaged",
+      "file": "objects/20-old-well-damaged.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "old-well",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "can_deposit_mail": false,
+      "can_collect_mail": false,
+      "crank_enabled": false,
+      "water_available": false,
+      "search_reveal": false,
+      "usable": false
+    }
+  ]
+}

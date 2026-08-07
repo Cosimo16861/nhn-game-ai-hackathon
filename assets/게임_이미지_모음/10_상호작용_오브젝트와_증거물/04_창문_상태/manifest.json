@@ -1,0 +1,67 @@
+{
+  "frame_size": [
+    64,
+    64
+  ],
+  "transparent_background": true,
+  "anchor": "center",
+  "opening_animation": {
+    "states": [
+      "00-closed-day",
+      "01-opening-half",
+      "02-open"
+    ],
+    "durations_ms": [
+      160,
+      150,
+      220
+    ],
+    "loop": false
+  },
+  "lighting_animation_ms": 180,
+  "interaction": {
+    "00-closed-day": "closed",
+    "01-opening-half": "transition",
+    "02-open": "open",
+    "03-closed-evening-lit": "closed",
+    "04-damaged-blocked": "cannot-open"
+  },
+  "windows": [
+    {
+      "id": "01-white-sash",
+      "directory": "windows/01-white-sash",
+      "glow_frames": [
+        "lighting-overlays/01-white-sash-warm-glow-01.png",
+        "lighting-overlays/01-white-sash-warm-glow-02.png",
+        "lighting-overlays/01-white-sash-warm-glow-03.png"
+      ]
+    },
+    {
+      "id": "02-oak-casement",
+      "directory": "windows/02-oak-casement",
+      "glow_frames": [
+        "lighting-overlays/02-oak-casement-warm-glow-01.png",
+        "lighting-overlays/02-oak-casement-warm-glow-02.png",
+        "lighting-overlays/02-oak-casement-warm-glow-03.png"
+      ]
+    },
+    {
+      "id": "03-shop-display",
+      "directory": "windows/03-shop-display",
+      "glow_frames": [
+        "lighting-overlays/03-shop-display-warm-glow-01.png",
+        "lighting-overlays/03-shop-display-warm-glow-02.png",
+        "lighting-overlays/03-shop-display-warm-glow-03.png"
+      ]
+    },
+    {
+      "id": "04-stone-cellar",
+      "directory": "windows/04-stone-cellar",
+      "glow_frames": [
+        "lighting-overlays/04-stone-cellar-warm-glow-01.png",
+        "lighting-overlays/04-stone-cellar-warm-glow-02.png",
+        "lighting-overlays/04-stone-cellar-warm-glow-03.png"
+      ]
+    }
+  ]
+}

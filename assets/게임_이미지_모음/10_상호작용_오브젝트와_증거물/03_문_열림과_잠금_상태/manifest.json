@@ -1,0 +1,68 @@
+{
+  "frame_size": [
+    64,
+    64
+  ],
+  "transparent_background": true,
+  "anchor": "bottom-center",
+  "hinge_anchor": "fixed within each row",
+  "opening_animation": {
+    "states": [
+      "00-closed",
+      "01-opening-25deg",
+      "02-opening-60deg",
+      "03-open"
+    ],
+    "durations_ms": [
+      160,
+      120,
+      120,
+      220
+    ],
+    "loop": false
+  },
+  "closing_animation": {
+    "states": [
+      "03-open",
+      "02-opening-60deg",
+      "01-opening-25deg",
+      "00-closed"
+    ],
+    "durations_ms": [
+      120,
+      120,
+      120,
+      180
+    ],
+    "loop": false
+  },
+  "collision": {
+    "00-closed": "blocked",
+    "01-opening-25deg": "blocked",
+    "02-opening-60deg": "blocked",
+    "03-open": "walkable",
+    "04-locked": "blocked"
+  },
+  "doors": [
+    {
+      "id": "01-house-oak",
+      "directory": "doors/01-house-oak",
+      "locked_state": "doors/01-house-oak/04-locked.png"
+    },
+    {
+      "id": "02-interior-panel",
+      "directory": "doors/02-interior-panel",
+      "locked_state": "doors/02-interior-panel/04-locked.png"
+    },
+    {
+      "id": "03-police-reinforced",
+      "directory": "doors/03-police-reinforced",
+      "locked_state": "doors/03-police-reinforced/04-locked.png"
+    },
+    {
+      "id": "04-cellar-worn",
+      "directory": "doors/04-cellar-worn",
+      "locked_state": "doors/04-cellar-worn/04-locked.png"
+    }
+  ]
+}

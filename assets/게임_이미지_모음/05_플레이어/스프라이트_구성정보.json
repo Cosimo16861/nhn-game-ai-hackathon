@@ -1,0 +1,76 @@
+{
+  "character": "player-sketch-artist-v3",
+  "format": "RGBA PNG",
+  "total_frames": 56,
+  "animations": {
+    "walk_down": {
+      "directory": "frames/walk/down",
+      "frames": 8,
+      "frame_size": [146, 240],
+      "origin": [73, 230],
+      "frame_duration_ms": 100,
+      "loop": true
+    },
+    "walk_up": {
+      "directory": "frames/walk/up",
+      "frames": 8,
+      "frame_size": [146, 240],
+      "origin": [73, 230],
+      "frame_duration_ms": 100,
+      "loop": true
+    },
+    "walk_left": {
+      "directory": "frames/walk/left",
+      "frames": 8,
+      "frame_size": [146, 240],
+      "origin": [73, 230],
+      "frame_duration_ms": 100,
+      "loop": true
+    },
+    "walk_right": {
+      "directory": "frames/walk/right",
+      "frames": 8,
+      "frame_size": [146, 240],
+      "origin": [73, 230],
+      "frame_duration_ms": 100,
+      "loop": true
+    },
+    "investigate_ground": {
+      "directory": "frames/investigate/ground-inspect",
+      "frames": 6,
+      "frame_size": [219, 425],
+      "origin": [109, 415],
+      "frame_durations_ms": [120, 120, 140, 220, 260, 140],
+      "loop": false
+    },
+    "investigate_pickup": {
+      "directory": "frames/investigate/pickup-compare",
+      "frames": 6,
+      "frame_size": [219, 425],
+      "origin": [109, 415],
+      "frame_durations_ms": [140, 140, 160, 180, 240, 300],
+      "loop": false
+    },
+    "draw_standing": {
+      "directory": "frames/draw/standing-sketch",
+      "frames": 6,
+      "frame_size": [260, 473],
+      "origin": [130, 463],
+      "frame_durations_ms": [140, 140, 160, 120, 180, 260],
+      "loop": false
+    },
+    "draw_detailed": {
+      "directory": "frames/draw/detailed-board",
+      "frames": 6,
+      "frame_size": [260, 473],
+      "origin": [130, 463],
+      "frame_durations_ms": [160, 160, 180, 220, 180, 360],
+      "loop": false
+    }
+  },
+  "source_sheets": {
+    "walk": "player-walk-4dir-8f-v3.png",
+    "investigate": "player-investigate-12f-v3.png",
+    "draw": "player-draw-12f-v3.png"
+  }
+}

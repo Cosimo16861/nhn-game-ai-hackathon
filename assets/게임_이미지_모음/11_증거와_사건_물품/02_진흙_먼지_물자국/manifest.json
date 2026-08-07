@@ -1,0 +1,123 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "roles": {
+    "map": [
+      64,
+      64
+    ],
+    "map-faded": [
+      64,
+      64
+    ],
+    "closeup": [
+      128,
+      128
+    ],
+    "notebook-icon": [
+      64,
+      64
+    ],
+    "discovered-highlight": [
+      64,
+      64
+    ]
+  },
+  "discovery_animation_ms": [
+    480,
+    160,
+    420
+  ],
+  "evidence": [
+    {
+      "id": "01-fresh-mud-smear",
+      "surface": "gray-stone",
+      "condition": "fresh",
+      "distinctive_pattern": "fan-splashes-dragged-edge",
+      "files": {
+        "map": "evidence/01-fresh-mud-smear/map.png",
+        "map-faded": "evidence/01-fresh-mud-smear/map-faded.png",
+        "closeup": "evidence/01-fresh-mud-smear/closeup.png",
+        "notebook-icon": "evidence/01-fresh-mud-smear/notebook-icon.png",
+        "discovered-highlight": "evidence/01-fresh-mud-smear/discovered-highlight.png"
+      },
+      "collectible": true,
+      "weather_sensitive": true,
+      "comparison_tags": [
+        "fan",
+        "splashes",
+        "dragged",
+        "edge"
+      ]
+    },
+    {
+      "id": "02-dried-mud-flakes",
+      "surface": "dark-oak",
+      "condition": "dry",
+      "distinctive_pattern": "crescent-clump-interrupted-trail",
+      "files": {
+        "map": "evidence/02-dried-mud-flakes/map.png",
+        "map-faded": "evidence/02-dried-mud-flakes/map-faded.png",
+        "closeup": "evidence/02-dried-mud-flakes/closeup.png",
+        "notebook-icon": "evidence/02-dried-mud-flakes/notebook-icon.png",
+        "discovered-highlight": "evidence/02-dried-mud-flakes/discovered-highlight.png"
+      },
+      "collectible": true,
+      "weather_sensitive": true,
+      "comparison_tags": [
+        "crescent",
+        "clump",
+        "interrupted",
+        "trail"
+      ]
+    },
+    {
+      "id": "03-dust-clean-outline",
+      "surface": "wooden-shelf",
+      "condition": "old",
+      "distinctive_pattern": "rectangular-clean-zone-twin-finger-arcs",
+      "files": {
+        "map": "evidence/03-dust-clean-outline/map.png",
+        "map-faded": "evidence/03-dust-clean-outline/map-faded.png",
+        "closeup": "evidence/03-dust-clean-outline/closeup.png",
+        "notebook-icon": "evidence/03-dust-clean-outline/notebook-icon.png",
+        "discovered-highlight": "evidence/03-dust-clean-outline/discovered-highlight.png"
+      },
+      "collectible": true,
+      "weather_sensitive": false,
+      "comparison_tags": [
+        "rectangular",
+        "clean",
+        "zone",
+        "twin",
+        "finger",
+        "arcs"
+      ]
+    },
+    {
+      "id": "04-water-droplet-trail",
+      "surface": "pale-stone",
+      "condition": "fresh",
+      "distinctive_pattern": "five-decreasing-drops-partial-ring",
+      "files": {
+        "map": "evidence/04-water-droplet-trail/map.png",
+        "map-faded": "evidence/04-water-droplet-trail/map-faded.png",
+        "closeup": "evidence/04-water-droplet-trail/closeup.png",
+        "notebook-icon": "evidence/04-water-droplet-trail/notebook-icon.png",
+        "discovered-highlight": "evidence/04-water-droplet-trail/discovered-highlight.png"
+      },
+      "collectible": true,
+      "weather_sensitive": true,
+      "comparison_tags": [
+        "five",
+        "decreasing",
+        "drops",
+        "partial",
+        "ring"
+      ]
+    }
+  ]
+}

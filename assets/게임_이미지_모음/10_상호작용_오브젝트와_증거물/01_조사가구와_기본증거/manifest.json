@@ -1,0 +1,273 @@
+{
+  "base_grid": [
+    32,
+    32
+  ],
+  "transparent_background": true,
+  "interaction_range_tiles": 1,
+  "highlight_animation_ms": 220,
+  "state_pairs": [
+    {
+      "closed": "01-writing-desk-closed",
+      "revealed": "02-writing-desk-open"
+    },
+    {
+      "closed": "03-evidence-cabinet-closed",
+      "revealed": "04-evidence-cabinet-open"
+    },
+    {
+      "closed": "05-brass-bound-chest-closed",
+      "revealed": "06-brass-bound-chest-open"
+    },
+    {
+      "closed": "07-bookcase-normal",
+      "revealed": "08-bookcase-hidden-compartment"
+    },
+    {
+      "closed": "09-floorboards-intact",
+      "revealed": "10-floorboards-hiding-space"
+    }
+  ],
+  "objects": [
+    {
+      "index": 1,
+      "name": "01-writing-desk-closed",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/01-writing-desk-closed.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 2,
+      "name": "02-writing-desk-open",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/02-writing-desk-open.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 3,
+      "name": "03-evidence-cabinet-closed",
+      "size": [
+        48,
+        64
+      ],
+      "file": "objects/03-evidence-cabinet-closed.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 4,
+      "name": "04-evidence-cabinet-open",
+      "size": [
+        48,
+        64
+      ],
+      "file": "objects/04-evidence-cabinet-open.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 5,
+      "name": "05-brass-bound-chest-closed",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/05-brass-bound-chest-closed.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 6,
+      "name": "06-brass-bound-chest-open",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/06-brass-bound-chest-open.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 7,
+      "name": "07-bookcase-normal",
+      "size": [
+        48,
+        64
+      ],
+      "file": "objects/07-bookcase-normal.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 8,
+      "name": "08-bookcase-hidden-compartment",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/08-bookcase-hidden-compartment.png",
+      "kind": "interactive-furniture",
+      "collision": "solid",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 9,
+      "name": "09-floorboards-intact",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/09-floorboards-intact.png",
+      "kind": "interactive-furniture",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 10,
+      "name": "10-floorboards-hiding-space",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/10-floorboards-hiding-space.png",
+      "kind": "interactive-furniture",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 11,
+      "name": "11-folded-letter",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/11-folded-letter.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 12,
+      "name": "12-torn-note",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/12-torn-note.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 13,
+      "name": "13-antique-brass-key",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/13-antique-brass-key.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 14,
+      "name": "14-handkerchief",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/14-handkerchief.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 15,
+      "name": "15-cracked-pocket-watch",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/15-cracked-pocket-watch.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 16,
+      "name": "16-muddy-boot-prints",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/16-muddy-boot-prints.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 17,
+      "name": "17-broken-glass",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/17-broken-glass.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 18,
+      "name": "18-dark-coat-button",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/18-dark-coat-button.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 19,
+      "name": "19-red-fabric-scrap",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/19-red-fabric-scrap.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    },
+    {
+      "index": 20,
+      "name": "20-broken-wax-seal",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/20-broken-wax-seal.png",
+      "kind": "collectable-evidence",
+      "collision": "none",
+      "anchor": "bottom-center"
+    }
+  ]
+}

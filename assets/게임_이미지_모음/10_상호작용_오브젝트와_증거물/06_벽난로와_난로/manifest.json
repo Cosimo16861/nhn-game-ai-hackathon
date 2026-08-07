@@ -1,0 +1,447 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "anchor": "bottom-center",
+  "effect_layer_order": [
+    "object",
+    "flame",
+    "warm-glow"
+  ],
+  "fire_animation_ms": [
+    140,
+    120,
+    150
+  ],
+  "effects": {
+    "small_flame": [
+      "effects/flame-small-01.png",
+      "effects/flame-small-02.png",
+      "effects/flame-small-03.png"
+    ],
+    "large_flame": [
+      "effects/flame-large-01.png",
+      "effects/flame-large-02.png",
+      "effects/flame-large-03.png"
+    ],
+    "warm_glow": [
+      "effects/warm-glow-01.png",
+      "effects/warm-glow-02.png",
+      "effects/warm-glow-03.png"
+    ]
+  },
+  "groups": {
+    "brick-fireplace": [
+      "01-brick-fireplace-cold",
+      "02-brick-fireplace-kindling",
+      "03-brick-fireplace-burning",
+      "04-brick-fireplace-investigate",
+      "05-brick-fireplace-damaged"
+    ],
+    "stone-fireplace": [
+      "06-stone-fireplace-cold",
+      "07-stone-fireplace-embers",
+      "08-stone-fireplace-burning",
+      "09-stone-fireplace-investigate-token",
+      "10-stone-fireplace-damaged"
+    ],
+    "potbelly-stove": [
+      "11-potbelly-stove-cold",
+      "12-potbelly-stove-igniting",
+      "13-potbelly-stove-operating",
+      "14-potbelly-stove-investigate-scrap",
+      "15-potbelly-stove-damaged"
+    ],
+    "kitchen-range": [
+      "16-kitchen-range-cold",
+      "17-kitchen-range-warming",
+      "18-kitchen-range-cooking",
+      "19-kitchen-range-investigate",
+      "20-kitchen-range-damaged"
+    ]
+  },
+  "objects": [
+    {
+      "id": "01-brick-fireplace-cold",
+      "file": "objects/01-brick-fireplace-cold.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "brick-fireplace",
+      "state": "cold",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "02-brick-fireplace-kindling",
+      "file": "objects/02-brick-fireplace-kindling.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "brick-fireplace",
+      "state": "kindling",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": true,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "03-brick-fireplace-burning",
+      "file": "objects/03-brick-fireplace-burning.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "brick-fireplace",
+      "state": "burning",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": true,
+      "hazard": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "04-brick-fireplace-investigate",
+      "file": "objects/04-brick-fireplace-investigate.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "brick-fireplace",
+      "state": "investigate",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "05-brick-fireplace-damaged",
+      "file": "objects/05-brick-fireplace-damaged.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "brick-fireplace",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "06-stone-fireplace-cold",
+      "file": "objects/06-stone-fireplace-cold.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "stone-fireplace",
+      "state": "cold",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "07-stone-fireplace-embers",
+      "file": "objects/07-stone-fireplace-embers.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "stone-fireplace",
+      "state": "embers",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": true,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "08-stone-fireplace-burning",
+      "file": "objects/08-stone-fireplace-burning.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "stone-fireplace",
+      "state": "burning",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": true,
+      "hazard": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "09-stone-fireplace-investigate-token",
+      "file": "objects/09-stone-fireplace-investigate-token.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "stone-fireplace",
+      "state": "investigate-token",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "10-stone-fireplace-damaged",
+      "file": "objects/10-stone-fireplace-damaged.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "stone-fireplace",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "11-potbelly-stove-cold",
+      "file": "objects/11-potbelly-stove-cold.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "potbelly-stove",
+      "state": "cold",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "12-potbelly-stove-igniting",
+      "file": "objects/12-potbelly-stove-igniting.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "potbelly-stove",
+      "state": "igniting",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "emits_light": true,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "13-potbelly-stove-operating",
+      "file": "objects/13-potbelly-stove-operating.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "potbelly-stove",
+      "state": "operating",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "emits_light": true,
+      "hazard": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "14-potbelly-stove-investigate-scrap",
+      "file": "objects/14-potbelly-stove-investigate-scrap.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "potbelly-stove",
+      "state": "investigate-scrap",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "15-potbelly-stove-damaged",
+      "file": "objects/15-potbelly-stove-damaged.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "potbelly-stove",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": false
+    },
+    {
+      "id": "16-kitchen-range-cold",
+      "file": "objects/16-kitchen-range-cold.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "kitchen-range",
+      "state": "cold",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "17-kitchen-range-warming",
+      "file": "objects/17-kitchen-range-warming.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "kitchen-range",
+      "state": "warming",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "emits_light": true,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "18-kitchen-range-cooking",
+      "file": "objects/18-kitchen-range-cooking.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "kitchen-range",
+      "state": "cooking",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "emits_light": true,
+      "hazard": true,
+      "search_reveal": false,
+      "usable": true
+    },
+    {
+      "id": "19-kitchen-range-investigate",
+      "file": "objects/19-kitchen-range-investigate.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "kitchen-range",
+      "state": "investigate",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": true,
+      "usable": true
+    },
+    {
+      "id": "20-kitchen-range-damaged",
+      "file": "objects/20-kitchen-range-damaged.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "kitchen-range",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "emits_light": false,
+      "hazard": false,
+      "search_reveal": false,
+      "usable": false
+    }
+  ]
+}

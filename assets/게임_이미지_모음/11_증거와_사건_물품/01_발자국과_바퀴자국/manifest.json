@@ -1,0 +1,113 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "roles": {
+    "map": [
+      64,
+      64
+    ],
+    "map-smudged": [
+      64,
+      64
+    ],
+    "closeup": [
+      128,
+      128
+    ],
+    "notebook-icon": [
+      64,
+      64
+    ],
+    "discovered-highlight": [
+      64,
+      64
+    ]
+  },
+  "discovery_animation_ms": [
+    480,
+    160,
+    420
+  ],
+  "evidence": [
+    {
+      "id": "01-work-boot-prints",
+      "surface": "damp-soil",
+      "distinctive_pattern": "crosshatched-heel-rectangular-toe",
+      "files": {
+        "map": "evidence/01-work-boot-prints/map.png",
+        "map-smudged": "evidence/01-work-boot-prints/map-smudged.png",
+        "closeup": "evidence/01-work-boot-prints/closeup.png",
+        "notebook-icon": "evidence/01-work-boot-prints/notebook-icon.png",
+        "discovered-highlight": "evidence/01-work-boot-prints/discovered-highlight.png"
+      },
+      "collectible": true,
+      "comparison_tags": [
+        "crosshatched",
+        "heel",
+        "rectangular",
+        "toe"
+      ]
+    },
+    {
+      "id": "02-heeled-shoe-prints",
+      "surface": "wet-cobblestone",
+      "distinctive_pattern": "square-heel-pointed-toe",
+      "files": {
+        "map": "evidence/02-heeled-shoe-prints/map.png",
+        "map-smudged": "evidence/02-heeled-shoe-prints/map-smudged.png",
+        "closeup": "evidence/02-heeled-shoe-prints/closeup.png",
+        "notebook-icon": "evidence/02-heeled-shoe-prints/notebook-icon.png",
+        "discovered-highlight": "evidence/02-heeled-shoe-prints/discovered-highlight.png"
+      },
+      "collectible": true,
+      "comparison_tags": [
+        "square",
+        "heel",
+        "pointed",
+        "toe"
+      ]
+    },
+    {
+      "id": "03-handcart-double-tracks",
+      "surface": "wet-mud",
+      "distinctive_pattern": "parallel-narrow-notched-rims",
+      "files": {
+        "map": "evidence/03-handcart-double-tracks/map.png",
+        "map-smudged": "evidence/03-handcart-double-tracks/map-smudged.png",
+        "closeup": "evidence/03-handcart-double-tracks/closeup.png",
+        "notebook-icon": "evidence/03-handcart-double-tracks/notebook-icon.png",
+        "discovered-highlight": "evidence/03-handcart-double-tracks/discovered-highlight.png"
+      },
+      "collectible": true,
+      "comparison_tags": [
+        "parallel",
+        "narrow",
+        "notched",
+        "rims"
+      ]
+    },
+    {
+      "id": "04-wagon-wheel-rut",
+      "surface": "pale-dirt",
+      "distinctive_pattern": "broad-rut-repaired-rim-gap",
+      "files": {
+        "map": "evidence/04-wagon-wheel-rut/map.png",
+        "map-smudged": "evidence/04-wagon-wheel-rut/map-smudged.png",
+        "closeup": "evidence/04-wagon-wheel-rut/closeup.png",
+        "notebook-icon": "evidence/04-wagon-wheel-rut/notebook-icon.png",
+        "discovered-highlight": "evidence/04-wagon-wheel-rut/discovered-highlight.png"
+      },
+      "collectible": true,
+      "comparison_tags": [
+        "broad",
+        "rut",
+        "repaired",
+        "rim",
+        "gap"
+      ]
+    }
+  ]
+}

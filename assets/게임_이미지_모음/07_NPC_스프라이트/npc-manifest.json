@@ -1,0 +1,686 @@
+[
+  {
+    "id": "01-police",
+    "name": "Police",
+    "category": "occupation",
+    "sheet": "sheets-transparent/01-police.png",
+    "sprites": "sprites/01-police-sprites.png",
+    "portraits": "portraits/01-police-portraits.png",
+    "frame_root": "frames/01-police",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "02-doctor",
+    "name": "Doctor",
+    "category": "occupation",
+    "sheet": "sheets-transparent/02-doctor.png",
+    "sprites": "sprites/02-doctor-sprites.png",
+    "portraits": "portraits/02-doctor-portraits.png",
+    "frame_root": "frames/02-doctor",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "03-nurse",
+    "name": "Nurse",
+    "category": "occupation",
+    "sheet": "sheets-transparent/03-nurse.png",
+    "sprites": "sprites/03-nurse-sprites.png",
+    "portraits": "portraits/03-nurse-portraits.png",
+    "frame_root": "frames/03-nurse",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "04-teacher",
+    "name": "Teacher",
+    "category": "occupation",
+    "sheet": "sheets-transparent/04-teacher.png",
+    "sprites": "sprites/04-teacher-sprites.png",
+    "portraits": "portraits/04-teacher-portraits.png",
+    "frame_root": "frames/04-teacher",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "05-merchant",
+    "name": "Merchant",
+    "category": "occupation",
+    "sheet": "sheets-transparent/05-merchant.png",
+    "sprites": "sprites/05-merchant-sprites.png",
+    "portraits": "portraits/05-merchant-portraits.png",
+    "frame_root": "frames/05-merchant",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "06-farmer",
+    "name": "Farmer",
+    "category": "occupation",
+    "sheet": "sheets-transparent/06-farmer.png",
+    "sprites": "sprites/06-farmer-sprites.png",
+    "portraits": "portraits/06-farmer-portraits.png",
+    "frame_root": "frames/06-farmer",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "07-gravekeeper",
+    "name": "Gravekeeper",
+    "category": "occupation",
+    "sheet": "sheets-transparent/07-gravekeeper.png",
+    "sprites": "sprites/07-gravekeeper-sprites.png",
+    "portraits": "portraits/07-gravekeeper-portraits.png",
+    "frame_root": "frames/07-gravekeeper",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "08-baker",
+    "name": "Baker",
+    "category": "occupation",
+    "sheet": "sheets-transparent/08-baker.png",
+    "sprites": "sprites/08-baker-sprites.png",
+    "portraits": "portraits/08-baker-portraits.png",
+    "frame_root": "frames/08-baker",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "09-postal-clerk",
+    "name": "Postal Clerk",
+    "category": "occupation",
+    "sheet": "sheets-transparent/09-postal-clerk.png",
+    "sprites": "sprites/09-postal-clerk-sprites.png",
+    "portraits": "portraits/09-postal-clerk-portraits.png",
+    "frame_root": "frames/09-postal-clerk",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "10-drunkard",
+    "name": "Drunkard",
+    "category": "occupation",
+    "sheet": "sheets-transparent/10-drunkard.png",
+    "sprites": "sprites/10-drunkard-sprites.png",
+    "portraits": "portraits/10-drunkard-portraits.png",
+    "frame_root": "frames/10-drunkard",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "11-homeless",
+    "name": "Homeless Resident",
+    "category": "occupation",
+    "sheet": "sheets-transparent/11-homeless.png",
+    "sprites": "sprites/11-homeless-sprites.png",
+    "portraits": "portraits/11-homeless-portraits.png",
+    "frame_root": "frames/11-homeless",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "12-resident-seamstress",
+    "name": "Resident 1 - Seamstress",
+    "category": "resident",
+    "sheet": "sheets-transparent/12-resident-seamstress.png",
+    "sprites": "sprites/12-resident-seamstress-sprites.png",
+    "portraits": "portraits/12-resident-seamstress-portraits.png",
+    "frame_root": "frames/12-resident-seamstress",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "13-resident-dockworker",
+    "name": "Resident 2 - Dockworker",
+    "category": "resident",
+    "sheet": "sheets-transparent/13-resident-dockworker.png",
+    "sprites": "sprites/13-resident-dockworker-sprites.png",
+    "portraits": "portraits/13-resident-dockworker-portraits.png",
+    "frame_root": "frames/13-resident-dockworker",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "14-resident-laundress",
+    "name": "Resident 3 - Laundress",
+    "category": "resident",
+    "sheet": "sheets-transparent/14-resident-laundress.png",
+    "sprites": "sprites/14-resident-laundress-sprites.png",
+    "portraits": "portraits/14-resident-laundress-portraits.png",
+    "frame_root": "frames/14-resident-laundress",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "15-resident-newsseller",
+    "name": "Resident 4 - News Seller",
+    "category": "resident",
+    "sheet": "sheets-transparent/15-resident-newsseller.png",
+    "sprites": "sprites/15-resident-newsseller-sprites.png",
+    "portraits": "portraits/15-resident-newsseller-portraits.png",
+    "frame_root": "frames/15-resident-newsseller",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "16-resident-scholar",
+    "name": "Resident 5 - Scholar",
+    "category": "resident",
+    "sheet": "sheets-transparent/16-resident-scholar.png",
+    "sprites": "sprites/16-resident-scholar-sprites.png",
+    "portraits": "portraits/16-resident-scholar-portraits.png",
+    "frame_root": "frames/16-resident-scholar",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "17-resident-gardener",
+    "name": "Resident 6 - Gardener",
+    "category": "resident",
+    "sheet": "sheets-transparent/17-resident-gardener.png",
+    "sprites": "sprites/17-resident-gardener-sprites.png",
+    "portraits": "portraits/17-resident-gardener-portraits.png",
+    "frame_root": "frames/17-resident-gardener",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "18-resident-carpenter",
+    "name": "Resident 7 - Carpenter",
+    "category": "resident",
+    "sheet": "sheets-transparent/18-resident-carpenter.png",
+    "sprites": "sprites/18-resident-carpenter-sprites.png",
+    "portraits": "portraits/18-resident-carpenter-portraits.png",
+    "frame_root": "frames/18-resident-carpenter",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  },
+  {
+    "id": "19-resident-widow",
+    "name": "Resident 8 - Widow",
+    "category": "resident",
+    "sheet": "sheets-transparent/19-resident-widow.png",
+    "sprites": "sprites/19-resident-widow-sprites.png",
+    "portraits": "portraits/19-resident-widow-portraits.png",
+    "frame_root": "frames/19-resident-widow",
+    "portrait_order": [
+      "neutral",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "movement_order": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "actions": [
+      "idle",
+      "listen",
+      "talk",
+      "work_1",
+      "work_2",
+      "work_3",
+      "surprised",
+      "suspicious",
+      "anxious"
+    ],
+    "size": [
+      916,
+      1717
+    ]
+  }
+]

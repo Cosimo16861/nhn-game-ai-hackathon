@@ -1,0 +1,435 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "anchor": "bottom-center",
+  "text_policy": "abstract-pixel-marks-only",
+  "new_notice_animation_ms": [
+    180,
+    140,
+    180
+  ],
+  "overlays": {
+    "new_notice": [
+      "overlays/new-notice-marker-01.png",
+      "overlays/new-notice-marker-02.png",
+      "overlays/new-notice-marker-03.png"
+    ],
+    "important_clue": "overlays/important-clue-pin.png",
+    "resolved": "overlays/resolved-blue-seal.png"
+  },
+  "groups": {
+    "village-board": [
+      "01-village-board-empty",
+      "02-village-board-normal",
+      "03-village-board-incident",
+      "04-village-board-resolved",
+      "05-village-board-damaged"
+    ],
+    "police-board": [
+      "06-police-board-empty",
+      "07-police-board-normal",
+      "08-police-board-investigation",
+      "09-police-board-resolved",
+      "10-police-board-tampered"
+    ],
+    "market-board": [
+      "11-market-board-empty",
+      "12-market-board-normal",
+      "13-market-board-lost-parcel",
+      "14-market-board-resolved",
+      "15-market-board-weathered"
+    ],
+    "station-board": [
+      "16-station-board-empty",
+      "17-station-board-timetable",
+      "18-station-board-disruption",
+      "19-station-board-updated",
+      "20-station-board-damaged"
+    ]
+  },
+  "objects": [
+    {
+      "id": "01-village-board-empty",
+      "file": "objects/01-village-board-empty.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "village-board",
+      "state": "empty",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "02-village-board-normal",
+      "file": "objects/02-village-board-normal.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "village-board",
+      "state": "normal",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "03-village-board-incident",
+      "file": "objects/03-village-board-incident.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "village-board",
+      "state": "incident",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "readable": true,
+      "has_new_case": true,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "04-village-board-resolved",
+      "file": "objects/04-village-board-resolved.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "village-board",
+      "state": "resolved",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": true,
+      "usable": true
+    },
+    {
+      "id": "05-village-board-damaged",
+      "file": "objects/05-village-board-damaged.png",
+      "size": [
+        96,
+        96
+      ],
+      "group": "village-board",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        92
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": false
+    },
+    {
+      "id": "06-police-board-empty",
+      "file": "objects/06-police-board-empty.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "police-board",
+      "state": "empty",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "07-police-board-normal",
+      "file": "objects/07-police-board-normal.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "police-board",
+      "state": "normal",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "08-police-board-investigation",
+      "file": "objects/08-police-board-investigation.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "police-board",
+      "state": "investigation",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": true,
+      "has_new_case": true,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "09-police-board-resolved",
+      "file": "objects/09-police-board-resolved.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "police-board",
+      "state": "resolved",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": true,
+      "usable": true
+    },
+    {
+      "id": "10-police-board-tampered",
+      "file": "objects/10-police-board-tampered.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "police-board",
+      "state": "tampered",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": false
+    },
+    {
+      "id": "11-market-board-empty",
+      "file": "objects/11-market-board-empty.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "market-board",
+      "state": "empty",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "12-market-board-normal",
+      "file": "objects/12-market-board-normal.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "market-board",
+      "state": "normal",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "13-market-board-lost-parcel",
+      "file": "objects/13-market-board-lost-parcel.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "market-board",
+      "state": "lost-parcel",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "readable": true,
+      "has_new_case": true,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "14-market-board-resolved",
+      "file": "objects/14-market-board-resolved.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "market-board",
+      "state": "resolved",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": true,
+      "usable": true
+    },
+    {
+      "id": "15-market-board-weathered",
+      "file": "objects/15-market-board-weathered.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "market-board",
+      "state": "weathered",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": false
+    },
+    {
+      "id": "16-station-board-empty",
+      "file": "objects/16-station-board-empty.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "station-board",
+      "state": "empty",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "17-station-board-timetable",
+      "file": "objects/17-station-board-timetable.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "station-board",
+      "state": "timetable",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "18-station-board-disruption",
+      "file": "objects/18-station-board-disruption.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "station-board",
+      "state": "disruption",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": true,
+      "has_new_case": true,
+      "case_resolved": false,
+      "usable": true
+    },
+    {
+      "id": "19-station-board-updated",
+      "file": "objects/19-station-board-updated.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "station-board",
+      "state": "updated",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": true,
+      "has_new_case": false,
+      "case_resolved": true,
+      "usable": true
+    },
+    {
+      "id": "20-station-board-damaged",
+      "file": "objects/20-station-board-damaged.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "station-board",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "readable": false,
+      "has_new_case": false,
+      "case_resolved": false,
+      "usable": false
+    }
+  ]
+}

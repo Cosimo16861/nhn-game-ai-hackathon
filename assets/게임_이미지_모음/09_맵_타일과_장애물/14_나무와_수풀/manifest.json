@@ -1,0 +1,339 @@
+{
+  "base_grid": [
+    32,
+    32
+  ],
+  "transparent_background": true,
+  "y_sort_anchor": "bottom-center",
+  "tree_layer_rule": "Draw base below characters and foreground canopy above characters.",
+  "objects": [
+    {
+      "index": 1,
+      "name": "01-english-oak",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/01-english-oak.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 2,
+      "name": "02-elm",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/02-elm.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 3,
+      "name": "03-silver-birch",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/03-silver-birch.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 4,
+      "name": "04-yew",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/04-yew.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 5,
+      "name": "05-willow",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/05-willow.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 6,
+      "name": "06-young-sapling",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/06-young-sapling.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 7,
+      "name": "07-dead-tree",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/07-dead-tree.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 8,
+      "name": "08-hollow-tree",
+      "size": [
+        64,
+        96
+      ],
+      "file": "objects/08-hollow-tree.png",
+      "collision": [
+        22,
+        76,
+        20,
+        16
+      ],
+      "rendering": "base + foreground canopy"
+    },
+    {
+      "index": 9,
+      "name": "09-stump",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/09-stump.png",
+      "collision": [
+        2,
+        16,
+        28,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 10,
+      "name": "10-fallen-mossy-log",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/10-fallen-mossy-log.png",
+      "collision": [
+        2,
+        16,
+        60,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 11,
+      "name": "11-round-hedge-bush",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/11-round-hedge-bush.png",
+      "collision": [
+        2,
+        16,
+        28,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 12,
+      "name": "12-wide-hedge",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/12-wide-hedge.png",
+      "collision": [
+        2,
+        16,
+        60,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 13,
+      "name": "13-white-flowering-bush",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/13-white-flowering-bush.png",
+      "collision": [
+        2,
+        16,
+        28,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 14,
+      "name": "14-red-berry-bush",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/14-red-berry-bush.png",
+      "collision": [
+        2,
+        16,
+        28,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 15,
+      "name": "15-thorn-bramble",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/15-thorn-bramble.png",
+      "collision": [
+        2,
+        16,
+        28,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 16,
+      "name": "16-dense-mixed-shrubs",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/16-dense-mixed-shrubs.png",
+      "collision": [
+        2,
+        32,
+        60,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 17,
+      "name": "17-tall-overgrown-shrub",
+      "size": [
+        32,
+        48
+      ],
+      "file": "objects/17-tall-overgrown-shrub.png",
+      "collision": [
+        2,
+        32,
+        28,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 18,
+      "name": "18-straight-hedge",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/18-straight-hedge.png",
+      "collision": [
+        2,
+        16,
+        60,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 19,
+      "name": "19-hedge-corner",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/19-hedge-corner.png",
+      "collision": [
+        2,
+        48,
+        60,
+        14
+      ],
+      "rendering": "obstacle"
+    },
+    {
+      "index": 20,
+      "name": "20-hedge-opening",
+      "size": [
+        64,
+        32
+      ],
+      "file": "objects/20-hedge-opening.png",
+      "collision": [
+        [
+          0,
+          18,
+          20,
+          14
+        ],
+        [
+          44,
+          18,
+          20,
+          14
+        ]
+      ],
+      "rendering": "obstacle with walkable central gap"
+    }
+  ]
+}

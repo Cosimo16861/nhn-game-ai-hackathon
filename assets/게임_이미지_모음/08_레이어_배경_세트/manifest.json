@@ -1,0 +1,133 @@
+{
+  "format": "NHN layered background pack v1",
+  "layer_order": [
+    "01-floor",
+    "02-walls-fixed",
+    "03-player-npc",
+    "04-foreground",
+    "05-lighting-weather"
+  ],
+  "notes": "The original rooms were flattened images. Transparent semantic layers are a practical reconstruction; full state images preserve the authored room art.",
+  "interiors": [
+    {
+      "id": 1,
+      "slug": "01-police-station",
+      "name_ko": "경찰서",
+      "path": "interiors/01-police-station"
+    },
+    {
+      "id": 2,
+      "slug": "02-town-hall",
+      "name_ko": "시청",
+      "path": "interiors/02-town-hall"
+    },
+    {
+      "id": 3,
+      "slug": "03-post-office",
+      "name_ko": "우체국",
+      "path": "interiors/03-post-office"
+    },
+    {
+      "id": 4,
+      "slug": "04-library",
+      "name_ko": "도서관",
+      "path": "interiors/04-library"
+    },
+    {
+      "id": 5,
+      "slug": "05-general-store",
+      "name_ko": "잡화점",
+      "path": "interiors/05-general-store"
+    },
+    {
+      "id": 6,
+      "slug": "06-bakery",
+      "name_ko": "제과점",
+      "path": "interiors/06-bakery"
+    },
+    {
+      "id": 7,
+      "slug": "07-tailor-shop",
+      "name_ko": "재봉점",
+      "path": "interiors/07-tailor-shop"
+    },
+    {
+      "id": 8,
+      "slug": "08-apothecary",
+      "name_ko": "약제상",
+      "path": "interiors/08-apothecary"
+    },
+    {
+      "id": 9,
+      "slug": "09-clinic",
+      "name_ko": "진료소",
+      "path": "interiors/09-clinic"
+    },
+    {
+      "id": 10,
+      "slug": "10-school",
+      "name_ko": "학교",
+      "path": "interiors/10-school"
+    },
+    {
+      "id": 11,
+      "slug": "11-inn",
+      "name_ko": "여관",
+      "path": "interiors/11-inn"
+    },
+    {
+      "id": 12,
+      "slug": "12-pub",
+      "name_ko": "주점",
+      "path": "interiors/12-pub"
+    },
+    {
+      "id": 13,
+      "slug": "13-blacksmith",
+      "name_ko": "대장간",
+      "path": "interiors/13-blacksmith"
+    },
+    {
+      "id": 14,
+      "slug": "14-chapel",
+      "name_ko": "예배당",
+      "path": "interiors/14-chapel"
+    },
+    {
+      "id": 15,
+      "slug": "15-railway-station",
+      "name_ko": "기차역",
+      "path": "interiors/15-railway-station"
+    },
+    {
+      "id": 16,
+      "slug": "16-gravekeeper-house",
+      "name_ko": "묘지기 집",
+      "path": "interiors/16-gravekeeper-house"
+    },
+    {
+      "id": 17,
+      "slug": "17-home-a",
+      "name_ko": "주택 A",
+      "path": "interiors/17-home-a"
+    },
+    {
+      "id": 18,
+      "slug": "18-home-b",
+      "name_ko": "주택 B",
+      "path": "interiors/18-home-b"
+    },
+    {
+      "id": 19,
+      "slug": "19-home-c",
+      "name_ko": "주택 C",
+      "path": "interiors/19-home-c"
+    },
+    {
+      "id": 20,
+      "slug": "20-abandoned-building",
+      "name_ko": "폐건물",
+      "path": "interiors/20-abandoned-building"
+    }
+  ]
+}

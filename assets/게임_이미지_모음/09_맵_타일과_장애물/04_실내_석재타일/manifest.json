@@ -1,0 +1,194 @@
+{
+  "tile_size": [
+    32,
+    32
+  ],
+  "atlas_grid": [
+    5,
+    4
+  ],
+  "atlas_file": "indoor-floor-tileset-5x4-32px.png",
+  "transparent_background": false,
+  "tile_order": [
+    {
+      "index": 1,
+      "name": "01-clinic-ivory-a",
+      "cell": [
+        0,
+        0
+      ],
+      "file": "tiles-32px/01-clinic-ivory-a.png"
+    },
+    {
+      "index": 2,
+      "name": "02-clinic-ivory-b",
+      "cell": [
+        1,
+        0
+      ],
+      "file": "tiles-32px/02-clinic-ivory-b.png"
+    },
+    {
+      "index": 3,
+      "name": "03-clinic-ivory-c",
+      "cell": [
+        2,
+        0
+      ],
+      "file": "tiles-32px/03-clinic-ivory-c.png"
+    },
+    {
+      "index": 4,
+      "name": "04-clinic-cross-motif",
+      "cell": [
+        3,
+        0
+      ],
+      "file": "tiles-32px/04-clinic-cross-motif.png"
+    },
+    {
+      "index": 5,
+      "name": "05-clinic-diamond-motif",
+      "cell": [
+        4,
+        0
+      ],
+      "file": "tiles-32px/05-clinic-diamond-motif.png"
+    },
+    {
+      "index": 6,
+      "name": "06-gray-stone-a",
+      "cell": [
+        0,
+        1
+      ],
+      "file": "tiles-32px/06-gray-stone-a.png"
+    },
+    {
+      "index": 7,
+      "name": "07-gray-stone-b",
+      "cell": [
+        1,
+        1
+      ],
+      "file": "tiles-32px/07-gray-stone-b.png"
+    },
+    {
+      "index": 8,
+      "name": "08-gray-stone-c",
+      "cell": [
+        2,
+        1
+      ],
+      "file": "tiles-32px/08-gray-stone-c.png"
+    },
+    {
+      "index": 9,
+      "name": "09-gray-stone-d",
+      "cell": [
+        3,
+        1
+      ],
+      "file": "tiles-32px/09-gray-stone-d.png"
+    },
+    {
+      "index": 10,
+      "name": "10-gray-stone-e",
+      "cell": [
+        4,
+        1
+      ],
+      "file": "tiles-32px/10-gray-stone-e.png"
+    },
+    {
+      "index": 11,
+      "name": "11-black-cream-checker",
+      "cell": [
+        0,
+        2
+      ],
+      "file": "tiles-32px/11-black-cream-checker.png"
+    },
+    {
+      "index": 12,
+      "name": "12-sage-cream-checker",
+      "cell": [
+        1,
+        2
+      ],
+      "file": "tiles-32px/12-sage-cream-checker.png"
+    },
+    {
+      "index": 13,
+      "name": "13-victorian-encaustic",
+      "cell": [
+        2,
+        2
+      ],
+      "file": "tiles-32px/13-victorian-encaustic.png"
+    },
+    {
+      "index": 14,
+      "name": "14-terracotta-squares",
+      "cell": [
+        3,
+        2
+      ],
+      "file": "tiles-32px/14-terracotta-squares.png"
+    },
+    {
+      "index": 15,
+      "name": "15-dark-formal-stone",
+      "cell": [
+        4,
+        2
+      ],
+      "file": "tiles-32px/15-dark-formal-stone.png"
+    },
+    {
+      "index": 16,
+      "name": "16-lightly-scuffed",
+      "cell": [
+        0,
+        3
+      ],
+      "file": "tiles-32px/16-lightly-scuffed.png"
+    },
+    {
+      "index": 17,
+      "name": "17-muddy-footprints",
+      "cell": [
+        1,
+        3
+      ],
+      "file": "tiles-32px/17-muddy-footprints.png"
+    },
+    {
+      "index": 18,
+      "name": "18-cracked-tile",
+      "cell": [
+        2,
+        3
+      ],
+      "file": "tiles-32px/18-cracked-tile.png"
+    },
+    {
+      "index": 19,
+      "name": "19-replaced-patch",
+      "cell": [
+        3,
+        3
+      ],
+      "file": "tiles-32px/19-replaced-patch.png"
+    },
+    {
+      "index": 20,
+      "name": "20-damp-aged-tile",
+      "cell": [
+        4,
+        3
+      ],
+      "file": "tiles-32px/20-damp-aged-tile.png"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "tile_size": [
+    32,
+    32
+  ],
+  "frame_count": 8,
+  "frame_duration_ms": 120,
+  "loop": true,
+  "sprite_sheet": "water-animation-sheet-8x5-32px.png",
+  "sheet_layout": {
+    "columns": 8,
+    "rows": 5,
+    "columns_are_frames": true
+  },
+  "animations": [
+    {
+      "row": 0,
+      "name": "01-calm-day",
+      "frame_folder": "frames-32px/01-calm-day"
+    },
+    {
+      "row": 1,
+      "name": "02-flow-horizontal",
+      "frame_folder": "frames-32px/02-flow-horizontal"
+    },
+    {
+      "row": 2,
+      "name": "03-flow-vertical",
+      "frame_folder": "frames-32px/03-flow-vertical"
+    },
+    {
+      "row": 3,
+      "name": "04-circular-ripples",
+      "frame_folder": "frames-32px/04-circular-ripples"
+    },
+    {
+      "row": 4,
+      "name": "05-evening-water",
+      "frame_folder": "frames-32px/05-evening-water"
+    }
+  ]
+}

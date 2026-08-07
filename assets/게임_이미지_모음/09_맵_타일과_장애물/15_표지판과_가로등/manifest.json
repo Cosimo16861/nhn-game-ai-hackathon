@@ -1,0 +1,405 @@
+{
+  "base_grid": [
+    32,
+    32
+  ],
+  "transparent_background": true,
+  "glow_animation_ms": 140,
+  "render_order": [
+    "ground",
+    "object",
+    "characters-by-y-sort",
+    "lighting-overlay"
+  ],
+  "sign_text_rule": "Keep source signs blank; add localized text in the game UI or a separate text layer.",
+  "objects": [
+    {
+      "index": 1,
+      "name": "01-three-way-direction-sign",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/01-three-way-direction-sign.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 2,
+      "name": "02-single-arrow-sign",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/02-single-arrow-sign.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        38,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 3,
+      "name": "03-hanging-shop-sign",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/03-hanging-shop-sign.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        38,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 4,
+      "name": "04-public-noticeboard",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/04-public-noticeboard.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 5,
+      "name": "05-street-name-plaque",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/05-street-name-plaque.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        38,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 6,
+      "name": "06-stone-milestone",
+      "size": [
+        48,
+        64
+      ],
+      "file": "objects/06-stone-milestone.png",
+      "anchor": "bottom-center",
+      "collision": [
+        19,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 7,
+      "name": "07-rules-board",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/07-rules-board.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 8,
+      "name": "08-police-blue-lantern-sign",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/08-police-blue-lantern-sign.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 9,
+      "name": "09-inn-hanging-sign",
+      "size": [
+        64,
+        48
+      ],
+      "file": "objects/09-inn-hanging-sign.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        38,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 10,
+      "name": "10-temporary-warning-board",
+      "size": [
+        48,
+        48
+      ],
+      "file": "objects/10-temporary-warning-board.png",
+      "anchor": "bottom-center",
+      "collision": [
+        19,
+        38,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 11,
+      "name": "11-gas-lamp-unlit",
+      "size": [
+        32,
+        64
+      ],
+      "file": "objects/11-gas-lamp-unlit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 12,
+      "name": "12-gas-lamp-lit",
+      "size": [
+        32,
+        64
+      ],
+      "file": "objects/12-gas-lamp-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        54,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/12-gas-lamp-lit-glow-01.png",
+        "lighting-overlays/12-gas-lamp-lit-glow-02.png",
+        "lighting-overlays/12-gas-lamp-lit-glow-03.png"
+      ]
+    },
+    {
+      "index": 13,
+      "name": "13-double-gas-lamp-lit",
+      "size": [
+        64,
+        64
+      ],
+      "file": "objects/13-double-gas-lamp-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        27,
+        54,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/13-double-gas-lamp-lit-glow-01.png",
+        "lighting-overlays/13-double-gas-lamp-lit-glow-02.png",
+        "lighting-overlays/13-double-gas-lamp-lit-glow-03.png"
+      ]
+    },
+    {
+      "index": 14,
+      "name": "14-wall-gas-sconce-lit",
+      "size": [
+        48,
+        48
+      ],
+      "file": "objects/14-wall-gas-sconce-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        19,
+        38,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/14-wall-gas-sconce-lit-glow-01.png",
+        "lighting-overlays/14-wall-gas-sconce-lit-glow-02.png",
+        "lighting-overlays/14-wall-gas-sconce-lit-glow-03.png"
+      ]
+    },
+    {
+      "index": 15,
+      "name": "15-gatepost-lamp-lit",
+      "size": [
+        32,
+        48
+      ],
+      "file": "objects/15-gatepost-lamp-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        38,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/15-gatepost-lamp-lit-glow-01.png",
+        "lighting-overlays/15-gatepost-lamp-lit-glow-02.png",
+        "lighting-overlays/15-gatepost-lamp-lit-glow-03.png"
+      ]
+    },
+    {
+      "index": 16,
+      "name": "16-town-square-lamp-lit",
+      "size": [
+        32,
+        64
+      ],
+      "file": "objects/16-town-square-lamp-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        54,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/16-town-square-lamp-lit-glow-01.png",
+        "lighting-overlays/16-town-square-lamp-lit-glow-02.png",
+        "lighting-overlays/16-town-square-lamp-lit-glow-03.png"
+      ]
+    },
+    {
+      "index": 17,
+      "name": "17-bridge-lamp-lit",
+      "size": [
+        32,
+        48
+      ],
+      "file": "objects/17-bridge-lamp-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        38,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/17-bridge-lamp-lit-glow-01.png",
+        "lighting-overlays/17-bridge-lamp-lit-glow-02.png",
+        "lighting-overlays/17-bridge-lamp-lit-glow-03.png"
+      ]
+    },
+    {
+      "index": 18,
+      "name": "18-bent-lamp-damaged",
+      "size": [
+        32,
+        64
+      ],
+      "file": "objects/18-bent-lamp-damaged.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 19,
+      "name": "19-gas-lamp-extinguished",
+      "size": [
+        32,
+        64
+      ],
+      "file": "objects/19-gas-lamp-extinguished.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        54,
+        10,
+        8
+      ],
+      "lit": false,
+      "glow_frames": []
+    },
+    {
+      "index": 20,
+      "name": "20-portable-lantern-lit",
+      "size": [
+        32,
+        32
+      ],
+      "file": "objects/20-portable-lantern-lit.png",
+      "anchor": "bottom-center",
+      "collision": [
+        11,
+        22,
+        10,
+        8
+      ],
+      "lit": true,
+      "glow_frames": [
+        "lighting-overlays/20-portable-lantern-lit-glow-01.png",
+        "lighting-overlays/20-portable-lantern-lit-glow-02.png",
+        "lighting-overlays/20-portable-lantern-lit-glow-03.png"
+      ]
+    }
+  ]
+}

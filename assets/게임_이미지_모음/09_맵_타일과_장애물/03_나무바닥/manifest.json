@@ -1,0 +1,194 @@
+{
+  "tile_size": [
+    32,
+    32
+  ],
+  "atlas_grid": [
+    5,
+    4
+  ],
+  "atlas_file": "wood-floor-tileset-5x4-32px.png",
+  "transparent_background": false,
+  "tile_order": [
+    {
+      "index": 1,
+      "name": "01-horizontal-clean-a",
+      "cell": [
+        0,
+        0
+      ],
+      "file": "tiles-32px/01-horizontal-clean-a.png"
+    },
+    {
+      "index": 2,
+      "name": "02-horizontal-clean-b",
+      "cell": [
+        1,
+        0
+      ],
+      "file": "tiles-32px/02-horizontal-clean-b.png"
+    },
+    {
+      "index": 3,
+      "name": "03-horizontal-clean-c",
+      "cell": [
+        2,
+        0
+      ],
+      "file": "tiles-32px/03-horizontal-clean-c.png"
+    },
+    {
+      "index": 4,
+      "name": "04-horizontal-clean-d",
+      "cell": [
+        3,
+        0
+      ],
+      "file": "tiles-32px/04-horizontal-clean-d.png"
+    },
+    {
+      "index": 5,
+      "name": "05-horizontal-clean-e",
+      "cell": [
+        4,
+        0
+      ],
+      "file": "tiles-32px/05-horizontal-clean-e.png"
+    },
+    {
+      "index": 6,
+      "name": "06-vertical-clean-a",
+      "cell": [
+        0,
+        1
+      ],
+      "file": "tiles-32px/06-vertical-clean-a.png"
+    },
+    {
+      "index": 7,
+      "name": "07-vertical-clean-b",
+      "cell": [
+        1,
+        1
+      ],
+      "file": "tiles-32px/07-vertical-clean-b.png"
+    },
+    {
+      "index": 8,
+      "name": "08-vertical-clean-c",
+      "cell": [
+        2,
+        1
+      ],
+      "file": "tiles-32px/08-vertical-clean-c.png"
+    },
+    {
+      "index": 9,
+      "name": "09-vertical-clean-d",
+      "cell": [
+        3,
+        1
+      ],
+      "file": "tiles-32px/09-vertical-clean-d.png"
+    },
+    {
+      "index": 10,
+      "name": "10-vertical-clean-e",
+      "cell": [
+        4,
+        1
+      ],
+      "file": "tiles-32px/10-vertical-clean-e.png"
+    },
+    {
+      "index": 11,
+      "name": "11-herringbone",
+      "cell": [
+        0,
+        2
+      ],
+      "file": "tiles-32px/11-herringbone.png"
+    },
+    {
+      "index": 12,
+      "name": "12-square-parquet",
+      "cell": [
+        1,
+        2
+      ],
+      "file": "tiles-32px/12-square-parquet.png"
+    },
+    {
+      "index": 13,
+      "name": "13-wide-rustic-boards",
+      "cell": [
+        2,
+        2
+      ],
+      "file": "tiles-32px/13-wide-rustic-boards.png"
+    },
+    {
+      "index": 14,
+      "name": "14-narrow-refined-boards",
+      "cell": [
+        3,
+        2
+      ],
+      "file": "tiles-32px/14-narrow-refined-boards.png"
+    },
+    {
+      "index": 15,
+      "name": "15-dark-formal-boards",
+      "cell": [
+        4,
+        2
+      ],
+      "file": "tiles-32px/15-dark-formal-boards.png"
+    },
+    {
+      "index": 16,
+      "name": "16-light-scratches",
+      "cell": [
+        0,
+        3
+      ],
+      "file": "tiles-32px/16-light-scratches.png"
+    },
+    {
+      "index": 17,
+      "name": "17-water-stain",
+      "cell": [
+        1,
+        3
+      ],
+      "file": "tiles-32px/17-water-stain.png"
+    },
+    {
+      "index": 18,
+      "name": "18-cracked-board",
+      "cell": [
+        2,
+        3
+      ],
+      "file": "tiles-32px/18-cracked-board.png"
+    },
+    {
+      "index": 19,
+      "name": "19-repaired-boards",
+      "cell": [
+        3,
+        3
+      ],
+      "file": "tiles-32px/19-repaired-boards.png"
+    },
+    {
+      "index": 20,
+      "name": "20-heavily-worn",
+      "cell": [
+        4,
+        3
+      ],
+      "file": "tiles-32px/20-heavily-worn.png"
+    }
+  ]
+}

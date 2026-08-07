@@ -1,0 +1,408 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "anchor": "bottom-center",
+  "atlas_layout": {
+    "columns": 5,
+    "rows": 4,
+    "logical_cell": [
+      96,
+      96
+    ]
+  },
+  "groups": {
+    "home-bed": [
+      "01-home-bed-neat",
+      "02-home-bed-rumpled",
+      "03-home-bed-investigate",
+      "04-home-bed-hidden-compartment",
+      "05-home-bed-broken"
+    ],
+    "clinic-bed": [
+      "06-clinic-bed-neat",
+      "07-clinic-bed-rumpled",
+      "08-clinic-bed-investigate",
+      "09-clinic-bed-hidden-compartment",
+      "10-clinic-bed-broken"
+    ],
+    "oak-chair": [
+      "11-oak-chair-upright",
+      "12-oak-chair-pulled",
+      "13-oak-chair-turned",
+      "14-oak-chair-tipped",
+      "15-oak-chair-broken"
+    ],
+    "armchair": [
+      "16-armchair-normal",
+      "17-armchair-shifted",
+      "18-armchair-cushion-lifted",
+      "19-armchair-hidden-gap",
+      "20-armchair-damaged"
+    ]
+  },
+  "objects": [
+    {
+      "id": "01-home-bed-neat",
+      "file": "objects/01-home-bed-neat.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "home-bed",
+      "state": "neat",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "02-home-bed-rumpled",
+      "file": "objects/02-home-bed-rumpled.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "home-bed",
+      "state": "rumpled",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "03-home-bed-investigate",
+      "file": "objects/03-home-bed-investigate.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "home-bed",
+      "state": "investigate",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "04-home-bed-hidden-compartment",
+      "file": "objects/04-home-bed-hidden-compartment.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "home-bed",
+      "state": "hidden-compartment",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": true
+    },
+    {
+      "id": "05-home-bed-broken",
+      "file": "objects/05-home-bed-broken.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "home-bed",
+      "state": "broken",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "06-clinic-bed-neat",
+      "file": "objects/06-clinic-bed-neat.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "clinic-bed",
+      "state": "neat",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "07-clinic-bed-rumpled",
+      "file": "objects/07-clinic-bed-rumpled.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "clinic-bed",
+      "state": "rumpled",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "08-clinic-bed-investigate",
+      "file": "objects/08-clinic-bed-investigate.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "clinic-bed",
+      "state": "investigate",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "09-clinic-bed-hidden-compartment",
+      "file": "objects/09-clinic-bed-hidden-compartment.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "clinic-bed",
+      "state": "hidden-compartment",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": true
+    },
+    {
+      "id": "10-clinic-bed-broken",
+      "file": "objects/10-clinic-bed-broken.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "clinic-bed",
+      "state": "broken",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "11-oak-chair-upright",
+      "file": "objects/11-oak-chair-upright.png",
+      "size": [
+        48,
+        64
+      ],
+      "group": "oak-chair",
+      "state": "upright",
+      "collision": "solid",
+      "interaction_anchor": [
+        24,
+        60
+      ],
+      "sit_enabled": true,
+      "movable": true,
+      "search_reveal": false
+    },
+    {
+      "id": "12-oak-chair-pulled",
+      "file": "objects/12-oak-chair-pulled.png",
+      "size": [
+        48,
+        64
+      ],
+      "group": "oak-chair",
+      "state": "pulled",
+      "collision": "solid",
+      "interaction_anchor": [
+        24,
+        60
+      ],
+      "sit_enabled": true,
+      "movable": true,
+      "search_reveal": false
+    },
+    {
+      "id": "13-oak-chair-turned",
+      "file": "objects/13-oak-chair-turned.png",
+      "size": [
+        48,
+        64
+      ],
+      "group": "oak-chair",
+      "state": "turned",
+      "collision": "solid",
+      "interaction_anchor": [
+        24,
+        60
+      ],
+      "sit_enabled": true,
+      "movable": true,
+      "search_reveal": false
+    },
+    {
+      "id": "14-oak-chair-tipped",
+      "file": "objects/14-oak-chair-tipped.png",
+      "size": [
+        48,
+        64
+      ],
+      "group": "oak-chair",
+      "state": "tipped",
+      "collision": "solid",
+      "interaction_anchor": [
+        24,
+        60
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "15-oak-chair-broken",
+      "file": "objects/15-oak-chair-broken.png",
+      "size": [
+        48,
+        64
+      ],
+      "group": "oak-chair",
+      "state": "broken",
+      "collision": "solid",
+      "interaction_anchor": [
+        24,
+        60
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "16-armchair-normal",
+      "file": "objects/16-armchair-normal.png",
+      "size": [
+        64,
+        64
+      ],
+      "group": "armchair",
+      "state": "normal",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        60
+      ],
+      "sit_enabled": true,
+      "movable": true,
+      "search_reveal": false
+    },
+    {
+      "id": "17-armchair-shifted",
+      "file": "objects/17-armchair-shifted.png",
+      "size": [
+        64,
+        64
+      ],
+      "group": "armchair",
+      "state": "shifted",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        60
+      ],
+      "sit_enabled": true,
+      "movable": true,
+      "search_reveal": false
+    },
+    {
+      "id": "18-armchair-cushion-lifted",
+      "file": "objects/18-armchair-cushion-lifted.png",
+      "size": [
+        64,
+        64
+      ],
+      "group": "armchair",
+      "state": "cushion-lifted",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        60
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    },
+    {
+      "id": "19-armchair-hidden-gap",
+      "file": "objects/19-armchair-hidden-gap.png",
+      "size": [
+        64,
+        64
+      ],
+      "group": "armchair",
+      "state": "hidden-gap",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        60
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": true
+    },
+    {
+      "id": "20-armchair-damaged",
+      "file": "objects/20-armchair-damaged.png",
+      "size": [
+        64,
+        64
+      ],
+      "group": "armchair",
+      "state": "damaged",
+      "collision": "solid",
+      "interaction_anchor": [
+        32,
+        60
+      ],
+      "sit_enabled": false,
+      "movable": false,
+      "search_reveal": false
+    }
+  ]
+}

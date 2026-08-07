@@ -1,0 +1,472 @@
+{
+  "transparent_background": true,
+  "base_grid": [
+    32,
+    32
+  ],
+  "anchor": "bottom-center",
+  "switch_animation_ms": [
+    160,
+    140,
+    220
+  ],
+  "effects": {
+    "amber_indicator": [
+      "effects/amber-indicator-01.png",
+      "effects/amber-indicator-02.png",
+      "effects/amber-indicator-03.png"
+    ]
+  },
+  "groups": {
+    "brass-wall-lever": [
+      "01-brass-wall-lever-off",
+      "02-brass-wall-lever-transition",
+      "03-brass-wall-lever-on",
+      "04-brass-wall-lever-locked",
+      "05-brass-wall-lever-broken"
+    ],
+    "railway-floor-lever": [
+      "06-railway-floor-lever-off",
+      "07-railway-floor-lever-transition",
+      "08-railway-floor-lever-on",
+      "09-railway-floor-lever-hidden-token",
+      "10-railway-floor-lever-jammed"
+    ],
+    "porcelain-knife-switch": [
+      "11-porcelain-switch-off",
+      "12-porcelain-switch-transition",
+      "13-porcelain-switch-on",
+      "14-porcelain-switch-extra-wire",
+      "15-porcelain-switch-broken"
+    ],
+    "pipe-valve": [
+      "16-pipe-valve-closed",
+      "17-pipe-valve-quarter",
+      "18-pipe-valve-open",
+      "19-pipe-valve-hidden-key",
+      "20-pipe-valve-broken"
+    ]
+  },
+  "objects": [
+    {
+      "id": "01-brass-wall-lever-off",
+      "file": "objects/01-brass-wall-lever-off.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "brass-wall-lever",
+      "state": "off",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "02-brass-wall-lever-transition",
+      "file": "objects/02-brass-wall-lever-transition.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "brass-wall-lever",
+      "state": "transition",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "active": false,
+      "transition": true,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "03-brass-wall-lever-on",
+      "file": "objects/03-brass-wall-lever-on.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "brass-wall-lever",
+      "state": "on",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "active": true,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "04-brass-wall-lever-locked",
+      "file": "objects/04-brass-wall-lever-locked.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "brass-wall-lever",
+      "state": "locked",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": false,
+      "requires_unlock": true
+    },
+    {
+      "id": "05-brass-wall-lever-broken",
+      "file": "objects/05-brass-wall-lever-broken.png",
+      "size": [
+        64,
+        96
+      ],
+      "group": "brass-wall-lever",
+      "state": "broken",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        32,
+        92
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": false,
+      "requires_unlock": false
+    },
+    {
+      "id": "06-railway-floor-lever-off",
+      "file": "objects/06-railway-floor-lever-off.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "railway-floor-lever",
+      "state": "off",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "07-railway-floor-lever-transition",
+      "file": "objects/07-railway-floor-lever-transition.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "railway-floor-lever",
+      "state": "transition",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": true,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "08-railway-floor-lever-on",
+      "file": "objects/08-railway-floor-lever-on.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "railway-floor-lever",
+      "state": "on",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": true,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "09-railway-floor-lever-hidden-token",
+      "file": "objects/09-railway-floor-lever-hidden-token.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "railway-floor-lever",
+      "state": "hidden-token",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": true,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "10-railway-floor-lever-jammed",
+      "file": "objects/10-railway-floor-lever-jammed.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "railway-floor-lever",
+      "state": "jammed",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": false,
+      "requires_unlock": false
+    },
+    {
+      "id": "11-porcelain-switch-off",
+      "file": "objects/11-porcelain-switch-off.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "porcelain-knife-switch",
+      "state": "off",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "12-porcelain-switch-transition",
+      "file": "objects/12-porcelain-switch-transition.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "porcelain-knife-switch",
+      "state": "transition",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "active": false,
+      "transition": true,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "13-porcelain-switch-on",
+      "file": "objects/13-porcelain-switch-on.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "porcelain-knife-switch",
+      "state": "on",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "active": true,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "14-porcelain-switch-extra-wire",
+      "file": "objects/14-porcelain-switch-extra-wire.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "porcelain-knife-switch",
+      "state": "extra-wire",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": true,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "15-porcelain-switch-broken",
+      "file": "objects/15-porcelain-switch-broken.png",
+      "size": [
+        96,
+        64
+      ],
+      "group": "porcelain-knife-switch",
+      "state": "broken",
+      "mount": "wall",
+      "collision": "none",
+      "interaction_anchor": [
+        48,
+        60
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": false,
+      "requires_unlock": false
+    },
+    {
+      "id": "16-pipe-valve-closed",
+      "file": "objects/16-pipe-valve-closed.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "pipe-valve",
+      "state": "closed",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "17-pipe-valve-quarter",
+      "file": "objects/17-pipe-valve-quarter.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "pipe-valve",
+      "state": "quarter",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": true,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "18-pipe-valve-open",
+      "file": "objects/18-pipe-valve-open.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "pipe-valve",
+      "state": "open",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": true,
+      "transition": false,
+      "search_reveal": false,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "19-pipe-valve-hidden-key",
+      "file": "objects/19-pipe-valve-hidden-key.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "pipe-valve",
+      "state": "hidden-key",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": true,
+      "usable": true,
+      "requires_unlock": false
+    },
+    {
+      "id": "20-pipe-valve-broken",
+      "file": "objects/20-pipe-valve-broken.png",
+      "size": [
+        96,
+        80
+      ],
+      "group": "pipe-valve",
+      "state": "broken",
+      "mount": "floor",
+      "collision": "solid",
+      "interaction_anchor": [
+        48,
+        76
+      ],
+      "active": false,
+      "transition": false,
+      "search_reveal": false,
+      "usable": false,
+      "requires_unlock": false
+    }
+  ]
+}
