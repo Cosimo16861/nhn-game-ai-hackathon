@@ -51,7 +51,17 @@
       // 칠했고(70%+) 대체로 맞는 색(70%+)이어야 반영된 것으로 본다.
       const satisfied = coverage >= 0.7 && accuracy >= 0.7;
 
-      return { id: feature.id, label: feature.label, satisfied, coverage, accuracy };
+      return {
+        id: feature.id,
+        label: feature.label,
+        satisfied,
+        coverage,
+        accuracy,
+        // 지적할 때도 증언자의 말로 되짚어 준다(설계 용어를 쓰지 않는다).
+        missNote: feature.missNote,
+        speaker: feature.speaker,
+        quote: feature.quote,
+      };
     });
   }
 
@@ -110,14 +120,22 @@
     const notes = [];
     let headline;
 
+    /** 놓친 특징을 증언자의 말로 되짚는다. */
+    function missLine(feature) {
+      if (feature.missNote) {
+        return feature.speaker
+          ? `${feature.speaker}는 ${feature.missNote}`
+          : feature.missNote;
+      }
+      return `${withParticle(feature.label, ["이", "가"])} 아직 증언대로 보이지 않는다.`;
+    }
+
     if (tier === TIER.PASS) {
       headline = "증거로 사용할 수 있을 만큼 복원됐다.";
     } else if (tier === TIER.NEAR) {
       headline = "거의 완성됐다.";
       if (!meetsFeatures) {
-        notes.push(
-          `${withParticle(missing[0].label, ["이", "가"])} 아직 증언대로 보이지 않는다.`,
-        );
+        notes.push(missLine(missing[0]));
       } else {
         notes.push(weakestCategory(scores).message);
       }
@@ -134,7 +152,11 @@
       headline = "증언 카드를 다시 살펴보자.";
       if (blanks > 0) notes.push("아직 비어 있는 자리가 많다.");
       missing.slice(0, 2).forEach((feature) => {
-        notes.push(`증언에는 ${feature.label}에 관한 이야기가 있었다.`);
+        notes.push(
+          feature.quote
+            ? `${feature.speaker ? feature.speaker + "의 말" : "증언"}이 남아 있다. "${feature.quote}"`
+            : `증언에는 ${feature.label}에 관한 이야기가 있었다.`,
+        );
       });
       if (notes.length === 0) notes.push(weakestCategory(scores).message);
     }

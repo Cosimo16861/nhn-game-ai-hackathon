@@ -52,40 +52,54 @@
       redoStack = [];
     }
 
+    // 256²(65,536칸)에서는 칸마다 fillRect 를 부르면 느리다.
+    // 논리 해상도 그대로의 ImageData 에 직접 쓰고 한 번에 올린다.
+    let frame = null;
+    const EMPTY = [58, 50, 43]; // 아직 칠하지 않은 자리 — 작업대 바탕
+
+    function rgbOf(hex) {
+      const v = hex.replace("#", "");
+      return [
+        parseInt(v.slice(0, 2), 16),
+        parseInt(v.slice(2, 4), 16),
+        parseInt(v.slice(4, 6), 16),
+      ];
+    }
+
     function draw() {
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      if (!frame || frame.width !== size) {
+        canvas.width = size;
+        canvas.height = size;
+        frame = context.createImageData(size, size);
+      }
+      const data = frame.data;
 
-      for (let index = 0; index < pixels.length; index++) {
-        const x = (index % size) * cellSize;
-        const y = Math.floor(index / size) * cellSize;
-
-        if (!quest.paintable[index]) continue;
-
-        const color = pixels[index];
-        if (color) {
-          context.fillStyle = color;
-          context.fillRect(x, y, cellSize, cellSize);
-        } else {
-          // 채워야 하는 빈 칸 — 옅은 작업대 바탕
-          context.fillStyle = "#3A322B";
-          context.fillRect(x, y, cellSize, cellSize);
+      for (let i = 0; i < pixels.length; i++) {
+        const offset = i * 4;
+        if (!quest.paintable[i] && !quest.lockedPixels[i]) {
+          data[offset + 3] = 0; // 배경은 투명
+          continue;
         }
+        const color = pixels[i];
+        const [r, g, b] = color ? rgbOf(color) : EMPTY;
+        data[offset] = r;
+        data[offset + 1] = g;
+        data[offset + 2] = b;
+        data[offset + 3] = 255;
       }
 
-      // 픽셀 격자
-      context.strokeStyle = "rgba(0,0,0,0.18)";
-      context.lineWidth = 1;
-      for (let i = 0; i <= size; i++) {
-        const p = i * cellSize;
-        context.beginPath();
-        context.moveTo(p, 0);
-        context.lineTo(p, canvas.height);
-        context.stroke();
-        context.beginPath();
-        context.moveTo(0, p);
-        context.lineTo(canvas.width, p);
-        context.stroke();
-      }
+      context.putImageData(frame, 0, 0);
+      updateGrid();
+    }
+
+    /** 칸이 충분히 클 때만 격자를 보여 준다. 256²에서는 잡음이 될 뿐이다. */
+    function updateGrid() {
+      const grid = root.querySelector("[data-role=grid]");
+      if (!grid) return;
+      const displayed = canvas.getBoundingClientRect().width || 384;
+      const cell = displayed / size;
+      grid.hidden = cell < 6;
+      grid.style.setProperty("--cell", `${cell}px`);
     }
 
     function cellFromEvent(event) {
@@ -96,12 +110,60 @@
       return y * size + x;
     }
 
+    /**
+     * 채울 영역의 셀 목록.
+     * artwork.js 로 준비한 아트는 영역이 미리 계산돼 있고,
+     * 그렇지 않은 아트(문자맵 기반)는 현재 색이 같은 칸들을 즉석에서 묶는다.
+     */
+    function regionCells(index) {
+      if (quest.regionOf && quest.regions) {
+        const id = quest.regionOf[index];
+        return id >= 0 ? quest.regions[id] : [];
+      }
+
+      const seed = pixels[index] || null;
+      const cells = [];
+      const seen = new Set([index]);
+      const stack = [index];
+
+      while (stack.length > 0) {
+        const at = stack.pop();
+        cells.push(at);
+        const x = at % size;
+        const y = (at / size) | 0;
+        const push = (n) => {
+          if (seen.has(n) || !quest.hiddenMask[n]) return;
+          if ((pixels[n] || null) !== seed) return;
+          seen.add(n);
+          stack.push(n);
+        };
+        if (x > 0) push(at - 1);
+        if (x < size - 1) push(at + 1);
+        if (y > 0) push(at - size);
+        if (y < size - 1) push(at + size);
+      }
+      return cells;
+    }
+
     function applyTool(index) {
       if (index < 0) return;
       // 선화와 배경은 수정할 수 없다.
       if (!quest.hiddenMask[index]) return;
 
-      if (activeTool === "pencil") {
+      if (activeTool === "fill") {
+        // 선화로 둘러싸인 영역 하나를 통째로 칠한다.
+        // 256²를 한 픽셀씩 칠하는 것은 불가능하므로 이것이 기본 도구다.
+        const cells = regionCells(index);
+        if (cells.length === 0) return;
+        let changed = false;
+        for (let i = 0; i < cells.length; i++) {
+          if (pixels[cells[i]] !== activeColor) {
+            pixels[cells[i]] = activeColor;
+            changed = true;
+          }
+        }
+        if (!changed) return;
+      } else if (activeTool === "pencil") {
         if (pixels[index] === activeColor) return;
         pixels[index] = activeColor;
       } else if (activeTool === "eraser") {
@@ -127,7 +189,11 @@
         if (entry.hex === activeColor) button.classList.add("is-active");
         button.addEventListener("click", () => {
           activeColor = entry.hex;
-          activeTool = "pencil";
+          // 색을 고른다고 도구가 바뀌면 안 된다. 채우기로 작업하던 흐름이 끊긴다.
+          // 다만 지우개·스포이드 상태였다면 칠하려는 의도로 보고 그리기 도구로 돌린다.
+          if (activeTool === "eraser" || activeTool === "picker") {
+            activeTool = "fill";
+          }
           renderPalette();
           renderTools();
         });
@@ -137,6 +203,7 @@
 
     function renderTools() {
       const tools = [
+        { id: "fill", label: "채우기" },
         { id: "pencil", label: "연필" },
         { id: "eraser", label: "지우개" },
         { id: "picker", label: "스포이드" },
@@ -168,9 +235,28 @@
         return;
       }
 
+      // 목표는 명세 항목이 아니라 '기억나는 말'이다.
+      // "얼굴·턱 윤곽선" 같은 설계 용어는 몰입을 깬다. 증언자의 목소리를 그대로 남긴다.
       features.forEach((feature) => {
         const li = document.createElement("li");
-        li.textContent = feature.label;
+
+        if (feature.quote) {
+          const quote = document.createElement("q");
+          quote.className = "goal-quote";
+          quote.textContent = feature.quote;
+          li.appendChild(quote);
+
+          if (feature.speaker) {
+            const who = document.createElement("cite");
+            who.className = "goal-speaker";
+            who.textContent = `— ${feature.speaker}`;
+            li.appendChild(who);
+          }
+        } else {
+          // 아직 목격담이 붙지 않은 특징은 기존 라벨로 보여 준다.
+          li.textContent = feature.label;
+        }
+
         goalsEl.appendChild(li);
       });
     }
@@ -295,8 +381,46 @@
       draw();
     }
 
-    function setQuest(nextQuest, nextOptions = {}) {
-      quest = nextQuest;
+    // 아트 파이프라인으로 준비한 결과는 퀘스트당 한 번만 계산한다(256²는 80ms 안팎).
+    const preparedCache = new Map();
+
+    /**
+     * `source`(PNG 경로 또는 그리기 함수)를 가진 퀘스트는 artwork.js 로 준비해
+     * 정답·선화·채우기 영역을 채워 넣는다. 문자맵 기반 퀘스트는 그대로 쓴다.
+     */
+    async function resolveQuest(rawQuest) {
+      if (!rawQuest.source) return rawQuest;
+      if (preparedCache.has(rawQuest.id)) return preparedCache.get(rawQuest.id);
+
+      // 외곽선 색은 플레이어가 고르는 색이 아니지만 양자화 대상에는 반드시 포함해야
+      // 한다. 빠뜨리면 어두운 선이 다른 색으로 흡수되어 선화가 만들어지지 않는다.
+      const quantizePalette = rawQuest.palette.map((entry) => entry.hex);
+      if (!quantizePalette.some((hex) => hex.toUpperCase() === rawQuest.outline.toUpperCase())) {
+        quantizePalette.push(rawQuest.outline);
+      }
+
+      const art = await window.Artwork.prepare(rawQuest.source, {
+        size: rawQuest.gridSize,
+        palette: quantizePalette,
+        outline: rawQuest.outline,
+        minRegion: rawQuest.minRegion,
+      });
+
+      // 필수 특징의 대상 픽셀은 '그 색으로 칠해야 하는 곳'으로 자동 도출한다.
+      const requiredFeatures = rawQuest.requiredFeatures.map((feature) =>
+        Object.freeze({
+          ...feature,
+          indices: feature.indices || window.Artwork.indicesOfColor(art, feature.color),
+        }),
+      );
+
+      const resolved = Object.freeze({ ...rawQuest, ...art, requiredFeatures });
+      preparedCache.set(rawQuest.id, resolved);
+      return resolved;
+    }
+
+    async function setQuest(nextQuest, nextOptions = {}) {
+      quest = await resolveQuest(nextQuest);
       onCleared = nextOptions.onCleared || onCleared;
       size = quest.gridSize;
       cellSize = canvas.width / size;
@@ -304,7 +428,8 @@
       undoStack = [];
       redoStack = [];
       activeColor = quest.palette[0].hex;
-      activeTool = "pencil";
+      // 256²에서는 채우기가 기본 도구다.
+      activeTool = size > 64 ? "fill" : "pencil";
       painting = false;
       resultEl.hidden = true;
       refresh();
