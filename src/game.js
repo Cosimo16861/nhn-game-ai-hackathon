@@ -468,7 +468,8 @@
       priority: 0,
       objective: mainObjective,
       title: "탐정 사무소",
-      message: "지금 작업대에서 진행할 복원 의뢰가 없다.",
+      message: "작업대 위에는 마른 붓과 빈 캔버스뿐이다. 지금 복원할 증언이 없다.",
+      hint: mainObjective,
     }),
     Object.freeze({
       id: "police-ready",
@@ -478,7 +479,9 @@
       priority: 0,
       objective: mainObjective,
       title: "경찰서",
-      message: "경찰서 장면은 다음 구현 단계에서 연결된다.",
+      message:
+        "리드 경위는 서류 더미에 파묻혀 있다. 아직 그에게 보일 것이 없다.",
+      hint: mainObjective,
     }),
     Object.freeze({
       id: "mansion-ready",
@@ -488,7 +491,9 @@
       priority: 0,
       objective: mainObjective,
       title: "아셔튼 저택",
-      message: "저택 장면은 다음 구현 단계에서 연결된다.",
+      message:
+        "응접실은 조용하다. 지금 이 집에서 더 물을 것은 남아 있지 않다.",
+      hint: mainObjective,
     }),
     Object.freeze({
       id: "school-ready",
@@ -498,7 +503,9 @@
       priority: 0,
       objective: mainObjective,
       title: "학교",
-      message: "학교 장면은 다음 구현 단계에서 연결된다.",
+      message:
+        "홀트는 아이들 앞에 서 있다. 지금은 말을 붙일 상황이 아니다.",
+      hint: mainObjective,
     }),
     Object.freeze({
       id: "dock-ready",
@@ -508,7 +515,9 @@
       priority: 0,
       objective: mainObjective,
       title: "부두·창고",
-      message: "부두와 창고는 3막에 들어가면 조사할 수 있다.",
+      message:
+        "짠내와 안개뿐이다. 여기서 물어볼 사람은 아직 나타나지 않았다.",
+      hint: mainObjective,
     }),
   ]);
 
@@ -706,7 +715,13 @@
     views.placeholder.querySelector("[data-role=placeholder-title]").textContent =
       scene.title;
     views.placeholder.querySelector("[data-role=placeholder-message]").textContent =
-      scene.message;
+      typeof scene.message === "function" ? scene.message() : scene.message;
+
+    // 왜 지금 할 일이 없는지 알려 준 뒤, 어디로 가야 하는지 짚어 준다.
+    const hint = views.placeholder.querySelector("[data-role=placeholder-hint]");
+    const guide = typeof scene.hint === "function" ? scene.hint() : scene.hint;
+    hint.textContent = guide ? `다음에 할 일 — ${guide}` : "";
+    hint.hidden = !guide;
   }
 
   function goToScene(sceneId) {

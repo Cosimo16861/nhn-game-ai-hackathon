@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>증거판 — 퀘스트 가지 화면 확인용</title>
+    <style>
+      :root {
+        --ink: #2e241e;
+        --panel-deep: #2a221c;
+        --cream: #d9cdb5;
+        --gold: #d8a94b;
+        --muted: #9a8b74;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #1d1814;
+        color: var(--cream);
+        font-family: "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        padding: 20px 16px 48px;
+      }
+      .frame { width: 100%; max-width: 960px; margin: 0 auto; }
+      h1 {
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+        margin: 0 0 12px;
+      }
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        background: var(--panel-deep);
+        border: 2px solid var(--ink);
+        border-radius: 4px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+      }
+      .bar .label { color: var(--gold); font-weight: 700; font-size: 13px; }
+      .bar .step { color: var(--muted); font-size: 13px; }
+      button {
+        font: inherit;
+        font-size: 13px;
+        color: var(--cream);
+        background: #43372c;
+        border: 2px solid var(--ink);
+        border-radius: 3px;
+        padding: 5px 12px;
+        cursor: pointer;
+      }
+      button:hover { background: #554637; }
+      button:disabled { opacity: 0.45; cursor: default; }
+      label.chk { font-size: 13px; color: var(--muted); cursor: pointer; }
+      .log { margin-top: 14px; font-size: 13px; color: var(--muted); min-height: 1.7em; }
+    </style>
+  </head>
+
+  <body>
+    <div class="frame">
+      <h1>증거판 · 순차 공개 확인용 화면</h1>
+
+      <div class="bar">
+        <span class="label">진행</span>
+        <span class="step" data-role="step">—</span>
+        <button type="button" data-action="prev">◀ 되돌리기</button>
+        <button type="button" data-action="next">다음 단계 ▶</button>
+        <button type="button" data-action="reset">처음으로</button>
+        <label class="chk">
+          <input type="checkbox" data-action="branches" /> 가지도 함께 플레이
+        </label>
+      </div>
+
+      <div data-role="board"></div>
+      <p class="log" data-role="log">종이를 누르면 그 퀘스트로 들어간다.</p>
+    </div>
+
+    <script src="src/data/quest-graph.js"></script>
+    <script src="src/branchmap.js"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        // 본선을 한 단계씩 밟는다. 가지는 체크박스로 함께 켠다.
+        const MAIN = [
+          "Q0_MONTAGE",
+          "Q1A_IDEALIZED",
+          "Q2A_TRUE_FACE",
+          "Q3A_SEAL",
+          "Q4A_LEDGER",
+          "Q5A_DOCK",
+          "Q6_FINALE",
+        ];
+        // 본선 몇 단계까지 갔을 때 따라올 수 있는 가지인가.
+        const BRANCH_AFTER = {
+          1: ["Q1B_TAVERN_WALL"],
+          2: ["Q2B_CAT", "Q2C_CHILD_ROOM"],
+          3: ["Q3B_TATTOO", "Q3C_WAREHOUSE"],
+          4: ["Q4B_LOGBOOK", "Q4C_SQUARE_BET"],
+          5: ["Q5B_SIREN"],
+        };
+
+        let step = 0; // 0 = 인트로만 봤다
+        let withBranches = false;
+
+        const flags = Object.create(null);
+        const State = { has: (name) => Boolean(flags[name]) };
+
+        function rebuild() {
+          Object.keys(flags).forEach((k) => delete flags[k]);
+          flags.CUTSCENE_SEEN_C0_INTRO = true;
+
+          const clear = (id) => {
+            const node = window.QuestGraph.get(id);
+            flags["NODE_CLEARED_" + id] = true;
+            flags["CUTSCENE_SEEN_" + node.cutscene] = true;
+          };
+
+          for (let i = 0; i < step; i += 1) {
+            clear(MAIN[i]);
+            if (withBranches) (BRANCH_AFTER[i] || []).forEach(clear);
+          }
+
+          document.querySelector("[data-role=step]").textContent =
+            step === 0
+              ? "인트로만 봤다 — L0만 보여야 한다"
+              : "본선 " + step + "단계 (" + window.QuestGraph.get(MAIN[step - 1]).title + " 까지)";
+          document.querySelector("[data-action=prev]").disabled = step === 0;
+          document.querySelector("[data-action=next]").disabled = step >= MAIN.length;
+
+          window.BranchMap.render(State);
+        }
+
+        window.BranchMap.mount(document.querySelector("[data-role=board]"), {
+          onSelect(id) {
+            document.querySelector("[data-role=log]").textContent =
+              "→ " + window.QuestGraph.get(id).title + " 작업대로 (" + id + ")";
+          },
+        });
+
+        document.querySelector("[data-action=next]").addEventListener("click", () => {
+          if (step < MAIN.length) step += 1;
+          rebuild();
+        });
+        document.querySelector("[data-action=prev]").addEventListener("click", () => {
+          if (step > 0) step -= 1;
+          rebuild();
+        });
+        document.querySelector("[data-action=reset]").addEventListener("click", () => {
+          step = 0;
+          rebuild();
+        });
+        document.querySelector("[data-action=branches]").addEventListener("change", (e) => {
+          withBranches = e.target.checked;
+          rebuild();
+        });
+
+        window.QuestGraph.validate();
+        rebuild();
+      })();
+    </script>
+  </body>
+</html>
