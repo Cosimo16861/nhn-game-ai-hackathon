@@ -49,6 +49,8 @@
   const state = {
     title: config.title,
     quotes: config.quotes || [],
+    visibleHintCount: Number(config.visibleHintCount ?? 2),
+    showBackButton: config.showBackButton !== false,
     palette,
     activeColor: config.activeColor || palette[0].hex,
     activeTool: config.activeTool || "brush",

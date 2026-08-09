@@ -40,10 +40,17 @@
         text: "회색 중절모를 깊게 눌러써 눈이 챙 아래 가려졌어요.",
       }),
       Object.freeze({
-        speaker: "경관 리드",
+        speaker: "마르타",
         text: "초록 목도리와 짙은 자주색 코트가 가장 눈에 띄었습니다.",
       }),
+      Object.freeze({
+        speaker: "리드 경위",
+        text: "마르타의 증언대로 코트와 안에 입은 옷은 같은 짙은 자주색이네.",
+      }),
     ]),
+
+    visibleHintCount: 3,
+    showBackButton: false,
 
     regions: Object.freeze([
       Object.freeze({

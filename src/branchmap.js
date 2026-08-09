@@ -350,7 +350,7 @@
     visible.forEach(function (status, id) {
       if (status !== G.CLEARED) openIds.push(id);
     });
-    if (!focusedId || !openIds.includes(focusedId)) focusedId = openIds[0] || null;
+    if (focusedId && !openIds.includes(focusedId)) focusedId = null;
 
     window.Office.drawRoom(ctx, { fog: fogLevel(state), clock: lastOpts.clock });
     drawBoard();
@@ -359,9 +359,8 @@
     G.edges().forEach(function (edge) {
       if (!visible.has(edge.from) || !visible.has(edge.to)) return;
       if (visible.get(edge.from) !== G.CLEARED) return;
-      const target = edge.to === focusedId;
-      const color = target ? P.open : edge.thread === "red" ? P.threadRedLit : P.threadBranch;
-      const width = target ? 3 : edge.thread === "red" ? 3 : 2;
+      const color = P.threadRedLit;
+      const width = 3;
       drawThread(pinPoint(G.get(edge.from)), pinPoint(G.get(edge.to)), P.inkSoft, width + 2);
       drawThread(pinPoint(G.get(edge.from)), pinPoint(G.get(edge.to)), color, width);
     });

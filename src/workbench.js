@@ -22,6 +22,8 @@
       { speaker: "기록", text: "증언에서 확인한 특징을 캔버스에 복원한다." },
       { speaker: "관찰", text: "색과 도구를 골라 남은 형상을 천천히 채운다." },
     ],
+    visibleHintCount: 2,
+    showBackButton: true,
     palette: [
       { name: "먹색", hex: "#302A26" },
       { name: "종이색", hex: "#D9CDB5" },
@@ -135,15 +137,18 @@
 
   function drawEvidenceNotes(ctx, view) {
     // 큰 사건 서류 없이 목격자별 메모지만 책상 위에 직접 붙인다.
-    const quotes = (view.quotes || []).slice(0, 2);
+    const quotes = (view.quotes || []).slice(0, view.visibleHintCount || 2);
     quotes.forEach((quote, index) => drawMemoSlip(ctx, quote, index));
   }
 
   function drawMemoSlip(ctx, quote, index) {
+    const layouts = [
+      { cx: 84, cy: 91, width: 120, height: 66, angle: -3 * Math.PI / 180 },
+      { cx: 84, cy: 163, width: 118, height: 66, angle: 4 * Math.PI / 180 },
+      { cx: 84, cy: 235, width: 120, height: 66, angle: -2 * Math.PI / 180 },
+    ];
     const first = index === 0;
-    const memo = first
-      ? { cx: 84, cy: 111, width: 120, height: 76, angle: -3 * Math.PI / 180 }
-      : { cx: 84, cy: 205, width: 118, height: 76, angle: 4 * Math.PI / 180 };
+    const memo = layouts[index] || layouts[layouts.length - 1];
     const points = rotatedRectPoints(
       memo.cx, memo.cy, memo.width, memo.height, memo.angle
     );
@@ -479,10 +484,12 @@
       addHit("redo", 227, 345, 46, 21, "다시 실행", { type: "redo" }, !current.canRedo);
       addHit("reset", 276, 345, 43, 21, "새 종이로 초기화", { type: "reset" }, false);
       addHit("submit", 483, 332, 141, 45, "복원 기록 제출", { type: "submit" }, !!current.isSubmitting);
-      addHit(
-        "back-to-board", 32, 332, 56, 34,
-        "증거판으로 돌아가기", { type: "back-to-board" }, false
-      );
+      if (current.showBackButton) {
+        addHit(
+          "back-to-board", 32, 332, 56, 34,
+          "증거판으로 돌아가기", { type: "back-to-board" }, false
+        );
+      }
     }
 
     function draw() {
@@ -496,7 +503,7 @@
       drawPalette(ctx, current, focusKey);
       drawTools(ctx, current, focusKey);
       drawActions(ctx, current, focusKey);
-      drawBoardReturn(ctx, focusKey);
+      if (current.showBackButton) drawBoardReturn(ctx, focusKey);
       if (focusKey.startsWith("color-")) {
         const colorIndex = Number(focusKey.slice(6));
         const positions = [[517,111],[548,99],[581,110],[600,139],[599,178],[548,201],[512,182],[501,145]];

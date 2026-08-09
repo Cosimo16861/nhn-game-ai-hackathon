@@ -353,6 +353,7 @@
       ".pxscreen .px-hit{position:absolute;margin:0;padding:0;border:0;",
       "background:none;cursor:pointer;border-radius:0;outline:none;",
       "-webkit-appearance:none;appearance:none;}",
+      ".pxscreen .px-hit:hover:not(:disabled){background:none;}",
       ".pxscreen .px-hit[disabled]{cursor:default;}",
       ".pxscreen .px-sr{position:absolute;width:1px;height:1px;overflow:hidden;",
       "clip:rect(0 0 0 0);white-space:nowrap;}",
