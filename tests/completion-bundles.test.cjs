@@ -78,12 +78,21 @@ for (const bundle of bundles.list()) {
   }
 }
 
-// 오프닝 두 장면은 src/cutscene-c0-*.js 가, 나머지는 회수한 검토본이 원본이다.
-const producedSources = fs
-  .readdirSync(path.join(root, "dev/cutscenes"))
-  .filter((name) => name.endsWith(".js"))
-  .map((name) => fs.readFileSync(path.join(root, "dev/cutscenes", name), "utf8"))
-  .join("\n");
+// 장면 데이터의 원본은 두 곳 중 하나다.
+//   src/cutscenes/data  제품으로 이전이 끝난 묶음(정본)
+//   dev/cutscenes       아직 이전하지 않은 회수 제작본
+function readAll(directory) {
+  return fs
+    .readdirSync(path.join(root, directory))
+    .filter((name) => name.endsWith(".js"))
+    .map((name) => fs.readFileSync(path.join(root, directory, name), "utf8"))
+    .join("\n");
+}
+
+const producedSources = [
+  readAll("dev/cutscenes"),
+  readAll("src/cutscenes/data"),
+].join("\n");
 
 for (const bundle of completion) {
   for (const sceneId of bundle.sceneIds) {

@@ -78,6 +78,8 @@
   let ctx = null;
   let onSelect = null;
   let lastState = null;
+  // 열린 노드 구성이 바뀌었을 때만 핫스팟을 다시 만든다. render 는 1초마다 불린다.
+  let hotspotSignature = null;
   let lastOpts = {};
   let focusedId = null;
   const thumbnails = new Map();
@@ -374,41 +376,52 @@
     if (focusedId && visible.has(focusedId)) drawFocus(G.get(focusedId));
 
     // 클릭 대상. 보이는 것은 캔버스, 누르는 것은 그 위의 투명한 버튼이다.
-    screen.clearHotspots();
-    visible.forEach(function (status, id) {
-      const node = G.get(id);
-      const r = cardRect(node);
-      const done = status === G.CLEARED;
-      const el = screen.hotspot(r.x - 2, r.y - 8, r.w + 4, r.h + 10, {
-        label: done
-          ? node.title + " — 복원을 마쳤다"
-          : node.title + " — 아직 그리지 않았다. 선택하면 작업대로 간다",
-        disabled: done,
-        onClick: done
-          ? null
-          : function () {
-              if (onSelect) onSelect(id);
-            },
+    //
+    // 시계 때문에 판은 1초마다 다시 그려진다. 그때마다 버튼을 새로 만들면
+    // 누르는 도중(mousedown 과 mouseup 사이)에 대상이 사라져 click 이 아예
+    // 발생하지 않는다. 실제로 선택이 씹히는 것을 확인했다.
+    // 그래서 열린 노드 구성이 바뀔 때만 버튼을 다시 만든다.
+    const signature = Array.from(visible.entries())
+      .map(function (entry) { return entry[0] + ":" + entry[1]; })
+      .join("|");
+    if (signature !== hotspotSignature) {
+      hotspotSignature = signature;
+      screen.clearHotspots();
+      visible.forEach(function (status, id) {
+        const node = G.get(id);
+        const r = cardRect(node);
+        const done = status === G.CLEARED;
+        const el = screen.hotspot(r.x - 2, r.y - 8, r.w + 4, r.h + 10, {
+          label: done
+            ? node.title + " — 복원을 마쳤다"
+            : node.title + " — 아직 그리지 않았다. 선택하면 작업대로 간다",
+          disabled: done,
+          onClick: done
+            ? null
+            : function () {
+                if (onSelect) onSelect(id);
+              },
+        });
+        if (done) return;
+        el.addEventListener("focus", function () {
+          focusedId = id;
+          render(lastState, lastOpts);
+        });
+        el.addEventListener("blur", function () {
+          if (focusedId === id) focusedId = null;
+          render(lastState, lastOpts);
+        });
+        el.addEventListener("mouseenter", function () {
+          if (focusedId === id) return;
+          focusedId = id;
+          render(lastState, lastOpts);
+        });
+        el.addEventListener("mouseleave", function () {
+          if (focusedId === id) focusedId = null;
+          render(lastState, lastOpts);
+        });
       });
-      if (done) return;
-      el.addEventListener("focus", function () {
-        focusedId = id;
-        render(lastState, lastOpts);
-      });
-      el.addEventListener("blur", function () {
-        if (focusedId === id) focusedId = null;
-        render(lastState, lastOpts);
-      });
-      el.addEventListener("mouseenter", function () {
-        if (focusedId === id) return;
-        focusedId = id;
-        render(lastState, lastOpts);
-      });
-      el.addEventListener("mouseleave", function () {
-        if (focusedId === id) focusedId = null;
-        render(lastState, lastOpts);
-      });
-    });
+    }
 
     screen.say(
       "증거판에 " + visible.size + "장이 걸려 있고, 그중 " + openIds.length +
@@ -428,10 +441,39 @@
     return screen.root;
   }
 
+  /**
+   * 화면을 떠날 때 PixelScreen 이 붙인 resize 리스너까지 풀어 준다.
+   * 단일 셸에서 판을 여러 번 여닫아도 리스너가 쌓이면 안 된다.
+   */
+  function unmount() {
+    if (screen) {
+      window.removeEventListener("resize", screen.fit);
+      screen.root.remove();
+    }
+    screen = null;
+    ctx = null;
+    onSelect = null;
+    lastState = null;
+    hotspotSignature = null;
+  }
+
+  /** 선택 콜백만 갈아 끼운다. 판을 다시 마운트하지 않고 재사용할 때 쓴다. */
+  function setSelectHandler(handler) {
+    onSelect = handler || null;
+  }
+
   function setThumbnail(nodeId, source) {
     thumbnails.set(nodeId, source);
     if (lastState) render(lastState, lastOpts);
   }
 
-  window.BranchMap = Object.freeze({ mount, render, setThumbnail, BOARD });
+  window.BranchMap = Object.freeze({
+    mount,
+    unmount,
+    setSelectHandler,
+    render,
+    setThumbnail,
+    BOARD,
+    isMounted: () => Boolean(screen),
+  });
 })();

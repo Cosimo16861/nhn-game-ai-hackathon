@@ -8,12 +8,16 @@
     <title>안개항의 상속자</title>
     <link rel="stylesheet" href="src/intro.css" />
     <link rel="stylesheet" href="src/index-workbench.css" />
+    <link rel="stylesheet" href="src/game-shell.css" />
   </head>
   <body>
-    <main class="game-shell" aria-label="안개항의 상속자 게임 시작 화면">
-      <section class="game-frame" data-role="game-frame">
+    <!--
+      제품 진입점은 이 파일 하나다. 화면은 다섯 종류뿐이며 전환은 GameDirector 만 한다.
+      화면별 최상위 class 는 기존 CSS 를 그대로 쓰기 위해 유지한다.
+    -->
+    <main class="game-shell" data-screen="title" aria-label="안개항의 상속자 시작 화면">
+      <section class="game-frame">
         <canvas class="art-layer" data-role="art" width="640" height="384" aria-hidden="true"></canvas>
-        <canvas class="text-layer" data-role="text" width="1920" height="1152" aria-hidden="true"></canvas>
 
         <div class="title-ui" data-view="title">
           <p class="eyebrow">A STORY OF MEMORY &amp; INK</p>
@@ -32,60 +36,90 @@
           </nav>
           <p class="press-key">ENTER / SPACE</p>
         </div>
-
-        <div class="intro-ui" data-view="intro" hidden>
-          <p class="cutscene-live" data-role="intro-live" aria-live="polite"></p>
-          <div class="cutscene-meta intro-cutscene-meta">
-            <div class="progress" aria-hidden="true"><span data-role="progress"></span></div>
-            <p><kbd>SPACE</kbd> 문장 완성 / 다음 <span>·</span> <kbd>ESC</kbd> 현재 컷신 스킵 <span>·</span> <kbd>R</kbd> 처음부터</p>
-          </div>
-        </div>
-
-        <div class="cutscene-ui" data-view="c0b" hidden>
-          <p class="cutscene-live" data-role="c0b-live" aria-live="polite"></p>
-          <div class="cutscene-meta">
-            <div class="progress" aria-hidden="true"><span data-role="c0b-progress"></span></div>
-            <p><kbd>SPACE</kbd> 문장 완성 / 다음 <span data-role="c0b-skip-hint"><span>·</span> <kbd>ESC</kbd> 건너뛰기</span></p>
-          </div>
-        </div>
-
-        <div class="role-card" data-view="role" hidden>
-          <p class="role-kicker">당신의 역할</p>
-          <h2>복원 탐정</h2>
-          <div class="role-rule" aria-hidden="true"></div>
-          <p>목격자의 말을 듣고,<br />기억 속 얼굴을 그림으로 되돌리십시오.</p>
-          <p class="warning">당신이 그린 한 점이<br />누군가의 운명을 가릅니다.</p>
-          <button class="begin-button" type="button" data-action="tutorial">
-            <span>첫 번째 의뢰</span>
-            튜토리얼 시작
-          </button>
-          <button class="replay-link" type="button" data-action="replay">프롤로그 다시 보기</button>
-        </div>
-
-        <div class="fade-layer" data-role="fade" aria-hidden="true"></div>
       </section>
 
       <p class="shell-note">소리를 켜고 플레이하면 더 깊이 몰입할 수 있습니다.</p>
     </main>
 
-    <main class="index-workbench" data-role="index-workbench" aria-label="그림 복원 작업대" hidden>
-      <section class="index-workbench-stage" data-role="stage"></section>
+    <main class="game-shell" data-screen="cutscene" aria-label="컷신" hidden>
+      <section class="game-frame">
+        <canvas class="art-layer" data-role="art" width="640" height="384" aria-hidden="true"></canvas>
+        <canvas class="text-layer" data-role="text" width="1920" height="1152" aria-hidden="true"></canvas>
+
+        <div class="cutscene-ui" data-view="cutscene">
+          <p class="cutscene-live" data-role="cutscene-live" aria-live="polite"></p>
+          <div class="cutscene-meta">
+            <div class="progress" aria-hidden="true"><span data-role="progress"></span></div>
+            <p>
+              <kbd>SPACE</kbd> 문장 완성 / 다음
+              <span data-role="skip-hint" hidden><span>·</span> <kbd>ESC</kbd> 건너뛰기</span>
+              <span>·</span> <kbd>R</kbd> 처음부터
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main class="board-screen" data-screen="board" aria-label="증거판" hidden>
+      <div class="board-stage" data-role="board-stage"></div>
+    </main>
+
+    <main class="index-workbench" data-screen="workbench" aria-label="그림 복원 작업대" hidden>
+      <section class="index-workbench-stage" data-role="workbench-stage"></section>
       <p class="index-workbench-help" data-role="workbench-help"></p>
     </main>
 
+    <main class="game-shell" data-screen="finale" aria-label="증거의 방" hidden>
+      <section class="game-frame">
+        <canvas class="art-layer" data-role="art" width="640" height="384" aria-hidden="true"></canvas>
+      </section>
+    </main>
+
+    <div class="shell-overlay" data-role="loading-overlay" role="status" hidden>불러오는 중…</div>
+    <div class="shell-overlay shell-overlay--fatal" data-role="fatal-error" role="alert" hidden>
+      <p data-role="fatal-message"></p>
+      <button type="button" data-role="fatal-retry">다시 시도</button>
+    </div>
+
     <noscript>이 게임을 시작하려면 JavaScript를 활성화해 주세요.</noscript>
+
+    <!-- 로드 순서에 의존이 있다. 아래 순서를 지킬 것. -->
     <script src="src/screen.js"></script>
+    <script src="src/office.js"></script>
     <script src="src/workbench.js"></script>
-    <script src="scripts/scoring.js"></script>
-    <script src="scripts/montage-scoring.js"></script>
-    <script src="src/game-progress.js"></script>
-    <script src="src/data/workbench-quests.js"></script>
-    <script src="src/data/workbench/q0-montage.js"></script>
-    <script src="src/workbench-flow.js"></script>
-    <script src="src/workbench-runtime.js"></script>
-    <script src="src/index-workbench.js"></script>
+
+    <script src="src/data/quest-graph.js"></script>
+    <script src="src/data/completion-bundles.js"></script>
+    <script src="src/data/questimage-quests.js"></script>
+
+    <script src="src/core/asset-loader.js"></script>
+    <script src="src/core/progress-store.js"></script>
+    <script src="src/core/artwork-store.js"></script>
+    <script src="src/core/migration-v1-v2.js"></script>
+
+    <script src="src/cutscenes/cutscene-text.js"></script>
+    <script src="src/cutscenes/cutscene-registry.js"></script>
     <script src="src/cutscene-c0-intro.js"></script>
     <script src="src/cutscene-c0b.js"></script>
-    <script src="src/intro.js"></script>
+    <script src="src/cutscenes/legacy-opening.js"></script>
+    <script src="src/cutscenes/renderers/l0-l1.js"></script>
+    <script src="src/cutscenes/data/beats-l0-l1.js"></script>
+    <script src="src/cutscenes/cutscene-player.js"></script>
+
+    <script src="scripts/scoring.js"></script>
+    <script src="scripts/montage-scoring.js"></script>
+    <script src="src/data/workbench-quests.js"></script>
+    <script src="src/data/workbench/q0-montage.js"></script>
+    <script src="src/workbench-runtime.js"></script>
+    <script src="src/branchmap.js"></script>
+
+    <script src="src/screens/title-screen.js"></script>
+    <script src="src/screens/cutscene-screen.js"></script>
+    <script src="src/screens/board-screen.js"></script>
+    <script src="src/screens/workbench-screen.js"></script>
+
+    <script src="src/app/game-shell.js"></script>
+    <script src="src/app/game-director.js"></script>
+    <script src="src/app/bootstrap.js"></script>
   </body>
 </html>

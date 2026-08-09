@@ -472,7 +472,11 @@
     if (action.type === "redo") redo();
     if (action.type === "reset") reset();
     if (action.type === "submit") submit();
-    if (action.type === "back-to-board") global.location.href = config.backUrl || "board.html";
+    // 단일 셸에서는 Director 가 화면을 바꾼다. backUrl 은 board.html fallback 전용이다.
+    if (action.type === "back-to-board") {
+      if (typeof config.onBackToBoard === "function") config.onBackToBoard();
+      else global.location.href = config.backUrl || "board.html";
+    }
   }
 
   async function start() {
@@ -509,6 +513,14 @@
     getRegionSummary: () => regionSummary,
     getLastScoreResult: () => lastScoreResult,
     getTargetPixels: () => Object.freeze(targetPixels.slice()),
+    /**
+     * 화면을 떠날 때 PixelScreen 의 resize 리스너와 그리기 표면까지 해제한다.
+     * 단일 셸에서 작업대를 여러 번 여닫아도 리스너가 쌓이면 안 된다.
+     */
+    destroy() {
+      app?.destroy();
+      app = null;
+    },
   });
   }
 

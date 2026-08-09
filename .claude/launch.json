@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "haven-dev",
+      "name": "haven",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["serve.py", "8124"],
       "port": 8124

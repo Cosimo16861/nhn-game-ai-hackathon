@@ -1,0 +1,62 @@
+/*
+ * 단일 게임 셸 — 화면 컨테이너와 오버레이.
+ * 화면 내부 디자인은 기존 intro.css / index-workbench.css / 640×384 캔버스가 맡는다.
+ * 여기서는 컨테이너와 겹치는 상태(로딩·치명적 오류)만 다룬다.
+ */
+
+[data-screen][hidden] { display: none !important; }
+
+/* 증거판은 화면 전체가 하나의 640×384 도트 캔버스다. */
+.board-screen {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: 12px;
+  background: #14100d;
+}
+
+.board-stage { display: flex; }
+
+.shell-overlay {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 60;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 14px 18px;
+  color: #d9cdb5;
+  background: rgba(8, 11, 12, 0.92);
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.shell-overlay[hidden] { display: none; }
+
+.shell-overlay--fatal {
+  inset: 0;
+  place-content: center;
+  background: rgba(8, 11, 12, 0.96);
+  color: #e4b7a4;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.shell-overlay--fatal p {
+  max-width: 46ch;
+  margin: 0;
+}
+
+.shell-overlay--fatal button {
+  font: inherit;
+  color: #d9cdb5;
+  background: #241d18;
+  border: 1px solid #4d3f33;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+.shell-overlay--fatal button:hover { background: #33291f; }

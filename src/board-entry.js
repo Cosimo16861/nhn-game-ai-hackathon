@@ -87,8 +87,10 @@
     onSelect(id) {
       global.GameProgress.selectQuest(id);
       const node = global.QuestGraph.get(id);
+      // board.html 은 단일 셸로 이전되기 전의 확인용 fallback 이다.
+      // 제품 진행은 index.html 의 GameDirector 가 담당한다.
       if (global.WorkbenchQuestConfig?.get(id)) {
-        global.location.href = `index.html?workbench=${encodeURIComponent(id)}`;
+        global.location.href = `workbench.html?tutorial=${encodeURIComponent(id)}`;
         return;
       }
       log.textContent = `→ ${node.title} · 작업대 준비 중`;
