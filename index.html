@@ -34,13 +34,11 @@
         </div>
 
         <div class="intro-ui" data-view="intro" hidden>
-          <div class="story-copy" data-role="story-copy" aria-live="polite"></div>
-          <div class="intro-meta">
+          <p class="cutscene-live" data-role="intro-live" aria-live="polite"></p>
+          <div class="cutscene-meta intro-cutscene-meta">
             <div class="progress" aria-hidden="true"><span data-role="progress"></span></div>
-            <p><kbd>SPACE</kbd> 다음 장면 <span>·</span> <kbd>ESC</kbd> 건너뛰기</p>
+            <p><kbd>SPACE</kbd> 문장 완성 / 다음 <span>·</span> <kbd>ESC</kbd> 현재 컷신 스킵 <span>·</span> <kbd>R</kbd> 처음부터</p>
           </div>
-          <button class="icon-button" type="button" data-action="mute" aria-label="소리 끄기" aria-pressed="false">♪</button>
-          <button class="skip-button" type="button" data-action="skip">건너뛰기</button>
         </div>
 
         <div class="cutscene-ui" data-view="c0b" hidden>
@@ -86,6 +84,7 @@
     <script src="src/workbench-flow.js"></script>
     <script src="src/workbench-runtime.js"></script>
     <script src="src/index-workbench.js"></script>
+    <script src="src/cutscene-c0-intro.js"></script>
     <script src="src/cutscene-c0b.js"></script>
     <script src="src/intro.js"></script>
   </body>

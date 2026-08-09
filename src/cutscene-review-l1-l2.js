@@ -465,7 +465,12 @@
     if (beat.view === "parlorPortrait") textCtx.fillText("복원 결과 · 엘리너가 간직한 초상", 320, 36);
     if (beat.view === "wetWall") textCtx.fillText("현장 관찰 · 배 한 척 / 사람 셋 / 번진 글씨", 320, 36);
     if (beat.view === "ferryWall") textCtx.fillText("복원 결과 · 12년 전 선술집 벽 층", 320, 36);
-    if (beat.view === "catMemory") textCtx.fillText("코라의 기억 · 옅은 회색 / 흰 귀 하나 / 붉은 리본", 320, 36);
+    if (beat.view === "catMemory") {
+      textCtx.fillStyle = "rgba(23, 19, 16, 0.82)";
+      textCtx.fillRect(112, 22, 416, 27);
+      textCtx.fillStyle = PAL.cream;
+      textCtx.fillText("코라의 기억 · 옅은 회색 / 흰 귀 하나 / 붉은 리본", 320, 36);
+    }
     if (beat.view === "memoryJaw" || beat.view === "memoryBrow") {
       textCtx.fillText("홀트의 직접 증언 · 미화되기 전 얼굴", 210, 42);
       textCtx.font = '900 12px "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';

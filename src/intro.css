@@ -223,6 +223,8 @@ button { font: inherit; }
   border: 1px solid rgba(234, 223, 202, .14);
 }
 
+.intro-cutscene-meta { width: 47%; }
+
 .cutscene-meta p {
   margin: 5px 0 0;
   color: #827b6d;

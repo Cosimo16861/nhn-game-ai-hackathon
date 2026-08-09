@@ -66,8 +66,8 @@
   const introView = document.querySelector('[data-view="intro"]');
   const cutsceneView = document.querySelector('[data-view="c0b"]');
   const roleView = document.querySelector('[data-view="role"]');
-  const copy = document.querySelector("[data-role=story-copy]");
   const progress = document.querySelector("[data-role=progress]");
+  const introLive = document.querySelector('[data-role="intro-live"]');
   const fade = document.querySelector("[data-role=fade]");
   const titleReplay = titleView.querySelector('[data-action="replay"]');
   const muteButton = document.querySelector('[data-action="mute"]');
@@ -93,6 +93,14 @@
     progress: c0bProgress,
     live: c0bLive,
     onComplete: finishC0B,
+  });
+
+  const c0Intro = window.C0IntroCutscene.create({
+    art,
+    textCanvas,
+    progress,
+    live: introLive,
+    onComplete: finishIntro,
   });
 
   ctx.imageSmoothingEnabled = false;
@@ -410,23 +418,7 @@
     if (mode === "title") {
       drawTitle(now - titleStarted);
     } else if (mode === "intro") {
-      storyElapsed = now - sceneStarted;
-      if (storyElapsed >= STORY_DURATION) {
-        finishIntro();
-      } else {
-        const current = getSceneAt(storyElapsed);
-        if (current.index !== sceneIndex) {
-          sceneIndex = current.index;
-          sceneSeed += 7;
-          setSceneCopy(sceneIndex);
-          ping(sceneIndex);
-        }
-        scenes[current.index].draw(current.local, sceneSeed);
-        const opacity = sceneOpacity(current.local, scenes[current.index].duration);
-        fade.style.opacity = String(1 - opacity);
-        copy.style.opacity = String(Math.min(1, current.local / 420) * Math.min(1, (scenes[current.index].duration - current.local) / 480));
-        progress.style.width = `${Math.min(100, storyElapsed / STORY_DURATION * 100)}%`;
-      }
+      // C0IntroCutscene owns both canvas layers while the prologue is active.
     } else if (mode === "role") {
       drawRole(now);
     }
@@ -440,21 +432,16 @@
     roleView.hidden = view !== "role";
   }
 
-  function setSceneCopy(index) {
-    copy.innerHTML = `<span class="story-text">${scenes[index].copy}</span>`;
-  }
-
   function startIntro() {
     ensureAudio();
     mode = "intro";
-    sceneIndex = 0;
-    sceneStarted = performance.now();
-    storyElapsed = 0;
-    setSceneCopy(0);
-    progress.style.width = "0%";
-    fade.style.opacity = "1";
+    fade.style.opacity = "0";
     showOnly("intro");
     ping(0);
+    c0Intro.start().catch((error) => {
+      console.error("C0 인트로 컷신을 시작하지 못했습니다.", error);
+      finishIntro({ skipped: true });
+    });
   }
 
   function hasSeenCutscene(id, legacyKey) {
@@ -469,10 +456,7 @@
   }
 
   function nextScene() {
-    if (mode !== "intro") return;
-    const current = getSceneAt(storyElapsed);
-    if (current.index >= scenes.length - 1) return finishIntro();
-    sceneStarted = performance.now() - current.cursor - scenes[current.index].duration - 1;
+    if (mode === "intro") c0Intro.advance();
   }
 
   function finishIntro() {
@@ -554,9 +538,11 @@
 
   function toggleMute() {
     muted = !muted;
-    muteButton.setAttribute("aria-pressed", String(muted));
-    muteButton.setAttribute("aria-label", muted ? "소리 켜기" : "소리 끄기");
-    muteButton.textContent = muted ? "×" : "♪";
+    if (muteButton) {
+      muteButton.setAttribute("aria-pressed", String(muted));
+      muteButton.setAttribute("aria-label", muted ? "소리 켜기" : "소리 끄기");
+      muteButton.textContent = muted ? "×" : "♪";
+    }
     if (audio) audio.master.gain.setTargetAtTime(muted ? 0 : .1, audio.ctx.currentTime, .03);
   }
 
@@ -564,7 +550,7 @@
     const action = event.target.closest("[data-action]")?.dataset.action;
     if (action === "start") startGame();
     if (action === "replay") startIntro();
-    if (action === "skip") finishIntro();
+    if (action === "skip" && mode === "intro") c0Intro.finish();
     if (action === "mute") toggleMute();
     if (action === "tutorial") startTutorial();
   });
@@ -577,8 +563,9 @@
       else if (mode === "intro") nextScene();
       else if (mode === "c0b") c0b.advance();
     }
-    if (event.key === "Escape" && mode === "intro") finishIntro();
+    if (event.key === "Escape" && mode === "intro") c0Intro.finish();
     if (event.key === "Escape" && mode === "c0b" && c0bCanSkip) c0b.finish();
+    if ((event.key === "r" || event.key === "R") && mode === "intro") c0Intro.restart();
     if ((event.key === "m" || event.key === "M") && mode === "intro") toggleMute();
   });
 
@@ -588,7 +575,9 @@
   }
 
   const launchParams = new URLSearchParams(window.location.search);
-  if (launchParams.get("c0b") === "1" && launchParams.get("record") === "1") {
+  if (launchParams.get("intro") === "1") {
+    startIntro();
+  } else if (launchParams.get("c0b") === "1" && launchParams.get("record") === "1") {
     startC0B("c0b-the-job.webm");
   }
 
