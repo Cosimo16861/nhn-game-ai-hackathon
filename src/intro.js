@@ -72,7 +72,7 @@
   const muteButton = document.querySelector('[data-action="mute"]');
   const startLabel = document.querySelector('[data-role="start-label"]');
 
-  let mode = "title";
+  let mode = window.IndexWorkbench?.getActiveQuestId() ? "workbench" : "title";
   let sceneIndex = 0;
   let sceneStarted = 0;
   let storyElapsed = 0;
@@ -458,6 +458,7 @@
   function finishIntro() {
     if (mode === "role") return;
     localStorage.setItem("heir_intro_seen", "1");
+    window.GameProgress?.ensureOpeningComplete();
     mode = "role";
     fade.style.opacity = "0";
     showOnly("role");
@@ -507,7 +508,18 @@
     if (action === "replay") startIntro();
     if (action === "skip") finishIntro();
     if (action === "mute") toggleMute();
-    if (action === "tutorial") window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
+    if (action === "tutorial") {
+      mode = "workbench";
+      window.GameProgress?.selectQuest("Q0_MONTAGE");
+      if (window.IndexWorkbench) {
+        window.IndexWorkbench.open("Q0_MONTAGE").catch((error) => {
+          console.error(error);
+          window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
+        });
+      } else {
+        window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
+      }
+    }
   });
 
   document.addEventListener("keydown", (event) => {

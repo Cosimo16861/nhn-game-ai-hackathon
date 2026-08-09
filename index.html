@@ -7,6 +7,7 @@
     <meta name="description" content="말로 남은 기억을 그림으로 되돌리는 복원 탐정 이야기, 안개항의 상속자" />
     <title>안개항의 상속자</title>
     <link rel="stylesheet" href="src/intro.css" />
+    <link rel="stylesheet" href="src/index-workbench.css" />
   </head>
   <body>
     <main class="game-shell" aria-label="안개항의 상속자 게임 시작 화면">
@@ -61,7 +62,22 @@
       <p class="shell-note">소리를 켜고 플레이하면 더 깊이 몰입할 수 있습니다.</p>
     </main>
 
+    <main class="index-workbench" data-role="index-workbench" aria-label="그림 복원 작업대" hidden>
+      <section class="index-workbench-stage" data-role="stage"></section>
+      <p class="index-workbench-help" data-role="workbench-help"></p>
+    </main>
+
     <noscript>이 게임을 시작하려면 JavaScript를 활성화해 주세요.</noscript>
+    <script src="src/screen.js"></script>
+    <script src="src/workbench.js"></script>
+    <script src="scripts/scoring.js"></script>
+    <script src="scripts/montage-scoring.js"></script>
+    <script src="src/game-progress.js"></script>
+    <script src="src/data/workbench-quests.js"></script>
+    <script src="src/data/workbench/q0-montage.js"></script>
+    <script src="src/workbench-flow.js"></script>
+    <script src="src/workbench-runtime.js"></script>
+    <script src="src/index-workbench.js"></script>
     <script src="src/intro.js"></script>
   </body>
 </html>

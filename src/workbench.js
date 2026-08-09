@@ -411,6 +411,13 @@
     ctx.restore();
   }
 
+  function drawPointer(ctx, x, y, direction) {
+    const points = direction === "down"
+      ? [[x - 5, y - 7], [x + 5, y - 7], [x, y]]
+      : [[x - 7, y - 5], [x - 7, y + 5], [x, y]];
+    polygon(ctx, points, C.gold, C.ink, 1);
+  }
+
   function mount(container, options) {
     const opt = options || {};
     const screen = P.mount(container, {
@@ -419,7 +426,8 @@
     });
     let current = Object.assign({}, DEFAULT_VIEW);
     let artwork = null;
-    let focusKey = "";
+    let focusedKey = "";
+    let hoveredKey = "";
     const listeners = [];
 
     function emit(action, announcement) {
@@ -439,11 +447,20 @@
         disabled,
         onClick: () => emit(action, label),
       });
-      const onFocus = () => { focusKey = key; draw(); };
-      const onBlur = () => { focusKey = ""; draw(); };
+      const onFocus = () => { focusedKey = key; draw(); };
+      const onBlur = () => { focusedKey = ""; draw(); };
+      const onEnter = () => { hoveredKey = key; draw(); };
+      const onLeave = () => { hoveredKey = ""; draw(); };
       el.addEventListener("focus", onFocus);
       el.addEventListener("blur", onBlur);
-      listeners.push([el, "focus", onFocus], [el, "blur", onBlur]);
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+      listeners.push(
+        [el, "focus", onFocus],
+        [el, "blur", onBlur],
+        [el, "mouseenter", onEnter],
+        [el, "mouseleave", onLeave],
+      );
     }
 
     function rebuildHotspots() {
@@ -470,6 +487,7 @@
 
     function draw() {
       const ctx = screen.ctx;
+      const focusKey = hoveredKey || focusedKey;
       ctx.clearRect(0, 0, P.W, P.H);
       screen.clearText();
       drawDesk(ctx);
@@ -479,6 +497,16 @@
       drawTools(ctx, current, focusKey);
       drawActions(ctx, current, focusKey);
       drawBoardReturn(ctx, focusKey);
+      if (focusKey.startsWith("color-")) {
+        const colorIndex = Number(focusKey.slice(6));
+        const positions = [[517,111],[548,99],[581,110],[600,139],[599,178],[548,201],[512,182],[501,145]];
+        const point = positions[colorIndex];
+        if (point) drawPointer(ctx, point[0] - 16, point[1], "right");
+      }
+      if (focusKey.startsWith("tool-")) {
+        const toolIndex = Number(focusKey.slice(5));
+        drawPointer(ctx, TOOL_X0 + toolIndex * TOOL_PITCH + 8, 257, "down");
+      }
       drawCanvasLighting(ctx);
     }
 
