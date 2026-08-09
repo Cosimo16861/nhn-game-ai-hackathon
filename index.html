@@ -3,424 +3,65 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>안개항의 상속자 — The Heir of Haven</title>
-    <style>
-      /* 색 기준: GAME_DESIGN 9·10장 */
-      :root {
-        --ink: #2e241e;
-        --panel: #3a2f26;
-        --panel-deep: #2a221c;
-        --cream: #d9cdb5;
-        --gold: #d8a94b;
-        --teal: #4a7471;
-        --terracotta: #a05c43;
-        --muted: #9a8b74;
-      }
-
-      * { box-sizing: border-box; }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        background: #1d1814;
-        color: var(--cream);
-        font-family: "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
-        font-size: 15px;
-        line-height: 1.7;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 16px 48px;
-      }
-
-      h1 {
-        font-size: 15px;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        font-weight: 600;
-        margin: 0 0 12px;
-      }
-
-      .frame {
-        width: 100%;
-        max-width: 940px;
-      }
-
-      /* ── HUD ─────────────────────────────── */
-      .hud {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: var(--panel-deep);
-        border: 2px solid var(--ink);
-        border-radius: 4px;
-        padding: 10px 14px;
-        margin-bottom: 14px;
-      }
-      .hud .label {
-        color: var(--gold);
-        font-weight: 700;
-        font-size: 13px;
-        white-space: nowrap;
-      }
-      .hud .objective { flex: 1; }
-      .hud button { margin-left: auto; }
-
-      .location-nav {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        overflow-x: auto;
-        background: var(--panel-deep);
-        border: 2px solid var(--ink);
-        border-radius: 4px;
-        padding: 9px 12px;
-        margin-bottom: 14px;
-      }
-      .location-nav .label {
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-      }
-      .location-nav button {
-        flex: 0 0 auto;
-        padding: 5px 10px;
-      }
-      .location-nav button[aria-current="location"] {
-        color: #fff;
-        border-color: var(--gold);
-      }
-
-      /* ── 공통 패널 ─────────────────────────── */
-      .panel {
-        background: var(--panel);
-        border: 2px solid var(--ink);
-        border-radius: 4px;
-        padding: 16px;
-      }
-
-      button {
-        font: inherit;
-        font-size: 14px;
-        color: var(--cream);
-        background: var(--panel-deep);
-        border: 2px solid var(--ink);
-        border-radius: 3px;
-        padding: 7px 14px;
-        cursor: pointer;
-      }
-      button:hover:not(:disabled) { border-color: var(--gold); color: #fff; }
-      button:disabled { opacity: 0.45; cursor: not-allowed; }
-      button.primary { background: var(--teal); border-color: var(--ink); }
-      button.ghost { background: transparent; color: var(--muted); }
-
-      /* ── 대화 화면 ─────────────────────────── */
-      .stage {
-        position: relative;
-        height: 200px;
-        background:
-          linear-gradient(180deg, #4a3b30 0%, #2f2620 100%);
-        border: 2px solid var(--ink);
-        border-radius: 4px 4px 0 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6d5b49;
-        font-size: 13px;
-        letter-spacing: 0.2em;
-      }
-      .portrait {
-        position: absolute;
-        top: 14px;
-        right: 16px;
-        width: 96px;
-        height: 96px;
-        display: grid;
-        place-items: center;
-        font-size: 40px;
-        font-weight: 700;
-        color: var(--cream);
-        background: #55443a;
-        border: 2px solid var(--ink);
-        border-radius: 3px;
-      }
-      .portrait[data-face="긴장"] { background: #5b4038; }
-      .portrait[data-face="고조"] { background: #6b543f; }
-
-      .dialogue {
-        background: var(--panel-deep);
-        border: 2px solid var(--ink);
-        border-top: none;
-        border-radius: 0 0 4px 4px;
-        padding: 14px 18px 18px;
-      }
-      .speaker { color: var(--gold); font-weight: 700; margin-bottom: 6px; }
-      .lines p { margin: 0 0 2px; }
-      .choices { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
-      .choice {
-        text-align: left;
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        background: #241d18;
-      }
-      .choice-mark { color: var(--gold); }
-      .choice:disabled .choice-mark { color: var(--muted); }
-      .choice-hint { color: var(--muted); font-size: 12px; font-style: normal; }
-
-      /* ── 복원 작업대 ───────────────────────── */
-      .workbench { display: grid; grid-template-columns: 240px 1fr 190px; gap: 14px; }
-      .col-title {
-        color: var(--gold);
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        margin: 0 0 10px;
-      }
-      .clues, .goals { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-      .clues li {
-        background: #2c241e;
-        border-left: 3px solid var(--terracotta);
-        padding: 8px 10px;
-        font-size: 13px;
-        display: grid;
-        gap: 2px;
-      }
-      .clues strong { color: var(--gold); font-size: 11px; }
-      .goals li {
-        font-size: 13px;
-        padding-left: 14px;
-        position: relative;
-      }
-      .goals li::before {
-        content: "◆";
-        position: absolute;
-        left: 0;
-        color: var(--teal);
-      }
-      .goals li.muted { color: var(--muted); }
-      .goals li.muted::before { content: "·"; }
-
-      .easel { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-      canvas {
-        width: 384px;
-        height: 384px;
-        image-rendering: pixelated;
-        background: #2a221c;
-        border: 2px solid var(--ink);
-        cursor: crosshair;
-        touch-action: none;
-      }
-      .is-developing canvas { filter: brightness(0.25) sepia(0.4); transition: filter 0.2s; }
-
-      /* 캔버스 내부 해상도가 곧 격자 크기라(256²까지) 격자선은 CSS 오버레이로 그린다. */
-      .easel-canvas { position: relative; line-height: 0; }
-      .pixel-grid {
-        position: absolute;
-        inset: 2px; /* 캔버스 테두리 두께만큼 */
-        pointer-events: none;
-        background-image:
-          repeating-linear-gradient(
-            to right, rgba(0,0,0,0.22) 0 1px, transparent 1px var(--cell, 24px)),
-          repeating-linear-gradient(
-            to bottom, rgba(0,0,0,0.22) 0 1px, transparent 1px var(--cell, 24px));
-      }
-      .pixel-grid[hidden] { display: none; }
-
-      .toolbar { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-      .tool.is-active { border-color: var(--gold); color: #fff; }
-      .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
-      .swatch {
-        width: 34px;
-        height: 34px;
-        padding: 0;
-        border: 2px solid var(--ink);
-        border-radius: 3px;
-        cursor: pointer;
-      }
-      .swatch.is-active { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(216,169,75,0.35); }
-
-      .result {
-        margin-top: 4px;
-        width: 100%;
-        background: #241d18;
-        border: 2px solid var(--ink);
-        border-left: 4px solid var(--muted);
-        border-radius: 3px;
-        padding: 12px 14px;
-      }
-      .result[data-tier="pass"] { border-left-color: var(--teal); }
-      .result[data-tier="near"] { border-left-color: var(--gold); }
-      .result[data-tier="partial"] { border-left-color: var(--terracotta); }
-      .result[data-tier="far"] { border-left-color: #7a4038; }
-      .result-headline { margin: 0 0 6px; font-weight: 700; }
-      .result-note { margin: 0 0 4px; color: var(--muted); font-size: 13px; }
-      .result button { margin-top: 10px; }
-
-      .section-gap { margin-top: 16px; }
-      .note { color: var(--muted); font-size: 12px; }
-
-      .placeholder-hint {
-        margin-top: 10px;
-        padding-left: 12px;
-        border-left: 3px solid var(--gold);
-        color: var(--muted);
-        font-size: 13px;
-      }
-      .placeholder-hint[hidden] { display: none; }
-
-      /* ── 게임 내 확인창 ─────────────────────── */
-      .modal {
-        position: fixed;
-        inset: 0;
-        background: rgba(12, 9, 7, 0.72);
-        display: grid;
-        place-items: center;
-        z-index: 50;
-        padding: 20px;
-      }
-      .modal[hidden] { display: none; }
-      .modal-panel {
-        width: min(420px, 100%);
-        background: var(--panel);
-        border: 2px solid var(--ink);
-        border-top: 3px solid var(--gold);
-        border-radius: 4px;
-        padding: 20px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
-      }
-      .modal-message p { margin: 0 0 4px; }
-      .modal-actions {
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
-        margin-top: 18px;
-      }
-    </style>
+    <meta name="theme-color" content="#0d1214" />
+    <meta name="description" content="말로 남은 기억을 그림으로 되돌리는 복원 탐정 이야기, 안개항의 상속자" />
+    <title>안개항의 상속자</title>
+    <link rel="stylesheet" href="src/intro.css" />
   </head>
-
   <body>
-    <div class="frame">
-      <h1 data-role="game-title">안개항의 상속자 · 그레이박스</h1>
+    <main class="game-shell" aria-label="안개항의 상속자 게임 시작 화면">
+      <section class="game-frame" data-role="game-frame">
+        <canvas class="art-layer" data-role="art" width="640" height="384" aria-hidden="true"></canvas>
+        <canvas class="text-layer" data-role="text" width="1920" height="1152" aria-hidden="true"></canvas>
 
-      <div class="hud">
-        <span class="label">현재 목표</span>
-        <span class="objective" data-role="objective">—</span>
-        <button type="button" class="ghost" data-action="restart">처음부터</button>
-      </div>
+        <div class="title-ui" data-view="title">
+          <p class="eyebrow">A STORY OF MEMORY &amp; INK</p>
+          <h1><span>안개항의</span> 상속자</h1>
+          <p class="title-en">THE HEIR OF HAVEN</p>
 
-      <nav class="location-nav" aria-label="장소 이동">
-        <span class="label">장소 이동</span>
-        <button type="button" data-location="office">사무소</button>
-        <button type="button" data-location="police">경찰서</button>
-        <button type="button" data-location="mansion">저택</button>
-        <button type="button" data-location="school">학교</button>
-        <button type="button" data-location="tavern">선술집</button>
-        <button type="button" data-location="dock">부두·창고</button>
-      </nav>
-
-      <!-- 공통 대화 화면 -->
-      <section data-scene="dialogue" hidden>
-        <div class="stage">
-          <span data-role="scene-location">—</span>
-          <div class="portrait" data-role="portrait" data-face="평상"></div>
+          <nav class="title-menu" aria-label="시작 메뉴">
+            <button class="menu-button is-selected" type="button" data-action="start">
+              <span class="diamond" aria-hidden="true">◆</span>
+              <span data-role="start-label">새 이야기</span>
+            </button>
+            <button class="menu-button" type="button" data-action="replay" hidden>
+              <span class="diamond" aria-hidden="true">◆</span>
+              프롤로그 다시 보기
+            </button>
+          </nav>
+          <p class="press-key">ENTER / SPACE</p>
         </div>
-        <div class="dialogue" data-role="dialogue-box">
-          <div class="speaker" data-role="speaker"></div>
-          <div class="lines" data-role="lines"></div>
-          <div class="choices" data-role="choices"></div>
-        </div>
-      </section>
 
-      <!-- 탐정 사무소: 복원 작업대 -->
-      <section data-scene="workbench" hidden>
-        <div class="workbench">
-          <div class="panel">
-            <p class="col-title">증언 카드</p>
-            <ul class="clues" data-role="clues"></ul>
+        <div class="intro-ui" data-view="intro" hidden>
+          <div class="story-copy" data-role="story-copy" aria-live="polite"></div>
+          <div class="intro-meta">
+            <div class="progress" aria-hidden="true"><span data-role="progress"></span></div>
+            <p><kbd>SPACE</kbd> 다음 장면 <span>·</span> <kbd>ESC</kbd> 건너뛰기</p>
           </div>
-
-          <div class="panel easel">
-            <div class="easel-canvas">
-              <canvas data-role="canvas" width="384" height="384"></canvas>
-              <div class="pixel-grid" data-role="grid" aria-hidden="true"></div>
-            </div>
-            <div class="toolbar" data-role="tools"></div>
-            <div class="toolbar">
-              <button type="button" data-action="undo">실행 취소</button>
-              <button type="button" data-action="redo">다시 실행</button>
-              <button type="button" data-action="reset">초기화</button>
-              <button type="button" class="primary" data-action="submit">제출</button>
-            </div>
-            <div class="result" data-role="result" hidden></div>
-          </div>
-
-          <div class="panel">
-            <p class="col-title">복원 목표</p>
-            <ul class="goals" data-role="goals"></ul>
-            <div class="section-gap">
-              <p class="col-title">팔레트</p>
-              <div class="swatches" data-role="palette"></div>
-            </div>
-            <p class="note section-gap">
-              증언으로 알게 된 특징만 목표에 나타난다.
-            </p>
-          </div>
+          <button class="icon-button" type="button" data-action="mute" aria-label="소리 끄기" aria-pressed="false">♪</button>
+          <button class="skip-button" type="button" data-action="skip">건너뛰기</button>
         </div>
-      </section>
 
-      <!-- 후일담 -->
-      <section data-scene="epilogue" class="panel" hidden>
-        <p class="col-title">전단 게시</p>
-        <p>안개의 전단이 선술집 창문에 붙었다. 코라가 사례와 함께 힌트 한 번을 약속했다.</p>
-        <p class="note">
-          플래그 <code>CAT_POSTER</code> 설정됨 — 3막 부두 창고에서 안개를 알아보는 조건이다.
-          여기까지가 이번 수직 슬라이스의 범위다.
-        </p>
-      </section>
-
-      <!-- 이후 단계의 장면 데이터가 연결되기 전 사용하는 임시 장소 화면 -->
-      <section data-scene="placeholder" class="panel" hidden>
-        <p class="col-title" data-role="placeholder-title"></p>
-        <p data-role="placeholder-message"></p>
-        <p class="placeholder-hint" data-role="placeholder-hint" hidden></p>
-      </section>
-    </div>
-
-    <!-- 게임 내 확인창 (네이티브 confirm 대체) -->
-    <div class="modal" data-role="modal" hidden>
-      <div class="modal-panel">
-        <div class="modal-message" data-role="modal-message"></div>
-        <div class="modal-actions">
-          <button type="button" data-action="modal-cancel">취소</button>
-          <button type="button" class="primary" data-action="modal-ok">확인</button>
+        <div class="role-card" data-view="role" hidden>
+          <p class="role-kicker">당신의 역할</p>
+          <h2>복원 탐정</h2>
+          <div class="role-rule" aria-hidden="true"></div>
+          <p>목격자의 말을 듣고,<br />기억 속 얼굴을 그림으로 되돌리십시오.</p>
+          <p class="warning">당신이 그린 한 점이<br />누군가의 운명을 가릅니다.</p>
+          <button class="begin-button" type="button" data-action="tutorial">
+            <span>첫 번째 의뢰</span>
+            튜토리얼 시작
+          </button>
+          <button class="replay-link" type="button" data-action="replay">프롤로그 다시 보기</button>
         </div>
-      </div>
-    </div>
 
-    <!-- 기존 채점 모듈 (의존성 없음, 그대로 재사용) -->
-    <script src="scripts/scoring.js"></script>
+        <div class="fade-layer" data-role="fade" aria-hidden="true"></div>
+      </section>
 
-    <!-- 게임 -->
-    <script src="src/ui.js"></script>
-    <script src="src/state.js"></script>
-    <script src="src/ending.js"></script>
-    <script src="src/feedback.js"></script>
-    <script src="src/dialogue.js"></script>
-    <script src="src/artwork.js"></script>
-    <script src="src/restoration.js"></script>
-    <script src="src/data/quest-graph.js"></script>
-    <script src="src/data/quest-cat.js"></script>
-    <script src="src/data/quest-portrait.js"></script>
-    <script src="src/data/quest-seal.js"></script>
-    <script src="src/data/quest-dock.js"></script>
-    <script src="src/data/dialogue-cat.js"></script>
-    <script src="src/data/dialogue-prologue.js"></script>
-    <script src="src/data/dialogue-act1.js"></script>
-    <script src="src/data/dialogue-act2.js"></script>
-    <script src="src/data/dialogue-act3.js"></script>
-    <script src="src/data/dialogue-finale.js"></script>
-    <script src="src/game.js"></script>
+      <p class="shell-note">소리를 켜고 플레이하면 더 깊이 몰입할 수 있습니다.</p>
+    </main>
+
+    <noscript>이 게임을 시작하려면 JavaScript를 활성화해 주세요.</noscript>
+    <script src="src/intro.js"></script>
   </body>
 </html>

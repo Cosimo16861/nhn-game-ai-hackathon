@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>복원 작업대 — 화면 확인용</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        background: #14100d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .stage { display: flex; }
+    </style>
+  </head>
+  <body>
+    <main class="stage" data-role="stage" aria-label="그림 복원 작업대"></main>
+
+    <script src="src/screen.js"></script>
+    <script src="src/workbench.js"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        const state = {
+          title: "애셔튼 상속 사건",
+          quotes: [
+            { speaker: "마사", text: "초상화의 오른쪽 눈 아래에 작은 흉터가 있었어요." },
+            { speaker: "엘리엇", text: "그날 입은 외투는 짙은 청록색이었습니다." },
+          ],
+          palette: [
+            { name: "먹색", hex: "#302A26" },
+            { name: "종이색", hex: "#D9CDB5" },
+            { name: "황토색", hex: "#C79A4A" },
+            { name: "청록색", hex: "#4A7471" },
+            { name: "적갈색", hex: "#A05C43" },
+            { name: "회청색", hex: "#72888D" },
+          ],
+          activeColor: "#4A7471",
+          activeTool: "brush",
+          brushSize: 2,
+          canUndo: true,
+          canRedo: false,
+          isSubmitting: false,
+          feedback: "",
+        };
+
+        const app = window.Workbench.mount(document.querySelector("[data-role=stage]"), {
+          onAction(action) {
+            if (action.type === "back-to-board") {
+              window.location.href = "board.html?step=6&branches=1";
+              return;
+            }
+            if (action.type === "select-color") state.activeColor = action.hex;
+            if (action.type === "select-tool") {
+              state.activeTool = action.tool;
+              state.brushSize = action.size;
+            }
+            if (action.type === "undo") {
+              state.canUndo = false;
+              state.canRedo = true;
+            }
+            if (action.type === "redo") {
+              state.canUndo = true;
+              state.canRedo = false;
+            }
+            if (action.type === "reset") {
+              state.canUndo = false;
+              state.canRedo = false;
+              state.feedback = "새 캔버스를 준비했습니다";
+            }
+            if (action.type === "submit") {
+              state.feedback = "복원 기록을 봉인했습니다";
+            }
+            app.render(state);
+          },
+        });
+
+        app.render(state);
+      })();
+    </script>
+  </body>
+</html>
