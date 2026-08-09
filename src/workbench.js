@@ -7,13 +7,27 @@
 
   const P = window.PixelScreen;
   const C = P.PAL;
+  /**
+   * 도구 슬롯 다섯 개. icon 은 책상 위 사물의 생김새, tool·size 는 엔진에 보내는 값이다.
+   * 고해상도 복원은 view.tools 로 16·36·72px 붓을 넣어 이 기본값을 대체한다
+   * (RESTORATION_QUEST_SPEC 3.3 — 1px 붓·픽셀 격자는 쓰지 않는다).
+   */
   const TOOLS = [
-    { id: "pencil", label: "연필 · 1픽셀", size: 1 },
-    { id: "brush", label: "가는 붓 · 2픽셀", size: 2 },
-    { id: "broad", label: "넓은 붓 · 3픽셀", size: 3 },
-    { id: "fill", label: "물감 채우기", size: 1 },
-    { id: "eraser", label: "지우개", size: 1 },
+    { id: "pencil", icon: "pencil", label: "연필 · 1픽셀", tool: "pencil", size: 1 },
+    { id: "brush", icon: "brush", label: "가는 붓 · 2픽셀", tool: "brush", size: 2 },
+    { id: "broad", icon: "broad", label: "넓은 붓 · 3픽셀", tool: "brush", size: 3 },
+    { id: "fill", icon: "fill", label: "물감 채우기", tool: "fill", size: 1 },
+    { id: "eraser", icon: "eraser", label: "지우개", tool: "eraser", size: 1 },
   ];
+
+  function toolsOf(view) {
+    return (view && Array.isArray(view.tools) && view.tools.length) ? view.tools : TOOLS;
+  }
+
+  function isToolSelected(view, tool) {
+    if (view.activeTool !== tool.tool) return false;
+    return tool.size == null || Number(view.brushSize) === Number(tool.size);
+  }
   const TOOL_X0 = 494;
   const TOOL_PITCH = 25;
   const DEFAULT_VIEW = Object.freeze({
@@ -245,7 +259,11 @@
         dh
       );
       ctx.restore();
-    } else drawNeutralStudy(ctx);
+    } else if (!view.externalArtwork) {
+      drawNeutralStudy(ctx);
+    }
+    // externalArtwork 일 때는 그림을 DOM 캔버스가 직접 그린다.
+    // 그 아래에는 빈 종이만 남겨 중립 선화가 비쳐 보이지 않게 한다.
 
     // 붓 크기 고스트는 실제 포인터 연결 단계에서 포인터 좌표에 표시한다.
   }
@@ -301,19 +319,15 @@
     rect(ctx, 482, 238, 139, 95, C.deskDark);
     rect(ctx, 486, 242, 131, 87, C.frameDark);
     rect(ctx, 488, 244, 127, 83, C.deskTop);
-    TOOLS.forEach((tool, i) => {
+    toolsOf(view).forEach((tool, i) => {
       const x = TOOL_X0 + i * TOOL_PITCH;
-      const selected = tool.id === "brush"
-        ? view.activeTool === "brush" && view.brushSize !== 3
-        : tool.id === "broad"
-          ? view.activeTool === "brush" && view.brushSize === 3
-          : view.activeTool === tool.id;
+      const selected = isToolSelected(view, tool);
       const lift = selected ? -3 : 0;
       if (selected) {
         P.chamfer(ctx, x - 4, 260, 25, 60, C.goldDim, 3);
         P.chamfer(ctx, x - 2, 258, 21, 58, C.brass, 3);
       }
-      drawTool(ctx, tool.id, x, 267 + lift, view.activeColor);
+      drawTool(ctx, tool.icon || tool.id, x, 267 + lift, view.activeColor);
       if (focusKey === "tool-" + i) dottedFocus(ctx, x - 4, 255, 25, 68);
     });
   }
@@ -362,7 +376,18 @@
     drawMetalTag(ctx, 278, 348, 39, 15, "새 종이", true, focusKey === "reset");
     rect(ctx, 327, 350, 123, 12, C.brassDark);
     rect(ctx, 330, 348, 117, 12, C.brass);
-    P.text(ctx, "미완성 복원화", 388, 347, { align: "center", size: 9, weight: "700", color: C.ink, boxHeight: 13 });
+    if (view.zoom) {
+      // 확대는 20% 단계. 표시 배율만 바뀌고 내부 1254 좌표계는 그대로다.
+      P.text(ctx, "−", 337, 347, { align: "center", size: 11, weight: "800", color: C.ink, boxHeight: 13 });
+      P.text(ctx, Math.round(view.zoom * 100) + "%", 388, 347, {
+        align: "center", size: 9, weight: "700", color: C.ink, boxHeight: 13,
+      });
+      P.text(ctx, "＋", 439, 347, { align: "center", size: 11, weight: "800", color: C.ink, boxHeight: 13 });
+      if (focusKey === "zoom-out") dottedFocus(ctx, 328, 346, 22, 17);
+      if (focusKey === "zoom-in") dottedFocus(ctx, 428, 346, 22, 17);
+    } else {
+      P.text(ctx, "미완성 복원화", 388, 347, { align: "center", size: 9, weight: "700", color: C.ink, boxHeight: 13 });
+    }
 
     // 제출은 별도 봉투와 붉은 밀랍 인장
     polygon(ctx, [[491,336],[620,336],[616,373],[487,373]], C.paper, C.ink, 2);
@@ -476,13 +501,17 @@
         "color-" + i, positions[i][0] - 14, positions[i][1] - 14, 28, 28,
         entry.name + " 물감 선택", { type: "select-color", hex: entry.hex }, false
       ));
-      TOOLS.forEach((tool, i) => addHit(
+      toolsOf(current).forEach((tool, i) => addHit(
         "tool-" + i, TOOL_X0 - 4 + i * TOOL_PITCH, 255, 25, 68, tool.label + " 선택",
-        { type: "select-tool", tool: tool.id === "broad" ? "brush" : tool.id, size: tool.size }, false
+        { type: "select-tool", tool: tool.tool, size: tool.size }, false
       ));
       addHit("undo", 179, 345, 46, 21, "되감기", { type: "undo" }, !current.canUndo);
       addHit("redo", 227, 345, 46, 21, "다시 실행", { type: "redo" }, !current.canRedo);
       addHit("reset", 276, 345, 43, 21, "새 종이로 초기화", { type: "reset" }, false);
+      if (current.zoom) {
+        addHit("zoom-out", 328, 346, 22, 17, "축소", { type: "zoom-out" }, false);
+        addHit("zoom-in", 428, 346, 22, 17, "확대", { type: "zoom-in" }, false);
+      }
       addHit("submit", 483, 332, 141, 45, "복원 기록 제출", { type: "submit" }, !!current.isSubmitting);
       if (current.showBackButton) {
         addHit(

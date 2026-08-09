@@ -21,18 +21,45 @@ const MIGRATED = [
     // 승인된 검토본(커밋 7ecd508)의 beat 수. 대사를 늘이거나 줄이면 실패한다.
     beatCounts: { C1A_RETURNED_HEIR: 12, C1B_TWELVE_YEARS_UNDER: 10 },
   },
+  {
+    bundleId: "B_AFTER_Q1A",
+    module: "src/cutscenes/data/beats-l1-l2.js",
+    renderer: "src/cutscenes/renderers/l1-l2.js",
+    rendererId: "l1-l2",
+    beatCounts: { C2C_RAIN_BEHIND_THE_DOOR: 11, C2A_HOLTS_MEMORY: 14 },
+    // 같은 데이터 모듈이 두 번들의 장면을 함께 담는다.
+    sharedModuleSceneIds: ["C2B_MIST_IS_MISSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q1B",
+    module: "src/cutscenes/data/beats-l1-l2.js",
+    renderer: "src/cutscenes/renderers/l1-l2.js",
+    rendererId: "l1-l2",
+    beatCounts: { C2B_MIST_IS_MISSING: 11 },
+    sharedModuleSceneIds: ["C2C_RAIN_BEHIND_THE_DOOR", "C2A_HOLTS_MEMORY"],
+  },
 ];
 
-const VIEWS = new Set(["third", "poster", "newspaper", "portrait", "wall"]);
+// 묶음마다 시점 이름이 다르다. renderer 가 아는 값만 쓰면 된다.
+const VIEWS = {
+  "l0-l1": new Set(["third", "poster", "newspaper", "portrait", "wall"]),
+  "l1-l2": new Set([
+    "parlorPortrait", "parlorEleanor", "parlorBeth", "parlorBethEnter", "firstEleanor",
+    "hallDoor", "hallEleanor", "hallBeth", "hallWorld", "wetWall",
+    "schoolArrival", "schoolHolt", "schoolWide", "memoryJaw", "memoryBrow",
+    "ferryWall", "tavernCora", "firstCora", "tavernWide", "catMemory",
+  ]),
+};
 
 for (const entry of MIGRATED) {
   const bundle = bundles.get(entry.bundleId);
   assert.ok(bundle, `${entry.bundleId}: 번들이 없습니다.`);
 
   const scenes = require(path.join(root, entry.module));
+  const expected = bundle.sceneIds.concat(entry.sharedModuleSceneIds || []).sort();
   assert.deepEqual(
     Object.keys(scenes).sort(),
-    bundle.sceneIds.slice().sort(),
+    expected,
     `${entry.bundleId}: 데이터 모듈의 장면 집합이 번들과 다릅니다.`,
   );
 
@@ -55,7 +82,10 @@ for (const entry of MIGRATED) {
       assert.ok(typeof beat.speaker === "string" && beat.speaker, `${where}: 화자 누락`);
       assert.ok(typeof beat.text === "string" && beat.text, `${where}: 대사 누락`);
       assert.ok(beat.duration > 0, `${where}: duration 이 양수가 아닙니다.`);
-      assert.ok(VIEWS.has(beat.view), `${where}: 알 수 없는 view ${beat.view}`);
+      assert.ok(
+        VIEWS[entry.rendererId].has(beat.view),
+        `${where}: 알 수 없는 view ${beat.view}`,
+      );
       assert.ok(
         (beat.textDelay || 0) < beat.duration,
         `${where}: textDelay 가 beat 길이보다 깁니다.`,
@@ -97,6 +127,14 @@ const reviewPage = fs.readFileSync(
   path.join(root, "dev/cutscenes/cutscene-review-l0-l1.html"),
   "utf8",
 );
+const reviewPageL1L2 = fs.readFileSync(
+  path.join(root, "dev/cutscenes/cutscene-review-l1-l2.html"),
+  "utf8",
+);
+assert.ok(
+  reviewPageL1L2.includes("src/cutscenes/data/beats-l1-l2.js"),
+  "L1→L2 검토 페이지가 제품 데이터 모듈을 로드하지 않습니다.",
+);
 for (const required of [
   "src/cutscenes/cutscene-player.js",
   "src/cutscenes/renderers/l0-l1.js",
@@ -107,13 +145,16 @@ for (const required of [
     `검토 페이지가 제품 모듈 ${required} 를 로드하지 않습니다.`,
   );
 }
-const reviewScript = fs.readFileSync(
-  path.join(root, "dev/cutscenes/cutscene-review-l0-l1.js"),
-  "utf8",
-);
-assert.ok(
-  !reviewScript.includes("const SCENES ="),
-  "검토 스크립트에 장면 데이터 사본이 남아 있습니다. 정본은 src/cutscenes/data 입니다.",
-);
+
+for (const name of ["cutscene-review-l0-l1", "cutscene-review-l1-l2"]) {
+  const reviewScript = fs.readFileSync(
+    path.join(root, `dev/cutscenes/${name}.js`),
+    "utf8",
+  );
+  assert.ok(
+    !reviewScript.includes("const SCENES ="),
+    `${name}.js 에 장면 데이터 사본이 남아 있습니다. 정본은 src/cutscenes/data 입니다.`,
+  );
+}
 
 console.log(`Cutscene registry tests passed (${MIGRATED.length} migrated bundle).`);

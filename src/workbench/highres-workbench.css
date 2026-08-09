@@ -1,0 +1,63 @@
+/*
+ * 고해상도 복원 표면.
+ *
+ * 640×384 도트 작업대의 작업면 사각형(188,51 크기 262×262) 위에 정확히 겹친다.
+ * 퍼센트로 두면 PixelScreen 이 1·2·3배 중 어떤 배율로 커져도 따라온다.
+ * 화면 표시 크기와 1254 캔버스 좌표계는 여기서 분리된다.
+ */
+
+.highres-viewport {
+  position: absolute;
+  left: 29.375%;          /* 188 / 640 */
+  top: 13.28125%;         /* 51 / 384 */
+  width: 40.9375%;        /* 262 / 640 */
+  height: 68.2291667%;    /* 262 / 384 */
+  overflow: hidden;
+  touch-action: none;
+  background: #e8e3d5;
+}
+
+.highres-stack {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+}
+
+.highres-paint,
+.highres-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.highres-paint {
+  cursor: crosshair;
+  touch-action: none;
+  outline: none;
+}
+
+/* 포커스 표시는 캔버스 위 도트 테두리로. CSS outline 을 쓰면 거기만 웹처럼 보인다. */
+.highres-paint:focus-visible {
+  box-shadow: inset 0 0 0 2px #d8a94b;
+}
+
+.highres-outline {
+  pointer-events: none;
+}
+
+/* 작업대의 황색 조명이 그림 위에서도 이어지도록 아주 얕게만 얹는다. */
+.highres-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 42%,
+    rgba(252, 218, 135, 0.10) 0%,
+    rgba(246, 205, 113, 0.04) 38%,
+    rgba(18, 28, 58, 0.10) 82%,
+    rgba(13, 20, 39, 0.18) 100%
+  );
+}

@@ -114,17 +114,23 @@
       }
     }
 
-    function drawFrame(local) {
+    function drawFrame(local, now) {
       const beat = scene.beats[beatIndex];
       const style = activeRenderer.speakerStyle
         ? activeRenderer.speakerStyle(beat.speaker)
         : T.defaultSpeakerStyle(beat.speaker);
+      // 비·불·먼지처럼 절대 시각에 매인 효과를 위해 now 도 함께 넘긴다.
+      renderContext.now = now;
+      renderContext.local = local;
+      const width = activeRenderer.nameBoxWidth
+        ? activeRenderer.nameBoxWidth(beat.speaker)
+        : T.nameBoxWidth(beat.speaker);
       activeRenderer.renderBeat(scene, beat, local, renderContext);
-      T.drawDialogueBox(ctx, beat, style);
+      T.drawDialogueBox(ctx, beat, style, width);
       T.clear(textCtx, textCanvas);
       textCtx.textBaseline = "top";
       activeRenderer.renderTextOverlay?.(scene, beat, renderContext);
-      T.drawDialogueText(textCtx, beat, local, forceCompleteText, style);
+      T.drawDialogueText(textCtx, beat, local, forceCompleteText, style, width);
     }
 
     function tick(now) {
@@ -143,7 +149,7 @@
         options.onBeat?.(scene, scene.beats[beatIndex], beatIndex);
       }
       try {
-        drawFrame(current.local);
+        drawFrame(current.local, now);
       } catch (error) {
         fail(error);
         return;

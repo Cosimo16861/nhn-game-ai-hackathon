@@ -1,6 +1,6 @@
 # 통합 구현 현황표
 
-> 기준일: 2026-08-10 · 기준 커밋: `1c588c1`
+> 기준일: 2026-08-10 · 기준 커밋: 단계 5 완료 시점
 > 정본: `docs/GAME_INTEGRATION_PLAN.md`
 > 이 문서는 계획서의 단계별 진척만 기록한다. 설계 결정은 계획서에 있다.
 
@@ -13,9 +13,9 @@
 | 2 | ProgressStore v2 · ArtworkStore | **완료** | `src/core/{progress-store,artwork-store,migration-v1-v2}.js` |
 | 3 | 공통 컷신 플레이어 세로 슬라이스 | **완료** | `src/cutscenes/**`, L0→L1 추출, 검토 페이지 역전 |
 | 4 | 단일 셸 | **완료** | `index.html`, `src/app/**`, `src/screens/**` |
-| 5 | Q1A 고해상도 본편 이식 | 미착수 | — |
-| 6 | 나머지 컷신 묶음 이전 | 미착수 | L1→L2 … 엔딩 6묶음 |
-| 7 | 나머지 13개 복원 퀘스트 등록 | 미착수 | — |
+| 5 | Q1A 고해상도 본편 이식 | **완료** | `src/workbench/**`, Q0·Q1A 이식 |
+| 6 | 나머지 컷신 묶음 이전 | 진행 중 | L1→L2 완료. L2→L3 … 엔딩 5묶음 남음 |
+| 7 | 나머지 12개 복원 퀘스트 등록 | 미착수 | Q0·Q1A 는 단계 5에서 완료 |
 | 8 | Q6 · 엔딩 | 미착수 | `finale` 화면은 컨테이너만 존재 |
 | 9 | 호환 파일 제거 | 미착수 | 승인 필요 |
 | 10 | 최종 QA 매트릭스 | 미착수 | — |
@@ -28,12 +28,12 @@
 | 제품 코드에 `location.href` 화면 이동 없음 | 충족. `src/board-entry.js` 의 이동은 board.html fallback 전용 |
 | 화면 다섯 종류 | 충족. `finale` 은 컨테이너만 있고 단계 8에서 채운다 |
 | 진행 저장 v2 + pending | 충족 |
-| 그림 Blob 은 IndexedDB | 저장소 완성. 쓰는 쪽(작업대)은 단계 5 |
-| 완료 컷신 번들 16개 | 데이터·검증 완료. 재생 가능한 것은 `B_OPENING`, `B_AFTER_Q0` |
-| 복원 퀘스트는 `assets/questimage` 만 사용 | 계약·검증 완료. 런타임 연결은 단계 5·7 |
-| 1254 원본 유지, 붓·채우기·되돌리기 | 미착수(단계 5). 현재 Q0 는 구형 64px 작업대 |
-| 색 유사도 + 의미 유사도 결합 판정 | 미착수(단계 5). 현재 Q0 는 구형 몽타주 채점 |
-| 증거판 썸네일은 실제 복원 결과 | 배선 완료(`BoardScreen.refreshThumbnails`). 저장하는 쪽은 단계 5 |
+| 그림 Blob 은 IndexedDB | 충족. draft 자동 저장, 통과 시 final(1254 PNG)·thumbnail(160) 저장 |
+| 완료 컷신 번들 16개 | 데이터·검증 완료. 재생 가능: `B_OPENING`, `B_AFTER_Q0`, `B_AFTER_Q1A`, `B_AFTER_Q1B` |
+| 복원 퀘스트는 `assets/questimage` 만 사용 | Q0·Q1A 는 questimage 쌍만 쓴다. 나머지 12개는 단계 7 |
+| 1254 원본 유지, 붓·채우기·되돌리기 | Q0·Q1A 충족. 16·36·72px 붓, 폐곡선 채우기, 최소 20단계 이력 |
+| 색 유사도 + 의미 유사도 결합 판정 | 충족. 색 70/채색 15/CLIP 15, CLIP 불가 시 82/18, 통과선 60 |
+| 증거판 썸네일은 실제 복원 결과 | 충족. Q0·Q1A 카드가 플레이어가 칠한 그림을 보여 준다 |
 
 ## 3. 이전이 끝난 컷신
 
@@ -41,8 +41,10 @@
 | --- | --- | --- | --- |
 | `B_OPENING` | `C0_INTRO`, `C0B_THE_JOB` | `src/cutscene-c0-*.js` (legacy adapter) | `dev/cutscenes/cutscene-review-intro.html` |
 | `B_AFTER_Q0` | `C1A_RETURNED_HEIR`, `C1B_TWELVE_YEARS_UNDER` | `src/cutscenes/data/beats-l0-l1.js` | `dev/cutscenes/cutscene-review-l0-l1.html` (제품 모듈 호출) |
+| `B_AFTER_Q1A` | `C2C_RAIN_BEHIND_THE_DOOR`, `C2A_HOLTS_MEMORY` | `src/cutscenes/data/beats-l1-l2.js` | `dev/cutscenes/cutscene-review-l1-l2.html` (제품 모듈 호출) |
+| `B_AFTER_Q1B` | `C2B_MIST_IS_MISSING` | `src/cutscenes/data/beats-l1-l2.js` | 같은 페이지 `?bundle=q1b` |
 
-나머지 여섯 묶음은 아직 `dev/cutscenes/*.js` 안에 데이터와 렌더링이 함께 있다.
+나머지 다섯 묶음은 아직 `dev/cutscenes/*.js` 안에 데이터와 렌더링이 함께 있다.
 `CutsceneRegistry` 에 없는 장면을 재생하려 하면 조용히 넘어가지 않고 오류를 낸다.
 
 ## 4. 문서 간 충돌 기록
@@ -70,3 +72,7 @@
 | `src/intro.js`, `src/index-workbench.js` | 더 이상 로드하지 않음 | 역할을 `TitleScreen`·`GameDirector`·`WorkbenchScreen` 이 가져갔다. 파일은 검증이 끝날 때까지 남긴다 |
 | `board.html` 의 선택 이동 | `index.html?workbench=` → `workbench.html?tutorial=` | 새 셸이 URL 파라미터를 받지 않는다. board.html 은 확인용 fallback 이다 |
 | `BranchMap` 핫스팟 | 노드 구성이 바뀔 때만 재생성 | 1초 시계 갱신이 버튼을 지워 선택이 씹혔다 |
+| Q0 복원 자산 | `assets/q0-montage` → `assets/questimage/Q0_MONTAGE__*` | 모든 복원 퀘스트가 questimage 만 쓴다는 계약. `assets/q0-montage` 는 L0→L1 컷신 수배 전단이 아직 참조하므로 삭제하지 않았다 |
+| `src/workbench.js` 도구 슬롯 | `view.tools` 로 대체 가능 | 1px 붓을 쓰지 않기 위해 16·36·72px 붓으로 교체 |
+| `src/workbench.js` 표찰 | `view.zoom` 이 있으면 확대 −/＋ 로 표시 | 60~160% 확대를 도트 화면 안에서 조작하기 위해 |
+| 구 Q0 런타임 | index.html 에서 제거 | `workbench-runtime.js`·`montage-scoring.js`·`workbench-quests.js`·`q0-montage.js` 는 `workbench.html` fallback 에만 남는다 |

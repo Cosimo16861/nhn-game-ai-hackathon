@@ -102,17 +102,20 @@
     return Math.min(beat.text.length, Math.floor(elapsed / TYPE_MS));
   }
 
-  /** art 캔버스에 대화 상자와 이름표 액자를 그린다. */
-  function drawDialogueBox(ctx, beat, style) {
+  /**
+   * art 캔버스에 대화 상자와 이름표 액자를 그린다.
+   * boxWidth 는 renderer 가 정할 수 있다. 묶음마다 승인된 이름표 폭이 다르다.
+   */
+  function drawDialogueBox(ctx, beat, style, boxWidth) {
     panel(ctx, BOX.x, BOX.y, BOX.w, BOX.h);
-    const width = nameBoxWidth(beat.speaker);
+    const width = boxWidth || nameBoxWidth(beat.speaker);
     panel(ctx, BOX.x + 10, BOX.y - 20, width, 23);
     px(ctx, BOX.x + 16, BOX.y - 16, 3, 14, style.accent);
   }
 
   /** 글씨 캔버스에 화자 이름과 지금까지 타이핑된 대사를 그린다. */
-  function drawDialogueText(textCtx, beat, local, forceComplete, style) {
-    const width = nameBoxWidth(beat.speaker);
+  function drawDialogueText(textCtx, beat, local, forceComplete, style, boxWidth) {
+    const width = boxWidth || nameBoxWidth(beat.speaker);
     textCtx.textBaseline = "top";
     textCtx.textAlign = "center";
     textCtx.font = '700 11px "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';

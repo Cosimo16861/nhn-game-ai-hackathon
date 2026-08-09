@@ -74,15 +74,13 @@ function harness() {
       };
     },
   };
+  // 고해상도 작업대로 이식이 끝난 것은 Q0·Q1A 뿐인 현재 상태를 흉내 낸다.
   win.WorkbenchScreen = {
+    isSupported: (questId) => ["Q0_MONTAGE", "Q1A_IDEALIZED"].includes(questId),
     mount(container, options) {
       workbenchOnPassed = options.onPassed;
       return { dispose: () => disposed.push("workbench") };
     },
-  };
-  // Q0 만 등록된 현재 상태를 흉내 낸다.
-  win.WorkbenchQuestConfig = {
-    get: (questId) => (questId === "Q0_MONTAGE" ? { id: questId } : null),
   };
 
   const progressStore = ProgressStoreFactory.create({ storage: fakeStorage(), bundles });
@@ -166,7 +164,12 @@ function harness() {
     h.progressStore.beginQuestCompletion("Q0_MONTAGE", "B_AFTER_Q0");
     h.progressStore.completeBundle("B_AFTER_Q0");
 
+    // Q1A 는 이식이 끝났으므로 열려야 한다.
     await h.director.openQuest("Q1A_IDEALIZED");
+    assert.deepEqual(h.director.getState(), { name: "workbench", questId: "Q1A_IDEALIZED" });
+
+    // 아직 이식하지 않은 노드만 안내로 막는다.
+    await h.director.openQuest("Q1B_TAVERN_WALL");
     assert.equal(h.director.getState().name, "fatal");
     assert.ok(
       h.events.some((event) => event.startsWith("fatal:")),
