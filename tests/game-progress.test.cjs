@@ -16,7 +16,7 @@ require(path.join(__dirname, "..", "src", "game-progress.js"));
 
 const progress = global.GameProgress;
 assert.equal(progress.has("CUTSCENE_SEEN_C0_INTRO"), true);
-assert.equal(progress.has("CUTSCENE_SEEN_C0B_THE_JOB"), true);
+assert.equal(progress.has("CUTSCENE_SEEN_C0B_THE_JOB"), false);
 
 let notifications = 0;
 const unsubscribe = progress.subscribe(() => { notifications += 1; });

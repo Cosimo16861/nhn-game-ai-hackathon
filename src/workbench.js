@@ -184,7 +184,7 @@
       size: 9.5, weight: "700", color: C.ink, boxHeight: 14,
       angle: textRotation.angle, rotateX: textRotation.rotateX, rotateY: textRotation.rotateY,
     });
-    const lines = wrapText(quote.text || "", memo.width - 22, 9.5, "500").slice(0, compact ? 3 : 4);
+    const lines = wrapText(quote.text || "", memo.width - 22, 9.5, "500").slice(0, 3);
     lines.forEach((value, lineIndex) => P.text(ctx, value, left, top + 16 + lineIndex * 12, {
       size: 9.5, weight: "500", color: C.inkSoft, boxHeight: 11,
       angle: textRotation.angle, rotateX: textRotation.rotateX, rotateY: textRotation.rotateY,

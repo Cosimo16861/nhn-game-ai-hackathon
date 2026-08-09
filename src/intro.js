@@ -457,9 +457,14 @@
     ping(0);
   }
 
+  function hasSeenCutscene(id, legacyKey) {
+    if (window.GameProgress) return window.GameProgress.has("CUTSCENE_SEEN_" + id);
+    return localStorage.getItem(legacyKey) === "1";
+  }
+
   function startGame() {
-    if (localStorage.getItem("heir_intro_seen") !== "1") startIntro();
-    else if (localStorage.getItem("heir_c0b_seen") !== "1") startC0B();
+    if (!hasSeenCutscene("C0_INTRO", "heir_intro_seen")) startIntro();
+    else if (!hasSeenCutscene("C0B_THE_JOB", "heir_c0b_seen")) startC0B();
     else startTutorial();
   }
 
@@ -480,7 +485,7 @@
   function startC0B(recordFilename) {
     ensureAudio();
     mode = "c0b";
-    c0bCanSkip = localStorage.getItem("heir_c0b_seen") === "1";
+    c0bCanSkip = hasSeenCutscene("C0B_THE_JOB", "heir_c0b_seen");
     c0bSkipHint.hidden = !c0bCanSkip;
     fade.style.opacity = "0";
     showOnly("c0b");
@@ -577,14 +582,14 @@
     if ((event.key === "m" || event.key === "M") && mode === "intro") toggleMute();
   });
 
-  if (localStorage.getItem("heir_intro_seen") === "1") {
+  if (hasSeenCutscene("C0_INTRO", "heir_intro_seen")) {
     startLabel.textContent = "이어하기";
     titleReplay.hidden = false;
   }
 
   const launchParams = new URLSearchParams(window.location.search);
-  if (launchParams.get("c0b") === "1") {
-    startC0B(launchParams.get("record") === "1" ? "c0b-the-job.webm" : undefined);
+  if (launchParams.get("c0b") === "1" && launchParams.get("record") === "1") {
+    startC0B("c0b-the-job.webm");
   }
 
   cancelAnimationFrame(frame);

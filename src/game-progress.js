@@ -111,9 +111,17 @@
     },
   });
 
-  // 기존 프롤로그 완료 기록을 새 진행 상태로 한 번 자동 이전한다.
-  if (global.localStorage?.getItem("heir_intro_seen") === "1" && state.flags.length === 0) {
-    api.ensureOpeningComplete();
+  // 구형 저장 키를 컷신별로 이전한다. 인트로만 본 저장에서 새 C0B까지 본 것으로
+  // 처리하면 첫 번째 의뢰의 발단이 통째로 건너뛰어지므로 두 기록을 분리한다.
+  if (state.flags.length === 0) {
+    const migrated = [];
+    if (global.localStorage?.getItem("heir_intro_seen") === "1") {
+      migrated.push("CUTSCENE_SEEN_C0_INTRO");
+    }
+    if (global.localStorage?.getItem("heir_c0b_seen") === "1") {
+      migrated.push("CUTSCENE_SEEN_C0B_THE_JOB");
+    }
+    if (migrated.length) api.replaceFlags(migrated);
   }
 
   global.GameProgress = api;
