@@ -1,0 +1,26 @@
+{
+  "layerTransition": "L0_TO_L1",
+  "reviewOnly": true,
+  "logicalResolution": [640, 384],
+  "dialogueBox": { "x": 152, "y": 278, "width": 336, "height": 84 },
+  "scenes": {
+    "C1A_RETURNED_HEIR": {
+      "nextQuest": "Q1A_IDEALIZED",
+      "background": "backgrounds/police-station-rain.png",
+      "inserts": ["inserts/damaged-edmund-portrait.png"]
+    },
+    "C1B_TWELVE_YEARS_UNDER": {
+      "nextQuest": "Q1B_TAVERN_WALL",
+      "background": "backgrounds/police-station-rain.png",
+      "inserts": ["inserts/tavern-wall-layers.png"]
+    }
+  },
+  "sharedPortraits": [
+    "../c0b/portraits/player-calm.png",
+    "../c0b/portraits/player-thinking.png",
+    "../c0b/portraits/player-ready.png",
+    "../c0b/portraits/reed-calm.png",
+    "../c0b/portraits/reed-tense.png",
+    "../c0b/portraits/reed-high.png"
+  ]
+}

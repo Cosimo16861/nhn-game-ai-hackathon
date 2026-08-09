@@ -1,0 +1,22 @@
+{
+  "logicalSize": [640, 384],
+  "dialogueBox": { "x": 152, "y": 278, "width": 336, "height": 84 },
+  "backgrounds": {
+    "parlor": "backgrounds/asherton-parlor-rain.png",
+    "westHall": "backgrounds/asherton-west-hall-rain.png",
+    "school": "backgrounds/school-after-rain.png",
+    "tavern": "backgrounds/tavern-evening.png"
+  },
+  "inserts": {
+    "idealizedPortrait": "inserts/restored-idealized-portrait.png",
+    "wetWall": "inserts/wet-child-wall-traces.png",
+    "ferryWall": "inserts/restored-ferry-wall.png",
+    "catMemory": "inserts/cora-cat-memory.png"
+  },
+  "generatedSources": {
+    "parlor": "source/asherton-parlor-generated.png",
+    "westHall": "source/asherton-west-hall-generated.png",
+    "school": "source/school-generated.png",
+    "tavern": "source/tavern-generated.png"
+  }
+}

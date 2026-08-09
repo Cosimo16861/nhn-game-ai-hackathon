@@ -1,0 +1,115 @@
+:root {
+  --ink: #0d1214;
+  --panel: #1d1814;
+  --panel-light: #3e332a;
+  --cream: #eadfca;
+  --cream-dim: #aaa18d;
+  --gold: #d8a94b;
+  --gold-dark: #8e6828;
+  --teal: #4a7471;
+  --rust: #a05c43;
+  --font: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  color: var(--cream);
+  background: #050708;
+  font-family: var(--font);
+  display: grid;
+  place-items: center;
+}
+
+kbd { font: inherit; }
+
+.game-frame {
+  position: relative;
+  width: min(100vw, calc(100vh * 5 / 3));
+  height: min(100vh, calc(100vw * 3 / 5));
+  overflow: hidden;
+  isolation: isolate;
+  background: #07090a;
+}
+
+.game-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: .13;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, #000 3px 4px),
+    linear-gradient(90deg, rgba(255,255,255,.015), rgba(0,0,0,.04));
+  mix-blend-mode: multiply;
+}
+
+.art-layer,
+.text-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.art-layer {
+  z-index: 1;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.text-layer { z-index: 2; pointer-events: none; }
+
+.cutscene-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.cutscene-controls {
+  position: absolute;
+  z-index: 6;
+  top: 3.2%;
+  left: 2.4%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 13px;
+  color: rgba(234, 223, 202, .67);
+  font-size: clamp(8px, 1.1vw, 12px);
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-shadow: 1px 1px 0 #050708;
+}
+
+kbd {
+  color: #e9d8b5;
+  background: rgba(8, 10, 10, .76);
+  border: 1px solid rgba(233, 216, 181, .28);
+  padding: 0 3px;
+  white-space: nowrap;
+}
+
+.review-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
