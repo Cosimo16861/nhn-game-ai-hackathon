@@ -13,6 +13,9 @@
  *          "end"    초록 — 종점
  *   kind:  "restoration" 복원 퀘스트 / "finale" 증거 연결 + 엔딩
  *
+ *   cutscene: 구 저장 마이그레이션 alias. 제품 진행은 completionBundleId 를 쓴다.
+ *          (정본은 src/data/completion-bundles.js)
+ *
  * 해금은 "부모 통과"가 아니라 "부모의 컷신 종료"로 일어난다.
  * 컷신 중 이탈해도 grants/unlocks가 유실되지 않도록 종료 시 일괄 적용한다.
  */
@@ -40,6 +43,7 @@
       questModule: "QuestMontage", // 신규
       parents: Object.freeze([]),
       cutscene: "C1_THE_CASE",
+      completionBundleId: "B_AFTER_Q0",
     }),
 
     // ── L1 ──────────────────────────────────────────────────────────
@@ -58,6 +62,7 @@
       questModule: "QuestIdealized", // 신규
       parents: Object.freeze(["Q0_MONTAGE"]),
       cutscene: "C2A_WHAT_WAS_ERASED",
+      completionBundleId: "B_AFTER_Q1A",
     }),
     Object.freeze({
       id: "Q1B_TAVERN_WALL",
@@ -74,6 +79,7 @@
       questModule: "QuestTavernWall", // 신규
       parents: Object.freeze(["Q0_MONTAGE"]),
       cutscene: "C2B_THE_WALL",
+      completionBundleId: "B_AFTER_Q1B",
     }),
 
     // ── L2 ──────────────────────────────────────────────────────────
@@ -92,6 +98,7 @@
       questModule: "QuestPortrait", // 기존 src/data/quest-portrait.js (REST1)
       parents: Object.freeze(["Q1A_IDEALIZED"]),
       cutscene: "C3A_THE_SEAL_HE_DREW",
+      completionBundleId: "B_AFTER_Q2A",
     }),
     Object.freeze({
       id: "Q2B_CAT",
@@ -108,6 +115,7 @@
       questModule: "QuestCat", // 기존 src/data/quest-cat.js
       parents: Object.freeze(["Q1B_TAVERN_WALL"]),
       cutscene: "C3B_THE_FLYER",
+      completionBundleId: "B_AFTER_Q2B",
     }),
     Object.freeze({
       id: "Q2C_CHILD_ROOM",
@@ -124,6 +132,7 @@
       questModule: "QuestChildRoom", // 신규
       parents: Object.freeze(["Q1A_IDEALIZED"]),
       cutscene: "C3C_THE_DOOR",
+      completionBundleId: "B_AFTER_Q2C",
     }),
 
     // ── L3 ──────────────────────────────────────────────────────────
@@ -142,6 +151,7 @@
       questModule: "QuestSeal", // 기존 quest-seal.js에서 문신 요소를 분리한 뒤 승계
       parents: Object.freeze(["Q2A_TRUE_FACE"]),
       cutscene: "C4A_WET_LEDGER",
+      completionBundleId: "B_AFTER_Q3A",
     }),
     Object.freeze({
       id: "Q3B_TATTOO",
@@ -158,6 +168,7 @@
       questModule: "QuestTattoo", // quest-seal.js에서 분할 신설
       parents: Object.freeze(["Q2A_TRUE_FACE"]),
       cutscene: "C4B_TOO_NEW",
+      completionBundleId: "B_AFTER_Q3B",
     }),
     Object.freeze({
       id: "Q3C_WAREHOUSE",
@@ -174,6 +185,7 @@
       questModule: "QuestWarehouse", // 신규
       parents: Object.freeze(["Q2B_CAT"]),
       cutscene: "C4C_WHAT_THE_CAT_FOUND",
+      completionBundleId: "B_AFTER_Q3C",
     }),
 
     // ── L4 ──────────────────────────────────────────────────────────
@@ -192,6 +204,7 @@
       questModule: "QuestLedger", // 신규 — 얼굴이 아닌 글자·선을 복원하는 유일한 퀘스트
       parents: Object.freeze(["Q3A_SEAL"]),
       cutscene: "C5A_THE_BLACK_CARRIAGE",
+      completionBundleId: "B_AFTER_Q4A",
     }),
     Object.freeze({
       id: "Q4B_LOGBOOK",
@@ -208,6 +221,7 @@
       questModule: "QuestLogbook", // 신규
       parents: Object.freeze(["Q3C_WAREHOUSE"]),
       cutscene: "C5B_A_WEEK_BEFORE",
+      completionBundleId: "B_AFTER_Q4B",
     }),
     Object.freeze({
       id: "Q4C_SQUARE_BET",
@@ -224,6 +238,7 @@
       questModule: "QuestSquareBet", // 신규
       parents: Object.freeze(["Q3A_SEAL"]),
       cutscene: "C5C_THE_PAINTER",
+      completionBundleId: "B_AFTER_Q4C",
     }),
 
     // ── L5 ──────────────────────────────────────────────────────────
@@ -242,6 +257,7 @@
       questModule: "QuestDock", // 기존 quest-dock.js (REST3) + fourth-wave 이관
       parents: Object.freeze(["Q4A_LEDGER"]),
       cutscene: "C6_EVIDENCE_WALL",
+      completionBundleId: "B_AFTER_Q5A",
     }),
     Object.freeze({
       id: "Q5B_SIREN",
@@ -258,6 +274,7 @@
       questModule: "QuestSiren", // 신규
       parents: Object.freeze(["Q4B_LOGBOOK"]),
       cutscene: "C6B_THAT_NIGHT",
+      completionBundleId: "B_AFTER_Q5B",
     }),
 
     // ── L6 ──────────────────────────────────────────────────────────
@@ -275,6 +292,7 @@
       questModule: null, // 복원이 아니다. 실 잇기 + CE_ENDING 재생
       parents: Object.freeze(["Q5A_DOCK"]),
       cutscene: "CE_ENDING",
+      completionBundleId: "B_AFTER_Q6",
     }),
   ]);
 
