@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, climactic eyewitness reconstruction
+Primary request: foggy late-19th-century dock at night where a black enclosed carriage secretly collected a man
+Scene/backdrop: row of gas lamps receding at image left, black carriage stopped beneath a lamp at center, unidentifiable male silhouette stepping into it, moored ship at image right, wet stone foreground and low crates
+Subject detail: carriage door has a clean reserved emblem panel containing one crescent moon and exactly four separate parallel wave grooves, large enough for later manual replacement
+Style/medium: cinematic but flat pixel-art illustration, crisp block clusters, dark brown outlines, four-value shading, muted navy/black/teal/amber palette matching the tutorial cutscene
+Composition/framing: square wide scene with carriage door clearly readable as the focal point, no owner visible
+Lighting/mood: dense fog, wet amber gaslight, investigative climax
+Constraints: exactly four wave grooves and no fifth; no owner name; no Julian; no family lettering; no watermark
+Avoid: three waves, visible mastermind, modern vehicle, heroic pose, readable text

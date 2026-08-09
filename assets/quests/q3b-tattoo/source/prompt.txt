@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, evidence sketch close-up
+Primary request: close-up of a man's inner wrist with a newly made anchor tattoo
+Subject: rolled dark sleeve, pale wrist, simple old-fashioned anchor design, very dark crisp ink, localized red irritated skin around the lines
+Style/medium: restrained late-19th-century evidence illustration in crisp flat pixel art, dark brown outline, four-step shading, muted skin/navy/rust palette
+Composition/framing: wrist diagonally fills the square, anchor centered and fully visible
+Lighting/mood: neutral police-record lamplight
+Constraints: no date, no letters, no crest, no blood, no watermark
+Avoid: healed faded tattoo, nautical scene, extra tattoos, severe wound

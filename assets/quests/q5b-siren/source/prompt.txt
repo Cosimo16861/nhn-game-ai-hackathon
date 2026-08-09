@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, tragic eyewitness memory
+Primary request: the sailing ship Siren listing dangerously during a violent night storm
+Scene/backdrop: dark open sea, breaking mast, slanted deck and railing, hard rain and waves
+Subject: one frightened eighteen-year-old young man clings to the railing with both hands to avoid sliding; his face is obscured by rain and side profile; he is not rescuing anyone
+Style/medium: emotional late-19th-century flat pixel art, crisp block clusters, dark brown outlines, four-value shading, limited navy/teal/gray/amber palette
+Composition/framing: ship tilt is immediately readable, small youth silhouette near the railing, square dramatic scene
+Lighting/mood: fearful and human, not triumphant
+Constraints: no crest, no carriage, no readable text, no rescue success, no watermark
+Avoid: heroic stance, saving another person, smiling, modern ship equipment, identifiable scar or eyebrow clue

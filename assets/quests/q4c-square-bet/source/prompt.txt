@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, overpainted self-portrait
+Primary request: old self-portrait of a traveling painter named Ram from twenty years earlier, partly uncovered beneath flat overpaint
+Subject: younger adult man with distinctive crooked nose, very thick right eyebrow, square jaw, fewer wrinkles and little beard; plain working painter's clothes
+Style/medium: late-19th-century portrait translated into bold readable flat pixel art, dark brown outlines, four-step shading, muted ochre/olive/brick palette
+Composition/framing: centered chest-up portrait, facial identity marks large enough to survive 64-pixel reduction, overpaint remains around edges
+Lighting/mood: wry, unflattering honesty
+Constraints: no scar, no anchor tattoo, no aristocratic clothes, no text, no watermark
+Avoid: handsome idealization, modern artist gear, resemblance to Edmund

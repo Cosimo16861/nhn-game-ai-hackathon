@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, dark warehouse investigation scene
+Primary request: windowless dock warehouse interior reconstructed from overlapping lantern-lit glimpses
+Scene/backdrop: uneven stacks of wooden crates on both sides, wet stone floor reflecting amber lantern light, deep central rear gap where a small gray cat with one white ear and red ribbon hides; an unreadable wet paper bundle lies in the gap
+Style/medium: atmospheric late-19th-century flat pixel art, crisp block clusters, dark brown outlines, four-value shading, muted navy/brown/teal/amber palette
+Composition/framing: wide interior compressed into a square, lantern path leads from foreground to central rear gap
+Lighting/mood: dark but readable, investigative rather than frightening
+Constraints: no windows, no readable paper, no carriage, no crest, no watermark
+Avoid: electric lights, modern warehouse equipment, legible documents, extra people

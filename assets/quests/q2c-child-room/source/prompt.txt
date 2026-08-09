@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, damaged child's crayon drawing
+Primary request: water-damaged crayon family drawing copied from an old bedroom wall
+Subject: exactly one simple sailing ship and exactly three crude human figures of different heights; leave a clear blank area below for a later manual word overlay
+Style/medium: believable eight-year-old crayon drawing interpreted as chunky pixel art, waxy uneven strokes, limited faded blue/red/yellow/brown palette
+Composition/framing: drawing centered on swollen cream wallpaper with damp edges, ship above and three figures below
+Lighting/mood: fragile, intimate, bittersweet
+Constraints: one ship, three people, no readable text, no crest, no watermark
+Avoid: fourth person, detailed faces, modern objects, ominous evidence symbols

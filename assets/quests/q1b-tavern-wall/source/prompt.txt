@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, layered tavern wall drawing
+Primary request: an old sailor's portrait emerging from the lowest layer of twenty years of overlapping tavern graffiti
+Subject: elderly sailor Perry with broad nose, hollow cheeks, white beard, weathered face; later scratches and paint marks remain only around the edges
+Style/medium: distressed late-19th-century wall drawing rendered as readable flat pixel art, chunky brown outlines, muted ochre/gray/brick palette, four-value shading
+Composition/framing: head-and-shoulders wall portrait centered, visible strata and chipped plaster around it
+Lighting/mood: dim warm tavern light, archaeological reveal rather than horror
+Constraints: the revealed man must clearly be old, no anchor tattoo, no scar clue, no readable text, no watermark
+Avoid: resemblance to a young claimant, modern graffiti, logos, extra faces

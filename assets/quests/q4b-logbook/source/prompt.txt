@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, torn sailor logbook puzzle
+Primary request: five water-damaged torn fragments from one late-19th-century sailor logbook page, arranged near but not yet perfectly joined
+Subject: paper grain and torn edges clearly match across fragments; faded line structure and blank ink bands reserve space for later manual text about midnight, a black carriage, a second gas lamp, Thomas, and a repeated meeting
+Style/medium: crisp flat pixel-art evidence close-up, dark brown outlines, four-step paper shading, muted cream/sepia/blue-gray palette
+Composition/framing: top-down square arrangement, each fragment fully visible with clear matching edges
+Lighting/mood: quiet dockside lamplight
+Constraints: no readable text, no owner name, no family crest, no wave count, no watermark
+Avoid: complete intact page, modern notebook, random legible writing, carriage illustration

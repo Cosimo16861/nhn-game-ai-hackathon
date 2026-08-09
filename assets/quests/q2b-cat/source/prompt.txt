@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, lost-cat flyer illustration without text
+Primary request: simple identification illustration of a seated cat named Fog
+Subject: light-gray cat, exactly one white ear on the cat's right side, vivid muted-red ribbon around the neck, round curled tail, alert eyes
+Style/medium: charming but restrained late-19th-century flat pixel art, dark brown outline, four-step shading, limited gray/red/cream palette
+Composition/framing: centered full cat on plain aged-paper background with generous margin
+Lighting/mood: clear identification image, gentle and readable
+Constraints: exactly one white ear, red ribbon, no text, no lettering, no watermark
+Avoid: two white ears, green ribbon, extra animals, modern pet accessories

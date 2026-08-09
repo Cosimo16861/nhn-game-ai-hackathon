@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, water-damaged estate ledger page
+Primary request: top-down view of a late-19th-century property-management ledger page damaged by water
+Subject: ruled accounting grid, several faded generic rows, one manager-signature area, one vertical outflow column, and one emphasized payment row; leave all exact words blank or as illegible ink traces for manual pixel text overlay
+Style/medium: precise flat pixel-art document close-up, crisp ruled lines, four-value paper and ink shading, muted cream/brown/blue-gray palette
+Composition/framing: ledger page fills the square with readable hierarchy and generous cells
+Lighting/mood: cool forensic lamplight, damp paper texture
+Constraints: no readable names, no readable initials, no carriage, no crest, no watermark
+Avoid: modern spreadsheet, decorative calligraphy, extra seals, legible random text

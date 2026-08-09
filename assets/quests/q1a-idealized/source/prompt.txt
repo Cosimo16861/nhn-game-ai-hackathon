@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, old family portrait
+Primary request: idealized painted portrait of Edmund at age eighteen before a voyage
+Subject: pale young man with very dark slightly wavy hair, deliberately soft jawline, perfectly symmetrical eyebrows, calm neutral expression, sea-teal coat and cream shirt; no visible scar
+Style/medium: late-19th-century formal portrait translated into crisp flat pixel art, dark brown outlines, four-step cel shading, limited muted brown/teal/cream palette
+Composition/framing: nearly frontal chest-up portrait, face centered and large, window-light strip at image left, same crop intended for a later comparison portrait
+Lighting/mood: gentle upper-left window light, polished and emotionally idealized
+Constraints: no visible scar, no text, no crest, no frame lettering, no watermark
+Avoid: photorealism, painterly blur, asymmetrical eyebrow, harsh jaw, modern details

@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork for a pixel-art mystery game
+Primary request: police identification portrait of an anonymous male pickpocket, front-facing bust
+Subject: a very wide gray hat brim hides both eyes; exactly one small mole on the image-right cheek, which is the subject's left cheek; frayed green scarf; dark maroon coat
+Style/medium: late-19th-century flat pixel-art illustration, crisp blocky clusters, dark brown outlines, four-step cel shading, limited muted palette matching the game's tutorial cutscene
+Composition/framing: centered symmetrical bust, head and shoulders fill most of the square, simple dark navy background
+Lighting/mood: upper-left lamplight, cautious and anonymous
+Constraints: exactly one cheek mole on image-right only; no mole-like dots on image-left; no readable text; no logos; no watermark
+Avoid: modern clothing, photorealism, smooth gradients, extra people, aristocratic insignia

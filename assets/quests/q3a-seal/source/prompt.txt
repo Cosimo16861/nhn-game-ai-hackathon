@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, broken wax seal reconstruction
+Primary request: seven broken pieces of one dark-red circular wax seal laid together over a blank old letter
+Subject: one simple crescent moon in the upper half; beneath it exactly three thick, widely separated horizontal wavy bands—top, middle, bottom—each a single groove; plain circular border and no other waves
+Style/medium: precise flat pixel-art evidence close-up, dark brown outlines, four-value wax shading, muted burgundy/cream palette
+Composition/framing: top-down macro close-up, seal centered and large, fragment seams clearly readable
+Lighting/mood: forensic lamplight, quiet discovery
+Constraints: exactly three wave bands total and no fourth; no doubled grooves; no readable letter text; no initials; no watermark
+Avoid: extra waves in the border, carriage imagery, ornate heraldic animals, modern stamp design

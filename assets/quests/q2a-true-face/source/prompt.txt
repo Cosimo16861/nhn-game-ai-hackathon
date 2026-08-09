@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: square restoration-quest source artwork, eyewitness reconstruction portrait
+Primary request: precise edit of Q1A's idealized portrait into the truthful portrait of the same Edmund at age eighteen
+Input images: Q1A generated original is the identity, crop, clothing, window, palette, and lighting reference
+Subject: same young man and dark wavy hair, distinctly angular jaw, only the image-right eyebrow raised, exactly one small healed scar at the image-left temple, sea-teal coat and cream shirt
+Style/medium: late-19th-century eyewitness portrait in crisp flat pixel art, dark brown outlines, four-step cel shading, muted brown/teal/cream palette
+Composition/framing: nearly frontal chest-up portrait, centered face and same scale as the idealized portrait, simple neutral background
+Lighting/mood: honest upper-left light, observant and unsentimental
+Constraints: preserve Q1A identity and composition; exactly one eyebrow raised on image-right; exactly one scar on image-left temple; no text, no crest, no watermark
+Avoid: round soft jaw, both eyebrows raised, dramatic injury, modern details, photorealism
