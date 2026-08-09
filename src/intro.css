@@ -235,6 +235,7 @@ button { font: inherit; }
   font-weight: 800;
   text-shadow: 1px 1px 0 #453116;
 }
+.story-copy .story-text { display: block; white-space: nowrap; }
 .story-copy .quote { color: #fff3d2; font-size: 1.08em; }
 
 .intro-meta {

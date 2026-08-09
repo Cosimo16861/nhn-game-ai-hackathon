@@ -23,37 +23,37 @@
   const scenes = [
     {
       duration: 3900,
-      copy: "안개가 육지를 삼키는 항구 도시, <span class=\"accent\">헤이번</span>.",
+      copy: "안개가 삼킨 항구 도시,<br><span class=\"accent\">헤이번</span>.",
       draw: drawHarbor,
     },
     {
       duration: 3600,
-      copy: "이곳에는 아직 사람의 얼굴을 남길<br><span class=\"accent\">사진기</span>가 없다.",
+      copy: "이곳에는 얼굴을 남길<br><span class=\"accent\">사진기</span>가 없다.",
       draw: drawEmptyFrame,
     },
     {
       duration: 3900,
-      copy: "사람이 본 것은 기억 속에 남고,<br>기억 속의 것은 <span class=\"accent\">말</span>로만 나온다.",
+      copy: "본 것은 기억에 남고,<br>기억은 <span class=\"accent\">말</span>이 된다.",
       draw: drawWitness,
     },
     {
       duration: 4100,
-      copy: "당신은 그 말을 듣고,<br>사라진 얼굴을 <span class=\"accent\">그림</span>으로 되돌리는 사람.",
+      copy: "당신은 증언을 듣고,<br>사라진 얼굴을 <span class=\"accent\">그린다</span>.",
       draw: drawRestorer,
     },
     {
       duration: 3700,
-      copy: "당신의 그림은<br>이름 없는 누군가를 찾아내고—",
+      copy: "당신의 그림은<br>이름 없는 이를 찾아내고—",
       draw: drawPoster,
     },
     {
       duration: 3700,
-      copy: "때로는 잘못 기억된 얼굴 하나가<br><span class=\"accent\">엉뚱한 사람의 운명</span>을 가른다.",
+      copy: "하지만 잘못된 얼굴은<br><span class=\"accent\">죄 없는 이의 운명</span>을 가른다.",
       draw: drawConsequence,
     },
     {
       duration: 4100,
-      copy: "그날 밤, 경찰이 문을 두드렸다.<br><span class=\"quote\">“말로는 잡을 수 없소. 얼굴을 주시오.”</span>",
+      copy: "그날 밤, 경찰이 찾아왔다.<br><span class=\"quote\">“말 대신 얼굴을 주시오.”</span>",
       draw: drawKnock,
     },
   ];
@@ -405,7 +405,7 @@
         if (current.index !== sceneIndex) {
           sceneIndex = current.index;
           sceneSeed += 7;
-          copy.innerHTML = scenes[sceneIndex].copy;
+          setSceneCopy(sceneIndex);
           ping(sceneIndex);
         }
         scenes[current.index].draw(current.local, sceneSeed);
@@ -426,13 +426,17 @@
     roleView.hidden = view !== "role";
   }
 
+  function setSceneCopy(index) {
+    copy.innerHTML = `<span class="story-text">${scenes[index].copy}</span>`;
+  }
+
   function startIntro() {
     ensureAudio();
     mode = "intro";
     sceneIndex = 0;
     sceneStarted = performance.now();
     storyElapsed = 0;
-    copy.innerHTML = scenes[0].copy;
+    setSceneCopy(0);
     progress.style.width = "0%";
     fade.style.opacity = "1";
     showOnly("intro");
