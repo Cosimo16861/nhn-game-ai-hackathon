@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  const ROOT = "output/questimage";
+  const ROOT = "assets/questimage";
   const RESOLUTION = 1254;
 
   const palette = (...entries) => Object.freeze(entries.map(([name, hex]) =>

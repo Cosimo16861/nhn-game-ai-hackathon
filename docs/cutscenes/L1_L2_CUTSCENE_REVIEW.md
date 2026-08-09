@@ -6,11 +6,11 @@
 
 ## 사용자 검토 화면
 
-- Q1A 완료 묶음: `cutscene-review-l1-l2.html?bundle=q1a`
+- Q1A 완료 묶음: `dev/cutscenes/cutscene-review-l1-l2.html?bundle=q1a`
   - 1/2 《문 뒤의 빗물》 → Q2C 《닫힌 방》
   - 2/2 《홀트가 기억한 얼굴》 → Q2A 《기억되지 않은 얼굴》
   - 약 97초, 두 컷신 자동 연속 재생
-- Q1B 완료 묶음: `cutscene-review-l1-l2.html?bundle=q1b`
+- Q1B 완료 묶음: `dev/cutscenes/cutscene-review-l1-l2.html?bundle=q1b`
   - 1/1 《안개를 찾습니다》 → Q2B 《고양이 전단》
   - 약 39초
 

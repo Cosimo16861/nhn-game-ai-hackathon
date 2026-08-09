@@ -39,4 +39,4 @@
 - 게임 시작 화면에서 인트로를 스킵했을 때 승인된 `C0B_THE_JOB`으로 즉시 전환됨을 확인.
 - 콘솔 경고 및 오류 없음.
 
-검토 URL: `http://localhost:8135/cutscene-review-intro.html`
+검토 URL: `http://localhost:8135/dev/cutscenes/cutscene-review-intro.html`

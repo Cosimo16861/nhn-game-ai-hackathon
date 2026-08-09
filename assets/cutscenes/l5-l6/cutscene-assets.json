@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "cropRule": "portrait-crop-v1",
+  "logicalSize": [
+    640,
+    384
+  ],
+  "dialogueBox": [
+    152,
+    278,
+    336,
+    84
+  ],
+  "sourceHashes": {
+    "11-homeless-portraits.png": "9b370567ccfc3debe86faf56e73b43c43760cae7aba817a0ceda4d471395c880"
+  },
+  "backgrounds": [
+    "backgrounds/police-evidence-room-night.png",
+    "backgrounds/office-evidence-wall-dawn.png"
+  ],
+  "inserts": [
+    "inserts/siren-night-memory.png"
+  ],
+  "evidence": [
+    "evidence/EV_WANTED.png",
+    "evidence/EV_IDEALIZED.png",
+    "evidence/EV_TRUE_FACE.png",
+    "evidence/EV_SEAL_3.png",
+    "evidence/EV_LEDGER_TC.png",
+    "evidence/EV_CARRIAGE_4.png"
+  ],
+  "portraits": [
+    "portraits/banks-calm.png",
+    "portraits/banks-high.png",
+    "portraits/banks-tense.png"
+  ]
+}

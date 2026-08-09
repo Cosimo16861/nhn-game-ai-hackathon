@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <base href="../../" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050708" />
+    <title>L5 → L6 컷신 검토</title>
+    <link rel="stylesheet" href="dev/cutscenes/cutscene-review-l0-l1.css" />
+  </head>
+  <body>
+    <main class="game-frame" data-role="game-frame">
+      <canvas class="art-layer" data-role="art" width="640" height="384" aria-hidden="true"></canvas>
+      <canvas class="text-layer" data-role="text" width="1920" height="1152" aria-hidden="true"></canvas>
+      <p class="cutscene-live" data-role="cutscene-live" aria-live="polite"></p>
+      <p class="review-status" data-role="review-status" aria-live="polite">자산을 준비하고 있습니다.</p>
+      <div class="cutscene-controls" aria-label="컷신 키보드 조작 안내">
+        <span><kbd>SPACE</kbd> 문장 완성 / 다음</span>
+        <span><kbd>ESC</kbd> 현재 컷신 스킵</span>
+        <span><kbd>R</kbd> 묶음 다시 보기</span>
+      </div>
+    </main>
+    <script src="dev/cutscenes/cutscene-review-l5-l6.js"></script>
+  </body>
+</html>

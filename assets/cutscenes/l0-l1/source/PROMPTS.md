@@ -8,7 +8,7 @@
 참조:
 
 - `assets/cutscenes/c0b/backgrounds/office-night.png` — 필수 스타일·팔레트 기준
-- `assets/게임_이미지_모음/06_사람없는_배경/02_내부/01-police-station-empty.png` — 공간 내용 참고
+- `assets/cutscenes/l0-l1/source/reference/police-station-empty.png` — 공간 내용 참고
 
 프롬프트 요약:
 

@@ -2,7 +2,7 @@
 
 > 상태: 고해상도 questimage 증언 계약으로 재작성(2026-08-10) · 재검토 필요
 > 게임 연결: 하지 않음
-> 검토 화면: `cutscene-review-l0-l1.html`
+> 검토 화면: `dev/cutscenes/cutscene-review-l0-l1.html`
 
 ## 1. 제작 단위
 

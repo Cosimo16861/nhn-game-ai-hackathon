@@ -1,0 +1,58 @@
+{
+  "logicalSize": [640, 384],
+  "textLayerSize": [1920, 1152],
+  "dialogueBox": { "x": 152, "y": 278, "width": 336, "height": 84 },
+  "backgrounds": {
+    "police": "backgrounds/police-registry.png",
+    "parlor": "backgrounds/asherton-parlor-dawn.png",
+    "tavern": "backgrounds/tavern-window.png",
+    "square": "backgrounds/market-square-morning.png",
+    "office": "backgrounds/office-clearing-fog.png"
+  },
+  "portraits": {
+    "playerCalm": "portraits/player-calm.png",
+    "playerThinking": "portraits/player-thinking.png",
+    "playerReady": "portraits/player-ready.png",
+    "reedCalm": "portraits/reed-calm.png",
+    "reedHigh": "portraits/reed-high.png",
+    "reedTense": "portraits/reed-tense.png",
+    "eleanorCalm": "portraits/eleanor-calm.png",
+    "eleanorHigh": "portraits/eleanor-high.png",
+    "eleanorTense": "portraits/eleanor-tense.png",
+    "julianCalm": "portraits/julian-calm.png",
+    "julianHigh": "portraits/julian-high.png",
+    "julianTense": "portraits/julian-tense.png",
+    "carverCalm": "portraits/carver-calm.png",
+    "carverHigh": "portraits/carver-high.png",
+    "carverTense": "portraits/carver-tense.png",
+    "coraCalm": "portraits/cora-calm.png",
+    "coraHigh": "portraits/cora-high.png",
+    "ramCalm": "portraits/ram-calm.png",
+    "ramHigh": "portraits/ram-high.png"
+  },
+  "evidence": {
+    "EV_WANTED": "evidence/EV_WANTED.png",
+    "EV_IDEALIZED": "evidence/EV_IDEALIZED.png",
+    "EV_TRUE_FACE": "evidence/EV_TRUE_FACE.png",
+    "EV_SEAL_3": "evidence/EV_SEAL_3.png",
+    "EV_LEDGER_TC": "evidence/EV_LEDGER_TC.png",
+    "EV_CARRIAGE_4": "evidence/EV_CARRIAGE_4.png",
+    "EV_CARVER_CHALK_4": "evidence/EV_CARVER_CHALK_4.png",
+    "EV_CHILD_DRAWING": "evidence/EV_CHILD_DRAWING.png",
+    "EV_TATTOO": "evidence/EV_TATTOO.png",
+    "EV_CAT": "evidence/EV_CAT.png",
+    "EV_RAM": "evidence/EV_RAM.png",
+    "EV_SIREN": "evidence/EV_SIREN.png"
+  },
+  "sprites": {
+    "mistCat": "sprites/mist-cat.png"
+  },
+  "generatedSources": {
+    "police": "source/police-registry-generated.png",
+    "parlor": "source/asherton-parlor-dawn-generated.png",
+    "tavern": "source/tavern-window-generated.png",
+    "square": "source/market-square-morning-generated.png",
+    "office": "source/office-clearing-fog-generated.png"
+  },
+  "portraitCropRule": "portrait-crop-v1"
+}

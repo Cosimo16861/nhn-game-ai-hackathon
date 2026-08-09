@@ -1,0 +1,149 @@
+{
+  "logicalSize": [
+    640,
+    384
+  ],
+  "dialogueBox": {
+    "x": 152,
+    "y": 278,
+    "width": 336,
+    "height": 84
+  },
+  "cropRule": "portrait-crop-v1",
+  "generatedSources": {
+    "dockWarehouse": "source/dock-warehouse-exterior-generated.png",
+    "openChildRoom": "source/open-child-room-generated.png"
+  },
+  "canonicalReferences": {
+    "freshAnchorRecord": {
+      "path": "source/fresh-anchor-record-reference.png",
+      "sha256": "e748d2a1d006d79d49894929958897c7204b932955683c8b54f549eda411d0bd"
+    }
+  },
+  "assets": {
+    "backgrounds/dock-warehouse-dusk.png": {
+      "size": [
+        640,
+        384
+      ],
+      "mode": "RGB",
+      "sha256": "f80156acbf881bc93f519f6351b20440a5fe420d1e7a6044dbd1fdeced97ff1c"
+    },
+    "backgrounds/open-child-room.png": {
+      "size": [
+        640,
+        384
+      ],
+      "mode": "RGB",
+      "sha256": "5eaf0271bf62cfb6ffa75d159676f034388752111b425d831de3dbb71e2d9d97"
+    },
+    "backgrounds/police-station-rain.png": {
+      "size": [
+        640,
+        384
+      ],
+      "mode": "RGB",
+      "sha256": "4e659248ddc93ff6619b87514bfe18e391d263a92d63aa77b37cff10c23b73d6"
+    },
+    "inserts/completed-cat-flyer.png": {
+      "size": [
+        336,
+        216
+      ],
+      "mode": "RGB",
+      "sha256": "42f40a9c3b51193d76a5ee33d3ec6a8492980c9b6501f28477b8561b040be273"
+    },
+    "inserts/fresh-anchor-wrist.png": {
+      "size": [
+        336,
+        216
+      ],
+      "mode": "RGB",
+      "sha256": "e748d2a1d006d79d49894929958897c7204b932955683c8b54f549eda411d0bd"
+    },
+    "inserts/letter-and-broken-wax.png": {
+      "size": [
+        336,
+        216
+      ],
+      "mode": "RGB",
+      "sha256": "e6e28b58b601f03afd52f7b11ff9c24f3231902081f9c18d95eba0065f359890"
+    },
+    "inserts/restored-true-face.png": {
+      "size": [
+        336,
+        216
+      ],
+      "mode": "RGB",
+      "sha256": "c4fa3378dd7dfa61f11a7ffc109d03f8d46d3f95f7b8b81468f0e29e90be1a6b"
+    },
+    "inserts/transferred-child-drawing.png": {
+      "size": [
+        336,
+        216
+      ],
+      "mode": "RGB",
+      "sha256": "1613f0a84747048e5b6bcb866a425f543cdf8b2ed371fcc9a8a05866890ddeed"
+    },
+    "portraits/carver-calm.png": {
+      "size": [
+        237,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "8fbedd2d920ca46f18b036d1ce8027d0ae491ba9eeb4339a33a13264d0af63ad"
+    },
+    "portraits/carver-high.png": {
+      "size": [
+        347,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "5435c6fdc8b106d4613d2ca54f2be984ed776f02a355b1150fa1e7ce1aafa2b3"
+    },
+    "portraits/carver-tense.png": {
+      "size": [
+        283,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "ca02250171c17be2e41267975d71cc88401b978303daa7962cd9d95722f77b11"
+    },
+    "portraits/dockworker-calm.png": {
+      "size": [
+        216,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "138dbe8e94da92ca47ee36dcf831189529c13b365286406729b7543a7f83a73f"
+    },
+    "portraits/julian-calm.png": {
+      "size": [
+        242,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "b563ec83e448946a269faffc0aab0bc78e270e4fb56c07c01dce11471f6b21b9"
+    },
+    "portraits/julian-high.png": {
+      "size": [
+        329,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "f89872aa4f9ef6bb982007d7d85c7358bdffb2aab6535f5ec54c595d9077a3a6"
+    },
+    "portraits/julian-tense.png": {
+      "size": [
+        255,
+        320
+      ],
+      "mode": "RGBA",
+      "sha256": "1b50021d54b1b7d4517642c6bfb275ca13f7817cb6aa285ce4d06af4da27febc"
+    }
+  },
+  "forbiddenFactAudit": {
+    "authenticSealThreeWavesPresent": false,
+    "julianTaughtCarverConclusionPresent": false
+  }
+}

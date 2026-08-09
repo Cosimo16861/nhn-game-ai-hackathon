@@ -45,14 +45,14 @@ L5→L6, L6→엔딩 검토본. 실제 게임 진행·저장·해금 연결은 �
 
 ## 사용자 검토 화면
 
-- L0→L1: `http://localhost:8124/cutscene-review-l0-l1.html`
-- L1→L2: `http://localhost:8124/cutscene-review-l1-l2.html?bundle=q1a`
-- L2→L3: `http://localhost:8130/cutscene-review-l2-l3.html?bundle=q2a`
-- L3→L4: `http://localhost:8131/cutscene-review-l3-l4.html?bundle=q3a`
-- L4→L5: `http://localhost:8132/cutscene-review-l4-l5.html?bundle=q4a`
-- L5→L6: `http://localhost:8133/cutscene-review-l5-l6.html?bundle=q5a`
-- 엔딩 본선: `http://localhost:8134/cutscene-review-l6-ending.html?fixture=main-only`
-- 엔딩 전체 후일담: `http://localhost:8134/cutscene-review-l6-ending.html?fixture=all`
+- L0→L1: `http://localhost:8124/dev/cutscenes/cutscene-review-l0-l1.html`
+- L1→L2: `http://localhost:8124/dev/cutscenes/cutscene-review-l1-l2.html?bundle=q1a`
+- L2→L3: `http://localhost:8130/dev/cutscenes/cutscene-review-l2-l3.html?bundle=q2a`
+- L3→L4: `http://localhost:8131/dev/cutscenes/cutscene-review-l3-l4.html?bundle=q3a`
+- L4→L5: `http://localhost:8132/dev/cutscenes/cutscene-review-l4-l5.html?bundle=q4a`
+- L5→L6: `http://localhost:8133/dev/cutscenes/cutscene-review-l5-l6.html?bundle=q5a`
+- 엔딩 본선: `http://localhost:8134/dev/cutscenes/cutscene-review-l6-ending.html?fixture=main-only`
+- 엔딩 전체 후일담: `http://localhost:8134/dev/cutscenes/cutscene-review-l6-ending.html?fixture=all`
 
 각 레이어의 다른 부모 경로는 URL의 `bundle`을 해당 부모(`q1b`~`q5b`)로 바꿔 검토한다.
 

@@ -1,0 +1,30 @@
+{
+  "logicalSize": [
+    640,
+    384
+  ],
+  "dialogueBox": {
+    "x": 152,
+    "y": 278,
+    "width": 336,
+    "height": 84
+  },
+  "backgrounds": {
+    "police": "backgrounds/police-station-evening.png",
+    "square": "backgrounds/harbor-square-dusk.png",
+    "warehouse": "backgrounds/windowless-warehouse.png"
+  },
+  "inserts": {
+    "sealComparison": "inserts/seal-three-vs-chalk-four.png",
+    "ledgerUnread": "inserts/waterlogged-ledger-unread.png",
+    "tattooRecord": "inserts/fresh-anchor-record.png",
+    "overpaintedPortrait": "inserts/overpainted-young-man.png",
+    "tornLogbook": "inserts/torn-waterlogged-logbook.png",
+    "mistFound": "inserts/mist-found.png"
+  },
+  "generatedSources": {
+    "square": "source/harbor-square-generated.png",
+    "warehouse": "source/windowless-warehouse-generated.png"
+  },
+  "portraitCropRule": "portrait-crop-v1"
+}

@@ -1,3 +1,6 @@
 .DS_Store
 /image/
 /video/*.mov
+__pycache__/
+*.pyc
+/output/

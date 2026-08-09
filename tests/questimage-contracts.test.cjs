@@ -17,8 +17,8 @@ function pngDimensions(file) {
 }
 
 quests.forEach((quest) => {
-  assert.ok(quest.targetSource.startsWith("output/questimage/"));
-  assert.ok(quest.outlineSource.startsWith("output/questimage/"));
+  assert.ok(quest.targetSource.startsWith("assets/questimage/"));
+  assert.ok(quest.outlineSource.startsWith("assets/questimage/"));
   assert.ok(quest.targetSource.endsWith("__완성이미지.png"));
   assert.ok(quest.outlineSource.endsWith("__윤곽선.png"));
   assert.ok(quest.palette.length >= 4 && quest.palette.length <= 8);

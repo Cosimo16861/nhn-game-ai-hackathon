@@ -1,0 +1,194 @@
+{
+  "contract": "l4-l5-review-v1",
+  "logicalScreen": [
+    640,
+    384
+  ],
+  "dialogueBox": [
+    152,
+    278,
+    336,
+    84
+  ],
+  "portraitCrop": "portrait-crop-v1",
+  "portraitSources": {
+    "banks": {
+      "path": "assets/cutscenes/l4-l5/source/reference/11-homeless-portraits.png",
+      "sha256": "9b370567ccfc3debe86faf56e73b43c43760cae7aba817a0ceda4d471395c880",
+      "identity": "elderly male survivor-sailor"
+    },
+    "ram": {
+      "path": "assets/cutscenes/l4-l5/source/reference/10-drunkard-portraits.png",
+      "sha256": "a5d43be88e01fa7f5d9773acd100c192c39ed85241977336c3dd254f1d6378c1"
+    }
+  },
+  "referenceSources": {
+    "sirenMemory": {
+      "path": "assets/cutscenes/l4-l5/source/siren-night-memory-reference.png",
+      "sha256": "f452b170ebe54282c9e809282e0a3480a75d977c3cf8610d884969f910a62747",
+      "use": "fogged incomplete memory crop; not Q5B completion art"
+    }
+  },
+  "files": [
+    {
+      "path": "assets/cutscenes/l4-l5/backgrounds/foggy-dock-night.png",
+      "size": [
+        640,
+        384
+      ],
+      "sha256": "e9df2b7dc25969b65453d5ac5ac0b9525ea12e8af516f006167134171013d1e2"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/backgrounds/police-station-ledger.png",
+      "size": [
+        640,
+        384
+      ],
+      "sha256": "42afab61df68a8b11b8a406aa35739d5a356abaf5dccc1fc90b84c35986d2c50"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/backgrounds/square-painter-evening.png",
+      "size": [
+        640,
+        384
+      ],
+      "sha256": "a792ce2388aab0cd064c7c03c056cea122d07f0c6f86ffa057312bdd73406c63"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/carriage-door-gate.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "3e277c28b0113101ca9ded6a85d5adb70695df960a2c0f3e6eaa0670c795aae7"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/carriage-layout-1.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "3298028aafec5fe9105bdc10b17e57f039131235afbc61392e7b60910dbb396e"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/carriage-layout-2.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "21ee75ae144940c82679e759b41fe3c22bbeb3d31845f24fb434828f1c38eff9"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/carriage-layout-3.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "ad7a9bcb7cb00f9ae3add0b9b3d86ae4840a30f5b53dc53092456f2f210fc8f4"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/carriage-layout-4.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "13ea804401aafa0a4d32c4ab29381c58499ab49fb430b93bce6311f3a1754397"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/carriage-layout-5.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "17d01514fdddd10ecac7732fcc6e8f97a896724e59e5dd77f56ef5d52ac1af06"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/ram-self-portrait.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "3402f7b1ae620cef2d34f31da6a8dfa303a8f194cf7a7fa5512cb4d21e3baaf0"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/restored-banks-journal.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "f06fdfebe8d216bfe6a4b0985fc34ba26f943e228a8cc47afa3b392adb7d1b1e"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/restored-ledger.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "06a50b6876c153d410820a50f673a7e76146b587fe19ae347e4946c0760a13b4"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/siren-hands-memory.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "e736b2fa2ed1bea0710011bf9a50bfff4722d780e046bbe9658884326dbf645d"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/inserts/siren-memory.png",
+      "size": [
+        336,
+        216
+      ],
+      "sha256": "e5ffa4ddd48c4396823de0193a6b265676099258e03f1a1d851996421132295c"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/portraits/banks-calm.png",
+      "size": [
+        198,
+        320
+      ],
+      "sha256": "c9f9d99b113674994dca9897c1dbdffe1e2dfe89f48472ea69347a09af20772a"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/portraits/banks-high.png",
+      "size": [
+        321,
+        320
+      ],
+      "sha256": "4655c4a1f3b6fd4e142f3dc12a39971943e9ddd0f10de900724df1c536b5fc03"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/portraits/banks-tense.png",
+      "size": [
+        216,
+        320
+      ],
+      "sha256": "c271b0537d5c70d86a461bda801ccddd9c26d8d1de9e36b30d7b63eec7498516"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/portraits/ram-calm.png",
+      "size": [
+        220,
+        320
+      ],
+      "sha256": "a9bbce4eccb204c584d36196b19e615c49b6d6585a56a8eff6fe7a12272f190c"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/portraits/ram-high.png",
+      "size": [
+        351,
+        320
+      ],
+      "sha256": "3d2585f626167b5344d1823693717591cf90706e3a2e9811aa83148c6edaf467"
+    },
+    {
+      "path": "assets/cutscenes/l4-l5/portraits/ram-tense.png",
+      "size": [
+        262,
+        320
+      ],
+      "sha256": "9a59550ffaf0ee65c520b6e91ebcd69dbe1031c5db5c78c7610b1b205713cedd"
+    }
+  ]
+}

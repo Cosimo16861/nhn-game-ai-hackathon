@@ -127,8 +127,8 @@
 - 전용 포트: `8130`
 - 소유 파일:
   - `assets/cutscenes/l2-l3/**`
-  - `cutscene-review-l2-l3.html`
-  - `src/cutscene-review-l2-l3.js`
+  - `dev/cutscenes/cutscene-review-l2-l3.html`
+  - `dev/cutscenes/cutscene-review-l2-l3.js`
   - `scripts/prepare-l2-l3-cutscene-assets.py`
   - `docs/cutscenes/L2_L3_CUTSCENE_PLAN.md`
   - `docs/cutscenes/L2_L3_CUTSCENE_REVIEW.md`
@@ -245,8 +245,8 @@ Q3C 입력: 회색 고양이/흰 귀 하나/붉은 리본의 동일성, 창문 �
 ### 5.1 파일 소유권
 
 - Worktree/작업 이름: `cutscene-l3-l4`, 포트 `8131`
-- 소유: `assets/cutscenes/l3-l4/**`, `cutscene-review-l3-l4.html`,
-  `src/cutscene-review-l3-l4.js`, `scripts/prepare-l3-l4-cutscene-assets.py`,
+- 소유: `assets/cutscenes/l3-l4/**`, `dev/cutscenes/cutscene-review-l3-l4.html`,
+  `dev/cutscenes/cutscene-review-l3-l4.js`, `scripts/prepare-l3-l4-cutscene-assets.py`,
   `docs/cutscenes/L3_L4_CUTSCENE_{PLAN,REVIEW}.md`,
   `docs/cutscenes/shared-change-requests/L3_L4.md` (필요할 때만)
 
@@ -324,8 +324,8 @@ Q3C 입력: 회색 고양이/흰 귀 하나/붉은 리본의 동일성, 창문 �
 ### 6.1 파일 소유권과 묶음
 
 - Worktree/작업 이름: `cutscene-l4-l5`, 포트 `8132`
-- 소유: `assets/cutscenes/l4-l5/**`, `cutscene-review-l4-l5.html`,
-  `src/cutscene-review-l4-l5.js`, `scripts/prepare-l4-l5-cutscene-assets.py`,
+- 소유: `assets/cutscenes/l4-l5/**`, `dev/cutscenes/cutscene-review-l4-l5.html`,
+  `dev/cutscenes/cutscene-review-l4-l5.js`, `scripts/prepare-l4-l5-cutscene-assets.py`,
   `docs/cutscenes/L4_L5_CUTSCENE_{PLAN,REVIEW}.md`,
   `docs/cutscenes/shared-change-requests/L4_L5.md` (필요할 때만)
 
@@ -395,8 +395,8 @@ Q5A의 파도 수 계약:
 ### 7.1 파일 소유권과 묶음
 
 - Worktree/작업 이름: `cutscene-l5-l6`, 포트 `8133`
-- 소유: `assets/cutscenes/l5-l6/**`, `cutscene-review-l5-l6.html`,
-  `src/cutscene-review-l5-l6.js`, `scripts/prepare-l5-l6-cutscene-assets.py`,
+- 소유: `assets/cutscenes/l5-l6/**`, `dev/cutscenes/cutscene-review-l5-l6.html`,
+  `dev/cutscenes/cutscene-review-l5-l6.js`, `scripts/prepare-l5-l6-cutscene-assets.py`,
   `docs/cutscenes/L5_L6_CUTSCENE_{PLAN,REVIEW}.md`,
   `docs/cutscenes/shared-change-requests/L5_L6.md` (필요할 때만)
 
@@ -445,8 +445,8 @@ Q5A의 파도 수 계약:
 ### 8.1 파일 소유권
 
 - Worktree/작업 이름: `cutscene-l6-ending`, 포트 `8134`
-- 소유: `assets/cutscenes/l6-ending/**`, `cutscene-review-l6-ending.html`,
-  `src/cutscene-review-l6-ending.js`, `scripts/prepare-l6-ending-cutscene-assets.py`,
+- 소유: `assets/cutscenes/l6-ending/**`, `dev/cutscenes/cutscene-review-l6-ending.html`,
+  `dev/cutscenes/cutscene-review-l6-ending.js`, `scripts/prepare-l6-ending-cutscene-assets.py`,
   `docs/cutscenes/L6_ENDING_CUTSCENE_{PLAN,REVIEW}.md`,
   `docs/cutscenes/shared-change-requests/L6_ENDING.md` (필요할 때만)
 - 다른 Worktree의 미승인 산출물은 복사하지 않는다. 이 세션은 아래 증거 키와 기존 퀘스트
@@ -519,7 +519,7 @@ manifest의 모든 `EV_*`는 `assets/cutscenes/l6-ending/` 아래의 실제 fall
 
 - `src/data/quest-graph.js`
 - `src/game-progress.js`, `src/workbench-flow.js`, `src/state.js`
-- `src/cutscene-review-l0-l1.css`와 기존 승인본 JS/HTML/자산
+- `dev/cutscenes/cutscene-review-l0-l1.css`와 기존 승인본 JS/HTML/자산
 - `docs/REMAINING_CUTSCENES_PRODUCTION_PLAN.md`
 - 다른 레이어의 `assets/cutscenes/l*-*/`, HTML, JS, 준비 스크립트, 검토 문서
 

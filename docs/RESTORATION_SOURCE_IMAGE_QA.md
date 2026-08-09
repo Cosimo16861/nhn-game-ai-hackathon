@@ -1,7 +1,7 @@
 # 14개 복원 퀘스트 구 원본 이미지 생성·검수 기록
 
 > 상태: **역사 기록 · 게임 비정본**
-> 2026-08-10 이후 게임 정본은 `output/questimage/*__완성이미지.png`와
+> 2026-08-10 이후 게임 정본은 `assets/questimage/*__완성이미지.png`와
 > `*__윤곽선.png`다. 현재 계약은 `docs/RESTORATION_QUEST_SPEC.md`를 따른다.
 > 생성일: 2026-08-09
 > 생성 방식: Codex 내장 ImageGen (`stylized-concept`, Q2A는 Q1A 참조 편집)
