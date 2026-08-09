@@ -48,8 +48,8 @@
       clues: Object.freeze([
         "출처: 리드 경위가 전달한 엘리너 아셔튼의 쪽지",
         "남은 유일한 열여덟 살 초상",
-        "습기로 물감이 벗겨져 얼굴을 식별할 수 없음",
-        "짙은 머리 안료와 화면 왼쪽 창가 빛은 남아 있음",
+        "습기로 색이 거의 빠지고 검은 선만 남음",
+        "짙은 머리·청록 코트·화면 왼쪽 창가 빛이 메모에 남음",
         "복원해야 카버와 비교할 얼굴이 생김",
       ]),
       beats: Object.freeze([
@@ -61,8 +61,8 @@
         { speaker: "리드 경위", face: "reedTense", view: "newspaper", text: "그런데 토마스 카버라는 사내가 나타나 자기가 에드먼드라고 하오.", duration: 3600, textDelay: 180 },
         { speaker: "플레이어", face: "playerThinking", view: "third", text: "열여덟 살 얼굴과 지금 얼굴을 비교할 기록은요.", duration: 2800, textDelay: 150 },
         { speaker: "리드 경위", face: "reedHigh", view: "portrait", text: "하나뿐이오. 엘리너 부인이 간직한 그 아이의 옛 초상.", duration: 3300, textDelay: 900, visualLock: 900 },
-        { speaker: "리드 경위", face: "reedTense", view: "portrait", text: "습기를 먹어 물감이 벗겨졌소. 얼굴은 거의 남지 않았고.", duration: 3300, textDelay: 180 },
-        { speaker: "리드 경위", face: "reedCalm", view: "portrait", text: "부인의 쪽지요. 짙은 머리 안료와 창가 쪽 빛은 아직 남아 있다는군.", duration: 3900, textDelay: 240 },
+        { speaker: "리드 경위", face: "reedTense", view: "portrait", text: "습기를 먹어 색이 거의 빠졌소. 지금은 검은 선만 남았고.", duration: 3300, textDelay: 180 },
+        { speaker: "리드 경위", face: "reedCalm", view: "portrait", text: "부인의 쪽지요. 짙은 머리, 청록 코트, 왼쪽 창가의 따뜻한 빛이었다는군.", duration: 4100, textDelay: 240 },
         { speaker: "플레이어", face: "playerThinking", view: "portrait", text: "그 흔적을 복원해야 카버와 비교할 열여덟 살 얼굴이 생기겠군요.", duration: 3900, textDelay: 180 },
         { speaker: "리드 경위", face: "reedCalm", view: "third", text: "그렇소. 저택 응접실에서 초상을 직접 보고 되살려 주시오.", duration: 3500, textDelay: 170 },
       ]),

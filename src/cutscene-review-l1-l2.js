@@ -64,9 +64,9 @@
         { speaker: "엘리너", face: "eleanorTense", view: "hallDoor", text: "열쇠를 가져왔어요. 십이 년 만에 이 문을 여는군요.", duration: 3600, textDelay: 740, visualLock: 740, effect: "lightning" },
         { speaker: "플레이어", face: "playerReady", view: "hallDoor", text: "제가 열겠습니다. 기억은 기다려도 비는 기다리지 않습니다.", duration: 3900, textDelay: 210, effect: "doorOpen", doorOpen: true },
         { speaker: "베스", face: "bethTense", view: "wetWall", text: "저기요. 배 한 척이 보여요. 사람은…… 크기가 다른 셋이고요.", duration: 4100, textDelay: 700, visualLock: 760, effect: "drips", doorOpen: true },
-        { speaker: "플레이어", face: "playerThinking", view: "wetWall", text: "아래에는 글씨 두 자가 있습니다. 물에 번져 획이 거의 끊겼군요.", duration: 3900, textDelay: 820, visualLock: 820, effect: "drips", doorOpen: true },
-        { speaker: "엘리너", face: "eleanorTense", view: "hallEleanor", text: "에드먼드는 가족을 그리면 늘 아래에 ‘우리’라고 썼어요.", duration: 3900, textDelay: 210, effect: "lightningSoft", doorOpen: true },
-        { speaker: "플레이어", face: "playerReady", view: "wetWall", text: "배 하나, 사람 셋, 그리고 ‘우리’. 지금 종이에 옮겨 남은 획을 복원해야 합니다.", duration: 4500, textDelay: 190, effect: "drips", doorOpen: true },
+        { speaker: "플레이어", face: "playerThinking", view: "wetWall", text: "푸른 물 번짐이 배와 사람들을 한 장면 안에 둘러싸고 있습니다.", duration: 3900, textDelay: 820, visualLock: 820, effect: "drips", doorOpen: true },
+        { speaker: "엘리너", face: "eleanorTense", view: "hallEleanor", text: "에드먼드는 가족을 그릴 때 늘 자신을 가장 작게 그렸어요.", duration: 3900, textDelay: 210, effect: "lightningSoft", doorOpen: true },
+        { speaker: "플레이어", face: "playerReady", view: "wetWall", text: "배 하나와 키가 다른 사람 셋. 푸른 번짐까지 지금 종이에 옮겨 복원해야 합니다.", duration: 4500, textDelay: 190, effect: "drips", doorOpen: true },
       ]),
     }),
 
@@ -76,9 +76,9 @@
       quest: "Q2A_TRUE_FACE",
       beats: Object.freeze([
         { speaker: "플레이어", face: "playerCalm", view: "parlorEleanor", text: "베스가 벽에 방수천을 대고 옮길 종이를 준비 중입니다. 그동안 초상을 다시 보죠.", duration: 4500, textDelay: 720, visualLock: 760, effect: "fadeIn" },
-        { speaker: "플레이어", face: "playerThinking", view: "parlorPortrait", text: "부인. 관자놀이 쪽은 물감이 두 겹입니다. 원래 선을 덮어 칠했습니다.", duration: 4300, textDelay: 680, visualLock: 760 },
-        { speaker: "엘리너", face: "eleanorTense", view: "firstEleanor", text: "그 아이 얼굴에 흠이 있는 걸 견딜 수가 없었어요.", duration: 3400, textDelay: 220 },
-        { speaker: "엘리너", face: "eleanorTense", view: "firstEleanor", text: "화가에게 부탁했죠. 턱은 부드럽게, 눈썹은 반듯하게 그려 달라고.", duration: 4000, textDelay: 170 },
+        { speaker: "플레이어", face: "playerThinking", view: "parlorPortrait", text: "부인. 이 초상은 턱도 눈썹도 지나치게 반듯합니다. 실제 얼굴보다 주문한 인상에 가깝습니다.", duration: 4600, textDelay: 680, visualLock: 760 },
+        { speaker: "엘리너", face: "eleanorTense", view: "firstEleanor", text: "그 아이가 거칠고 불안해 보이는 걸 견딜 수가 없었어요.", duration: 3600, textDelay: 220 },
+        { speaker: "엘리너", face: "eleanorTense", view: "firstEleanor", text: "화가에게 부탁했죠. 턱은 부드럽게, 표정은 차분하게 그려 달라고.", duration: 4100, textDelay: 170 },
         { speaker: "플레이어", face: "playerThinking", view: "parlorEleanor", text: "그렇다면 이 초상만으로는 카버 씨와 비교할 수 없습니다.", duration: 3500, textDelay: 170 },
         { speaker: "플레이어", face: "playerCalm", view: "parlorEleanor", text: "미화되기 전 얼굴을 매일 본 사람이 있습니까.", duration: 3200, textDelay: 150 },
         { speaker: "엘리너", face: "eleanorCalm", view: "parlorEleanor", text: "옛 가정교사 홀트 선생뿐이에요. 아직 학교에 계십니다.", duration: 3600, textDelay: 160 },
@@ -463,7 +463,7 @@
     textCtx.font = '700 11px "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
     textCtx.fillStyle = PAL.cream;
     if (beat.view === "parlorPortrait") textCtx.fillText("복원 결과 · 엘리너가 간직한 초상", 320, 36);
-    if (beat.view === "wetWall") textCtx.fillText("현장 관찰 · 배 한 척 / 사람 셋 / 번진 글씨", 320, 36);
+    if (beat.view === "wetWall") textCtx.fillText("현장 관찰 · 배 한 척 / 사람 셋 / 푸른 물 번짐", 320, 36);
     if (beat.view === "ferryWall") textCtx.fillText("복원 결과 · 12년 전 선술집 벽 층", 320, 36);
     if (beat.view === "catMemory") {
       textCtx.fillStyle = "rgba(23, 19, 16, 0.82)";

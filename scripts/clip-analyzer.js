@@ -111,7 +111,10 @@
         status: "inference",
         message: "이미지와 목격담의 의미를 비교하는 중입니다.",
       });
-      const results = await classifier(image, normalizedPrompts);
+      const input = image && typeof image.toDataURL === "function"
+        ? image.toDataURL("image/png")
+        : image;
+      const results = await classifier(input, normalizedPrompts);
 
       return Object.freeze({
         model: modelId,
