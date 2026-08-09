@@ -1,0 +1,53 @@
+{
+  "quest": "Q4B_LOGBOOK",
+  "title": "잃어버린 항해일지",
+  "category": "D",
+  "resolution": 128,
+  "currently_specified_resolution": 128,
+  "source": "assets/quests/q4b-logbook/source/generated-original.png",
+  "restore_range": [
+    0.2,
+    0.26
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [
+    "자정",
+    "검은 마차",
+    "두 번째 기둥 옆",
+    "토마스가 탔다",
+    "사흘째 같은 자리"
+  ],
+  "qa": {
+    "quest": "Q4B_LOGBOOK",
+    "resolution": 128,
+    "dimensions_ok": true,
+    "palette_colors": 26,
+    "palette_limit": 36,
+    "restore_ratio": 0.22833,
+    "restore_range": [
+      0.2,
+      0.26
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 62,
+    "line_pixels": 6098,
+    "corrections": [
+      "자정",
+      "검은 마차",
+      "두 번째 기둥 옆",
+      "토마스가 탔다",
+      "사흘째 같은 자리"
+    ]
+  }
+}

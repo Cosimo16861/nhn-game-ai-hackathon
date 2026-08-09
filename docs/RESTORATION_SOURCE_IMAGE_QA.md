@@ -11,7 +11,7 @@
 프롬프트 `source/prompt.txt`를 저장했다. 모든 원본은 1254×1254 RGB PNG다.
 
 이 파일은 제작 원본이며 아직 게임용 `target.png`, `line.png`, `masks/*.png`가 아니다.
-후속 단계에서 퀘스트별 64·128·256 정본으로 재구성하고 제한 팔레트로 양자화한다.
+후속 단계에서 퀘스트별 64·128 정본으로 재구성하고 제한 팔레트로 양자화한다.
 
 ![14개 원본 컨택트 시트](../assets/quests/source-contact-sheet.png)
 
@@ -25,7 +25,7 @@ Q4A, Q4B, Q4C, Q5A, Q5B 순서다.
 | Q0 | `q0-montage/source/generated-original.png` | 모자가 두 눈을 가림, 점은 화면 오른쪽 뺨 하나, 초록 목도리 | 기존 Q0 선화와 새 원본 중 정본 구도 선택 |
 | Q1A | `q1a-idealized/source/generated-original.png` | 부드러운 턱, 대칭 눈썹, 흉터 없음, 창가 빛 | 관자놀이 이중 물감층은 완료 오버레이로 분리 |
 | Q1B | `q1b-tavern-wall/source/generated-original.png` | 늙은 페리, 흰 수염, 아래층 얼굴, 카버와 비유사 | 가장자리 낙서는 채점 제외 |
-| Q2A | `q2a-true-face/source/generated-original.png` | Q1A와 같은 인물·크롭, 각진 턱, 화면 오른쪽 눈썹 상승, 화면 왼쪽 흉터 | Q1A와 같은 256 그리드에 정렬 |
+| Q2A | `q2a-true-face/source/generated-original.png` | Q1A와 같은 인물·크롭, 각진 턱, 화면 오른쪽 눈썹 상승, 화면 왼쪽 흉터 | Q1A와 같은 128 그리드에 정렬 |
 | Q2B | `q2b-cat/source/generated-original.png` | 회색 고양이, 흰 귀 정확히 하나, 붉은 리본 | 전단 문자는 넣지 않음 |
 | Q2C | `q2c-child-room/source/generated-original.png` | 배 정확히 1척, 사람 정확히 3명 | `우리`는 수동 픽셀 레이어 |
 | Q3A | `q3a-seal/source/generated-original.png` | 초승달 하나, 굵은 파도 띠 정확히 3줄 | `SYM_CREST_MAIN_3` 수동 정본으로 교체 |
@@ -46,14 +46,17 @@ Q4A, Q4B, Q4C, Q5A, Q5B 순서다.
 폐기한 변형은 프로젝트에 넣지 않았다. 선택한 최종 원본만 `generated-original.png`로
 보존했다.
 
-## 4. 다음 단계의 경계
+## 4. 픽셀 정본 후보 단계로의 인계
 
-원본 이미지 생성은 끝났지만 다음은 아직 하지 않았다.
+이 원본을 사용해 다음 비교 후보 제작을 완료했다.
 
-- 64×64·128×128·256×256 `target.png` 제작
-- 제한 팔레트 양자화와 수동 픽셀 정리
-- 정확한 문자·3줄·4줄 정본 합성
-- `line.png`, 초기 표시·잠금·복원·제외 마스크 제작
-- 유사도 fixture와 실제 통과 난이도 보정
+- 14개 × 2해상도, 총 28개의 `target.png`
+- 제한 팔레트 양자화와 정확한 문자·문양 정본 합성
+- 폐쇄 `line.png`와 초기 표시·잠금·복원·제외 마스크
+- 4방향·8방향 채우기 누출 자동 검사
+- 퀘스트별 비교 시트와 전체 접촉 시트
 
-따라서 현재 원본을 게임에서 직접 불러오거나 채점 대상으로 등록하면 안 된다.
+결과와 QA 수치는 `docs/RESTORATION_PIXEL_QA.md`에서 관리한다. 아직 퀘스트별 최종
+해상도를 선택하지 않았으므로 `source/generated-original.png`뿐 아니라 `candidates/`도
+게임 런타임에 직접 연결하면 안 된다. 다음 단계는 육안 비교로 최종 후보를 선택한 뒤
+게임용 고정 경로로 승격하고 유사도 fixture를 보정하는 것이다.

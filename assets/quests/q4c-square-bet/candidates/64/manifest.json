@@ -1,0 +1,41 @@
+{
+  "quest": "Q4C_SQUARE_BET",
+  "title": "광장의 내기",
+  "category": "P",
+  "resolution": 64,
+  "currently_specified_resolution": 64,
+  "source": "assets/quests/q4c-square-bet/source/generated-original.png",
+  "restore_range": [
+    0.25,
+    0.31
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [],
+  "qa": {
+    "quest": "Q4C_SQUARE_BET",
+    "resolution": 64,
+    "dimensions_ok": true,
+    "palette_colors": 16,
+    "palette_limit": 28,
+    "restore_ratio": 0.27319,
+    "restore_range": [
+      0.25,
+      0.31
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 15,
+    "line_pixels": 1933,
+    "corrections": []
+  }
+}

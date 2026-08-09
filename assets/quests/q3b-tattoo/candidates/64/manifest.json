@@ -1,0 +1,45 @@
+{
+  "quest": "Q3B_TATTOO",
+  "title": "너무 새것인 닻",
+  "category": "P",
+  "resolution": 64,
+  "currently_specified_resolution": 64,
+  "source": "assets/quests/q3b-tattoo/source/generated-original.png",
+  "restore_range": [
+    0.15,
+    0.21
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [
+    "SYM_ANCHOR_OLD"
+  ],
+  "qa": {
+    "quest": "Q3B_TATTOO",
+    "resolution": 64,
+    "dimensions_ok": true,
+    "palette_colors": 18,
+    "palette_limit": 28,
+    "restore_ratio": 0.17725,
+    "restore_range": [
+      0.15,
+      0.21
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 48,
+    "line_pixels": 2071,
+    "corrections": [
+      "SYM_ANCHOR_OLD"
+    ]
+  }
+}

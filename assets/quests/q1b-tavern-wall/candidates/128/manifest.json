@@ -1,0 +1,41 @@
+{
+  "quest": "Q1B_TAVERN_WALL",
+  "title": "선술집 벽",
+  "category": "P",
+  "resolution": 128,
+  "currently_specified_resolution": 128,
+  "source": "assets/quests/q1b-tavern-wall/source/generated-original.png",
+  "restore_range": [
+    0.25,
+    0.31
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [],
+  "qa": {
+    "quest": "Q1B_TAVERN_WALL",
+    "resolution": 128,
+    "dimensions_ok": true,
+    "palette_colors": 24,
+    "palette_limit": 36,
+    "restore_ratio": 0.27808,
+    "restore_range": [
+      0.25,
+      0.31
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 33,
+    "line_pixels": 4599,
+    "corrections": []
+  }
+}

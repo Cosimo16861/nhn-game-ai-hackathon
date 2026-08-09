@@ -1,0 +1,47 @@
+{
+  "quest": "Q4A_LEDGER",
+  "title": "번진 장부",
+  "category": "D",
+  "resolution": 128,
+  "currently_specified_resolution": 128,
+  "source": "assets/quests/q4a-ledger/source/generated-original.png",
+  "restore_range": [
+    0.2,
+    0.26
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [
+    "J. ASHERTON",
+    "T.C. 4 MONTHS"
+  ],
+  "qa": {
+    "quest": "Q4A_LEDGER",
+    "resolution": 128,
+    "dimensions_ok": true,
+    "palette_colors": 27,
+    "palette_limit": 36,
+    "restore_ratio": 0.22925,
+    "restore_range": [
+      0.2,
+      0.26
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 11,
+    "line_pixels": 4695,
+    "corrections": [
+      "J. ASHERTON",
+      "T.C. 4 MONTHS"
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "quest": "Q5A_DOCK",
+  "title": "안개 낀 부두",
+  "category": "S",
+  "resolution": 128,
+  "currently_specified_resolution": 128,
+  "source": "assets/quests/q5a-dock/source/generated-original.png",
+  "restore_range": [
+    0.3,
+    0.36
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [
+    "SYM_CREST_BRANCH_4"
+  ],
+  "qa": {
+    "quest": "Q5A_DOCK",
+    "resolution": 128,
+    "dimensions_ok": true,
+    "palette_colors": 26,
+    "palette_limit": 36,
+    "restore_ratio": 0.3291,
+    "restore_range": [
+      0.3,
+      0.36
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 51,
+    "line_pixels": 3710,
+    "corrections": [
+      "SYM_CREST_BRANCH_4"
+    ]
+  }
+}

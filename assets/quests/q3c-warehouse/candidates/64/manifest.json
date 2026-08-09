@@ -1,0 +1,41 @@
+{
+  "quest": "Q3C_WAREHOUSE",
+  "title": "창고의 불빛",
+  "category": "X",
+  "resolution": 64,
+  "currently_specified_resolution": 128,
+  "source": "assets/quests/q3c-warehouse/source/generated-original.png",
+  "restore_range": [
+    0.3,
+    0.36
+  ],
+  "mask_contract": {
+    "initial": "pixels visible on entry; may overlap locked pixels",
+    "locked": "non-editable pixels, including all closed linework",
+    "restore": "editable aggregate scoring candidate pixels; per-feature required masks are pending",
+    "exclude": "decorative or story-unsafe pixels omitted from scoring",
+    "line": "closed fill-tool barrier; always non-editable"
+  },
+  "corrections": [],
+  "qa": {
+    "quest": "Q3C_WAREHOUSE",
+    "resolution": 64,
+    "dimensions_ok": true,
+    "palette_colors": 16,
+    "palette_limit": 28,
+    "restore_ratio": 0.33008,
+    "restore_range": [
+      0.3,
+      0.36
+    ],
+    "restore_ratio_ok": true,
+    "binary_masks_ok": true,
+    "restore_exclude_overlap": 0,
+    "restore_locked_overlap": 0,
+    "fill_leaks_4way": 0,
+    "fill_leaks_8way": 0,
+    "fill_regions_4way": 8,
+    "line_pixels": 983,
+    "corrections": []
+  }
+}
