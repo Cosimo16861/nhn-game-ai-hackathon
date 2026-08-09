@@ -9,9 +9,43 @@
 import sys
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import urlsplit
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+CAPTURE_ROUTE = "/__capture/c0b-the-job.webm"
+CAPTURE_TARGET = PROJECT_ROOT / "video" / "c0b-the-job.webm"
+MAX_CAPTURE_BYTES = 100 * 1024 * 1024
 
 
 class NoCacheHandler(SimpleHTTPRequestHandler):
+    def do_POST(self):
+        if urlsplit(self.path).path != CAPTURE_ROUTE:
+            self.send_error(404)
+            return
+
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            self.send_error(400, "Invalid Content-Length")
+            return
+        if length <= 0 or length > MAX_CAPTURE_BYTES:
+            self.send_error(413, "Capture is empty or too large")
+            return
+
+        payload = self.rfile.read(length)
+        if len(payload) != length:
+            self.send_error(400, "Incomplete capture")
+            return
+
+        CAPTURE_TARGET.parent.mkdir(parents=True, exist_ok=True)
+        CAPTURE_TARGET.write_bytes(payload)
+        self.send_response(201)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(b"saved")
+
     def end_headers(self):
         self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
         self.send_header("Pragma", "no-cache")

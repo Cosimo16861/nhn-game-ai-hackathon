@@ -202,6 +202,38 @@ button { font: inherit; }
 }
 
 .intro-ui { inset: 0; pointer-events: none; }
+.cutscene-ui { inset: 0; pointer-events: none; }
+
+.cutscene-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.cutscene-meta {
+  position: absolute;
+  top: 3.2%;
+  left: 2.4%;
+  width: 35%;
+  padding: 5px 7px 4px;
+  background: rgba(7, 9, 10, .7);
+  border: 1px solid rgba(234, 223, 202, .14);
+}
+
+.cutscene-meta p {
+  margin: 5px 0 0;
+  color: #827b6d;
+  font-family: var(--pixel-display);
+  font-size: clamp(7px, .82vw, 10px);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-shadow: 1px 1px 0 #050708;
+}
+
+.cutscene-meta p span { margin: 0 4px; }
 
 .story-copy {
   position: absolute;
@@ -397,6 +429,7 @@ noscript {
   .shell-note { display: none; }
   .story-copy { width: 86%; bottom: 9.5%; }
   .intro-meta { width: 86%; }
+  .cutscene-meta { width: 43%; }
   .title-ui h1::before,
   .title-ui h1::after { display: none; }
 }

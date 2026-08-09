@@ -64,6 +64,7 @@
   const textCtx = textCanvas.getContext("2d");
   const titleView = document.querySelector('[data-view="title"]');
   const introView = document.querySelector('[data-view="intro"]');
+  const cutsceneView = document.querySelector('[data-view="c0b"]');
   const roleView = document.querySelector('[data-view="role"]');
   const copy = document.querySelector("[data-role=story-copy]");
   const progress = document.querySelector("[data-role=progress]");
@@ -71,6 +72,9 @@
   const titleReplay = titleView.querySelector('[data-action="replay"]');
   const muteButton = document.querySelector('[data-action="mute"]');
   const startLabel = document.querySelector('[data-role="start-label"]');
+  const c0bProgress = document.querySelector('[data-role="c0b-progress"]');
+  const c0bLive = document.querySelector('[data-role="c0b-live"]');
+  const c0bSkipHint = document.querySelector('[data-role="c0b-skip-hint"]');
 
   let mode = window.IndexWorkbench?.getActiveQuestId() ? "workbench" : "title";
   let sceneIndex = 0;
@@ -81,6 +85,15 @@
   let audio = null;
   let titleStarted = performance.now();
   let sceneSeed = 13;
+  let c0bCanSkip = false;
+
+  const c0b = window.C0BCutscene.create({
+    art,
+    textCanvas,
+    progress: c0bProgress,
+    live: c0bLive,
+    onComplete: finishC0B,
+  });
 
   ctx.imageSmoothingEnabled = false;
   textCtx.imageSmoothingEnabled = false;
@@ -423,6 +436,7 @@
   function showOnly(view) {
     titleView.hidden = view !== "title";
     introView.hidden = view !== "intro";
+    cutsceneView.hidden = view !== "c0b";
     roleView.hidden = view !== "role";
   }
 
@@ -444,8 +458,9 @@
   }
 
   function startGame() {
-    if (localStorage.getItem("heir_intro_seen") === "1") finishIntro();
-    else startIntro();
+    if (localStorage.getItem("heir_intro_seen") !== "1") startIntro();
+    else if (localStorage.getItem("heir_c0b_seen") !== "1") startC0B();
+    else startTutorial();
   }
 
   function nextScene() {
@@ -456,9 +471,47 @@
   }
 
   function finishIntro() {
-    if (mode === "role") return;
+    if (mode === "c0b" || mode === "role") return;
     localStorage.setItem("heir_intro_seen", "1");
-    window.GameProgress?.ensureOpeningComplete();
+    window.GameProgress?.markCutsceneSeen("C0_INTRO");
+    startC0B();
+  }
+
+  function startC0B(recordFilename) {
+    ensureAudio();
+    mode = "c0b";
+    c0bCanSkip = localStorage.getItem("heir_c0b_seen") === "1";
+    c0bSkipHint.hidden = !c0bCanSkip;
+    fade.style.opacity = "0";
+    showOnly("c0b");
+    const playback = recordFilename ? c0b.record(recordFilename) : c0b.start();
+    playback.catch((error) => {
+      console.error("C0B 컷신을 시작하지 못했습니다.", error);
+      finishC0B({ skipped: true });
+    });
+  }
+
+  function finishC0B() {
+    localStorage.setItem("heir_c0b_seen", "1");
+    window.GameProgress?.markCutsceneSeen("C0B_THE_JOB");
+    if (new URLSearchParams(window.location.search).get("stay") === "1") showRole();
+    else startTutorial();
+  }
+
+  function startTutorial() {
+    mode = "workbench";
+    window.GameProgress?.selectQuest("Q0_MONTAGE");
+    if (window.IndexWorkbench) {
+      window.IndexWorkbench.open("Q0_MONTAGE").catch((error) => {
+        console.error(error);
+        window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
+      });
+    } else {
+      window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
+    }
+  }
+
+  function showRole() {
     mode = "role";
     fade.style.opacity = "0";
     showOnly("role");
@@ -508,18 +561,7 @@
     if (action === "replay") startIntro();
     if (action === "skip") finishIntro();
     if (action === "mute") toggleMute();
-    if (action === "tutorial") {
-      mode = "workbench";
-      window.GameProgress?.selectQuest("Q0_MONTAGE");
-      if (window.IndexWorkbench) {
-        window.IndexWorkbench.open("Q0_MONTAGE").catch((error) => {
-          console.error(error);
-          window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
-        });
-      } else {
-        window.location.href = "workbench.html?tutorial=Q0_MONTAGE";
-      }
-    }
+    if (action === "tutorial") startTutorial();
   });
 
   document.addEventListener("keydown", (event) => {
@@ -528,14 +570,21 @@
       event.preventDefault();
       if (mode === "title") startGame();
       else if (mode === "intro") nextScene();
+      else if (mode === "c0b") c0b.advance();
     }
     if (event.key === "Escape" && mode === "intro") finishIntro();
+    if (event.key === "Escape" && mode === "c0b" && c0bCanSkip) c0b.finish();
     if ((event.key === "m" || event.key === "M") && mode === "intro") toggleMute();
   });
 
   if (localStorage.getItem("heir_intro_seen") === "1") {
     startLabel.textContent = "이어하기";
     titleReplay.hidden = false;
+  }
+
+  const launchParams = new URLSearchParams(window.location.search);
+  if (launchParams.get("c0b") === "1") {
+    startC0B(launchParams.get("record") === "1" ? "c0b-the-job.webm" : undefined);
   }
 
   cancelAnimationFrame(frame);

@@ -162,7 +162,7 @@
     };
 
     // 서로 다른 테이프 방향과 색으로 급히 붙인 메모의 어수선함을 만든다.
-    if (first) {
+    if (index % 2 === 0) {
       polygon(ctx, rotatedRectPoints(
         memo.cx, memo.cy - memo.height / 2, 24, 7, memo.angle
       ), C.goldDim, C.inkSoft, 1);
@@ -184,7 +184,7 @@
       size: 9.5, weight: "700", color: C.ink, boxHeight: 14,
       angle: textRotation.angle, rotateX: textRotation.rotateX, rotateY: textRotation.rotateY,
     });
-    const lines = wrapText(quote.text || "", memo.width - 22, 9.5, "500").slice(0, 4);
+    const lines = wrapText(quote.text || "", memo.width - 22, 9.5, "500").slice(0, compact ? 3 : 4);
     lines.forEach((value, lineIndex) => P.text(ctx, value, left, top + 16 + lineIndex * 12, {
       size: 9.5, weight: "500", color: C.inkSoft, boxHeight: 11,
       angle: textRotation.angle, rotateX: textRotation.rotateX, rotateY: textRotation.rotateY,
