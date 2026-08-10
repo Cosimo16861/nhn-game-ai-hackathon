@@ -1,597 +1,278 @@
-# 세션 인계 — 퀘스트 가지 재구성 + 픽셀 프레임 구축
+# 세션 인계 — 통합 완료 후 최종 정리 단계
 
-> 갱신: 2026-08-08 · 대상: **이 문서만 읽고 작업을 이어받는 구현자(codex 등)**
+> 갱신: 2026-08-10 · 기준 커밋: `860b35d` · 브랜치 `game` · 작업 트리 clean
+> 대상: **이 문서만 읽고 작업을 이어받는 구현자**
 >
-> 이전 판(복원 256×256 전환)의 내용은 7·9장에 흡수했다.
+> 이전 판(2026-08-08, 퀘스트 가지 재구성 + 픽셀 프레임 구축)의 내용 중
+> 살아 있는 설계 결정은 6·7장에 옮겨 담았다. 그때의 진행 상황 기술은 폐기됐다.
 
 ## 0. 문서 지도 — 무엇이 정본인가
 
 | 주제 | 정본 |
 | --- | --- |
-| 진행 구조 (노드·레이어·해금·화면) | `docs/QUEST_BRANCH.md` |
+| 통합 구현 계획·계약 | `docs/GAME_INTEGRATION_PLAN.md` ← **최상위 정본** |
+| 지금 어디까지 됐는가 | `docs/INTEGRATION_STATUS.md` |
+| 진행 구조(노드·레이어·해금) | `docs/QUEST_BRANCH.md` + `src/data/quest-graph.js` |
+| 복원 퀘스트 계약 | `docs/RESTORATION_QUEST_SPEC.md` + `src/data/questimage-quests.js` |
 | 이야기 | `docs/STORY_OUTLINE.md` |
-| 대사 | `docs/script/07_CUTSCENES.md` |
-| 그 외 전부 (복원 시스템·아트·저장) | `docs/GAME_DESIGN.md` |
-| 지금 무엇을 할 차례인가 | **이 문서** |
+| 대사 | `docs/script/07_CUTSCENES.md` + `src/cutscenes/data/beats-*.js` |
+| 파일 배치 규칙 | `docs/PROJECT_STRUCTURE.md` |
+| 삭제 승인 대기 목록 | `docs/LEGACY_DELETION_MANIFEST.md` |
+| 지금 무엇을 할 차례인가 | **이 문서 3장** |
 
-`docs/script/00~06`과 `docs/GREYBOX_PLAN.md`는 **레거시**다. 대화 선택지와 엔딩 A/B를
-전제하고 있어 그대로 구현하면 안 된다. 삭제하지 않은 이유는 대사 원본이기 때문이다.
-
----
-
-## 1. 지금 어디까지 왔나
-
-**게임 시스템이 크게 바뀌었다.** 시간 제약으로 월드 탐색과 대화 분기를 통째로 폐기하고,
-그림 복원 하나에 집중하는 **퀘스트 가지 구조**로 재구성했다. 스토리는 퀘스트 사이에
-자동 재생되는 **비인터랙티브 컷신**으로 전개되고, 증거는 컷신 종료 시 자동 수집된다.
-엔딩은 하나다.
-
-설계 문서 재작성이 끝났고, **공통 픽셀 프레임·증거판·작업대 표현 화면은 구현돼 동작한다.**
-증거판은 참조 이미지의 굵은 픽셀 밀도를 기준으로 화면 디자인 평가·수정 루프를 4회
-거쳐 최종 합격했다. 작업대도 기획·디자인 검토·코드 작성 에이전트의 4차 루프를 거쳐
-평균 8.5/10로 합격했다. 다음 차례는 **컷신 16개 데이터화와 재생기 구현**이다.
+`docs/script/00~06`, `docs/GREYBOX_PLAN.md`, `docs/HIGH_RES_RESTORATION_REWRITE_PLAN.md`는
+레거시다. 대사 원본이거나 이미 끝난 단계의 계획이라 남겨 뒀을 뿐, 그대로 구현하면 안 된다.
 
 ---
 
-## 2. 이번 세션의 논의와 결정
+## 1. 지금 상태 한 줄
 
-무엇을 왜 그렇게 정했는지의 기록이다. **근거 없이 되돌리면 같은 논의를 반복하게 된다.**
+**루트 `index.html` 하나로 시작 화면부터 엔딩까지 완주된다.** 계획서 단계 0~8이 끝났고,
+남은 것은 단계 9(호환 파일 제거, 사용자 승인 필요)와 단계 10(최종 QA 매트릭스)다.
 
-### 2-1. 시스템 전환 (사용자 지시)
+```
+시작 화면 → C0 인트로 → C0B 의뢰 → Q0 작업대 → B_AFTER_Q0
+  → 증거판 → (14개 복원 퀘스트 / 15개 완료 컷신 묶음)
+  → Q6 증거의 방 → B_AFTER_Q6(CE_ENDING) → 시작 화면
+```
 
-시간 제약으로 다음을 범위에서 제외했다.
-
-| 폐기 | 대체 |
-| --- | --- |
-| 타일맵 월드·이동·미니맵 | 증거판 한 화면 |
-| NPC 자유 대화, 반복 질문, 스몰 토크 | 없음 |
-| 고정 선택지 대화, 막마다 한 번의 핵심 판단 | 비인터랙티브 컷신(선택지 0) |
-| 대화 선택으로 증거 수집 | 컷신 종료 시 자동 수집 |
-| 엔딩 A / B 분기 | 단일 엔딩 + 후일담 변주 |
-
-플레이어의 유일한 결정은 **다음에 어느 그림을 복원할 것인가**이고, 그 근거는 항상
-직전 컷신에 명시적으로 나와 있다.
-
-### 2-2. 그래프 규모
-
-사용자 요구: 원 10~15개, 레이어 6~8개. **원 15개 / 레이어 7개**로 확정했다.
-초안은 14개였는데, L4에서 본선 플레이어에게 선택지가 없어지는 것을 발견해
-`Q4C_SQUARE_BET`(광장의 내기)를 추가했다. L5만 1택인데 이건 의도다 —
-마지막 복원 직전에 갈 곳이 하나뿐이라는 감각이 클라이맥스를 만든다.
-
-### 2-3. 🔴 인장 설정 개정 — 이 이야기의 심장
-
-기존 설정은 「줄리언이 불완전한 모사를 보고 카버에게 가르쳐 파도가 네 줄이 됐다」였다.
-**재산 관리인이 왜 자기 가문 인장을 틀리게 아는지 설명되지 않는 구멍이었다.**
-
-고친 설정:
-
-- 아셔튼 **본가** 인장 = 초승달 아래 파도 **세 줄**. 엘리너가 12년째 보관 중
-- 줄리언은 **방계**다. 그의 마차·문구류 문장은 파도 **네 줄**
-- 줄리언은 본가 인장 실물을 본 적이 없어, 카버에게 자기 마차 문양을 가르쳤다
-
-그래서 배후를 지목하는 것은 증언이 아니라 **플레이어가 직접 칠한 두 복원물의 대조**다.
-
-| 복원물 | 드러나는 것 |
-| --- | --- |
-| `Q3A_SEAL` 진품 봉인 | 파도 **세 줄** → 카버의 네 줄은 가짜 |
-| `Q5A_DOCK` 마차 문양 | 파도 **네 줄** → 가르친 자는 이 마차의 주인 |
-
-이것이 이 게임이 그림 복원 게임인 이유이자 본선이 본선인 이유다.
-**되돌리면 추리가 무너진다.** `docs/script/03_ACT2.md`의 옛 설명을 참고하지 말 것.
-
-### 2-4. 가지가 본선에 주는 것 — 검증된 메커니즘을 살리기
-
-수직 슬라이스에서 「증언으로 해금된 특징만 채점 필수가 된다」가 코드로 성립함을
-확인했었다. 그런데 이번 개정으로 증거가 자동 수집되면서, 본선만 따라가도 증언이
-전부 들어와 **플레이어마다 달라지지 않게 됐다.**
-
-그래서 규칙을 하나 뒀다. 가지는 결정적 증거를 절대 주지 않되,
-**본선 복원의 「보조 목격담」은 줄 수 있다.** 채점 필수가 아니라 목표 패널에 한 줄 더
-뜨는 것 — 가지를 한 사람은 같은 그림을 더 쉽게 그린다. 결말은 바뀌지 않는다.
-
-| 가지 | 보조 목격담 | 받는 본선 |
-| --- | --- | --- |
-| `Q2C_CHILD_ROOM` | 크레용 그림 속 아이가 머리를 아주 짙게 칠했다 | `Q2A` 머리색 |
-| `Q3C_WAREHOUSE` | 창고 앞 상자 배치와 젖은 돌바닥을 직접 봤다 | `Q5A` 배경 |
-| `Q4B_LOGBOOK` | 마차가 선 자리가 적혀 있다(「가스등 두 번째 기둥 옆」) | `Q5A` 마차 위치 |
-
-**금지**: 파도 세 줄과 마차 문양만은 예외 없이 본선 복원으로만 드러나야 한다.
-
-### 2-4b. 복원의 당위 점검 — 전 노드 재검토
-
-「왜 이 그림을 **그려야만** 하는가」를 14개 노드 전부에 대해 다시 따졌다.
-여섯 개가 약했고 전부 대사·설정으로 보강했다.
-
-| 노드 | 문제 | 고친 방식 |
-| --- | --- | --- |
-| `Q1B` 선술집 벽 | 카버가 눈앞에 살아 있는데 왜 얼굴을 그리나 | 벽의 **20년치 낙서 중 12년 전 층**을 꺼낸다. 카버가 그때도 이 도시에 있었는지 확인하는 조사가 된다 |
-| `Q2C` 닫힌 방 | 증거 가치 0인데 왜 그리나 | **물이 새어 크레용이 번지고 있다.** 지금 옮기지 않으면 사라진다 |
-| `Q3B` 문신 | 카버가 눈앞에 있는데 왜 그리나 | 리드가 **조서에 붙이라**고 한다. 내일 소매를 안 걷으면 안 남는다(사진기가 없다) |
-| `Q3C` 창고 | 고양이 찾으러 가서 왜 그림을 그리나 | 창문이 없다. 등불로 **비춘 자리를 이어 붙여야** 안이 보인다 → 어둠 걷어내기형 복원 |
-| `Q4C` 광장 | 거절하면 그만 아닌가 | 램이 군중 앞에서 **간판을 걸라**고 도전한다 |
-| `Q5B` 세이렌 호 | 그릴 동기가 사후에만 나온다 | 복원 **전에** 뱅크스가 말한다 — 「나 죽으면 같이 없어지오」 |
-
-당위는 다섯 종류로 정리했다(훼손 / 기억 / 소멸 / 조사 / 도전).
-분류표는 `docs/script/07_CUTSCENES.md`, 노드별 문구는 `QUEST_BRANCH.md` 1.2절의
-`당위` 열과 `quest-graph.js`의 `why` 필드에 있다. **셋은 같은 내용이어야 한다.**
-
-### 2-4c. 🔴 가지가 본선 클라이맥스를 앞질러 터뜨리던 문제
-
-`C5B`의 항해일지에 「아셔튼 씨께 모시겠습니다」가 적혀 있었다. `Q1B → Q2B → Q3C → Q4B`는
-**본선을 하나도 밟지 않고** 도달할 수 있는 체인이라, 본선 `Q2A`도 안 본 플레이어가
-배후를 먼저 알게 된다. `Q5A`의 마차 문양 반전이 통째로 무력해진다.
-
-일지가 주는 것을 **마차가 선 위치**까지로 잘라냈다. 그것이 이미 정해 둔 `Q5A`의
-보조 목격담과도 일치한다(그전에는 `QUEST_BRANCH.md` 2.2절과 대본이 서로 어긋나 있었다).
-
-이 밖에 고친 것:
-
-- **`C4A`의 논리 공백** — 「가르친 놈이 있다」에서 곧장 장부로 건너뛰었다.
-  「넉 달을 가르치려면 먹이고 재웠을 것 → 지출은 장부에 남는다」 한 칸을 넣었다
-- **`C2A`의 순서** — 「이 그림은 쓸 수 없습니다」가 먼저 나와 5분 그린 것이 헛수고로
-  읽혔다. **덧칠 발견을 먼저** 말하게 뒤집었다
-- **가지 이탈 구간** — 선술집 체인을 타면 사건이 멈춘 채 다섯 장을 연달아 그린다.
-  가지 컷신마다 「저택은 안 가 봐도 돼요?」류의 본선 상기 한 줄을 뒀다.
-  어느 원이 본선인지는 여전히 표시하지 않는다
-
-### 2-4d. 컷신을 노드에 붙이면서 드러난 것들
-
-플레이 구조가 **「퀘스트 → 애니메이션 → 퀘스트」**로 확정되면서 구조를 다시 훑었다.
-
-**오프닝을 두 컷으로 나눴다.** `C0_INTRO`(세계와 인물) + `C0B_THE_JOB`(발단).
-그리고 **오프닝이 끝나면 증거판을 거치지 않고 곧바로 튜토리얼로 들어간다.**
-증거판은 `C1_THE_CASE` 직후에 처음 등장한다 — 그때 판에는 이미 플레이어가 그린 그림
-한 장이 걸려 있고 뒤집힌 종이 두 장이 새로 꽂힌다. 화면 하나로 판의 언어를 전부
-가르칠 수 있다. 튜토리얼 전에 보여주면 종이 한 장뿐이라 아무것도 전달되지 않는다.
-
-**🔴 컷신이 형제 노드의 클리어 순서에 의존하고 있었다.** 같은 레이어의 원은 아무
-순서로나 깰 수 있는데, 앞 세션에서 넣은 본선 상기 대사(「저택은 안 가 봐도 돼요?」)는
-상대 노드를 아직 안 깼다고 단정한다. 순서를 바꾸면 등장인물이 거짓말을 한다.
-→ **조건부 비트**(`when: { unless: FLAG }`)를 스키마에 추가하고 해당 대사 4개에
-표기했다. 엔딩의 후일담 변주도 같은 장치를 쓰므로 재생기는 어차피 구현해야 한다.
-
-**🔴 배후의 이름이 두 번 나왔다.** `C6_EVIDENCE_WALL`에서 「줄리언 아셔튼」을 말한 뒤
-`Q6`(증거판 실 잇기)를 거쳐 `CE_ENDING`에서 다시 대질했다. 그러면 `Q6`이
-「이미 아는 답을 정리하는 절차」로 전락한다.
-→ `C6`에서 이름을 빼고 **`CE_ENDING` 1단계로 옮겼다.** 이제 플레이어가 마지막 실을
-자기 손으로 이은 **다음에** 이름을 듣는다.
-
-**컷신을 4종으로 분류했다** — `opening` 2 / `bridge` 10 / `closing` 4 / `ending` 1 =
-**총 17개.** 종류마다 하는 일이 다르다(`QUEST_BRANCH.md` 4.2). 대본 헤더에 `kind`를
-전부 표기해 뒀다.
-
-**원자성과 재개 규칙을 명문화했다.** 컷신 도중 종료하면 `grants`도 해금도 반영되지
-않는다. 「퀘스트는 통과했는데 컷신을 안 본」 상태가 남고, 그냥 두면 자식 노드가 영영
-안 열려 진행이 막힌다. `QuestGraph.pendingCutscene(State)`를 추가했다.
-
-### 2-5. 레이어 순차 공개 (사용자 지시)
-
-처음 명세는 「잠긴 노드는 빈 압정으로 보인다」였는데 사용자가 뒤집었다.
-**L0을 클리어하기 전에는 L1~L6이 화면에 존재하지 않는다.** 열도, 열 이름도 안 그린다.
-같은 레이어 안에서도 안 열린 노드는 그리지 않는다.
-
-### 2-6. 화면 전체를 하나의 도트 프레임으로 (사용자 지시)
-
-초판 증거판은 코르크판만 캔버스였고 나머지는 HTML 패널이었다. 사용자 지적:
-**"코르크 증거판 영역을 제외하면 웹사이트 느낌이 강하다. 전체 화면이 하나의 디자인
-로직으로 구성되어야 한다."**
-
-그래서 `src/screen.js`(프레임) + `src/office.js`(방)로 분리하고 화면 전체를
-640×384 캔버스 한 장으로 다시 만들었다. 이후 모든 픽셀 화면도 이 논리 해상도를
-기준으로 삼는다.
-
-### 2-7. 시간 예산 상향
-
-기존 목표 15~20분은 월드 탐색·대화가 시간의 절반을 쓰던 구성의 수치다.
-복원이 3개에서 14개로 늘었으므로 **본선 완주 30~35분 / 전체 60분 내외**로 올렸다.
-15~20분으로 되돌리려면 본선 복원을 3개로 줄여야 하는데 그러면 레이어가 5개가 되어
-요구된 6~8을 못 맞춘다. 대신 **캔버스 크기를 노드별로 차등**해 조인다
-(64²·128²·256²만 사용하며 같은 레이어에서는 서로 다르게 배정. 마지막 본선 필수 복원
-`Q5A`는 256². `RESTORATION_QUEST_SPEC` 1장과 `GAME_DESIGN` 8.6).
+- 복원 퀘스트 14개 전부 `assets/questimage`의 1254² 쌍만 쓴다.
+- 컷신 번들 16개 전부 제품 런타임에 있다. `dev/cutscenes`는 검토 하네스만 남았다.
+- 저장은 `heir_game_progress_v2`(localStorage) + `heir_artworks_v1`(IndexedDB).
+- 테스트 21개(단위·계약 20 + 본선 완주 E2E 1) 통과.
 
 ---
 
-## 3. 저장소 현재 상태
+## 2. 저장소 구조 (실제 실행되는 것만)
 
-### 3-1. git
-
-브랜치 `game`. 마지막 커밋 `4e32707`(merge), 그 전 `af96294 quest board`가 이번 세션의
-1차 결과물을 담고 있다. **아래는 아직 커밋되지 않았다.**
-
-```
- M board.html            픽셀 프레임 확인용으로 재작성
- M docs/GAME_DESIGN.md   7장(화면 구성) 전면 개정, 9·10·14장 갱신
- M docs/QUEST_BRANCH.md  2장(순차 공개), 3.3절(구현) 갱신
- M docs/SESSION_HANDOFF.md
- M src/branchmap.js      픽셀 프레임 위로 재작성
-?? src/office.js         신규
-?? src/screen.js         신규
-?? src/workbench.js      신규. 작업대 표현 계층과 실물형 핫스팟
-?? workbench.html        신규. 작업대 확인용 화면
-```
-
-### 3-2. 파일 지도
-
-| 파일 | 상태 |
-| --- | --- |
-| `src/screen.js` | **신규·프레임 정본.** 모든 화면이 공유 |
-| `src/office.js` | **신규.** 사무소 배경 + HUD |
-| `src/branchmap.js` | **동작함.** 코르크 증거판, 순차 공개 |
-| `src/data/quest-graph.js` | **동작함.** 노드 15 그래프 + `validate()` |
-| `board.html` | 증거판 확인용 화면 |
-| `src/workbench.js` | **신규·동작함.** 작업대 표현 계층과 선택 상호작용 |
-| `workbench.html` | 작업대 확인용 화면. 실제 그리기·채점은 아직 연결하지 않음 |
-| `index.html` + `src/game.js` | **레거시.** 옛 대화 기반 그레이박스가 아직 돈다 |
-| `src/dialogue.js`, `src/data/dialogue-*.js` | **폐기 예정.** 단 대사 원본이므로 삭제 금지 |
-| `src/ending.js` | A/B 판정 — 단일 엔딩으로 대체 예정 |
-| `src/restoration.js`, `src/artwork.js`, `src/feedback.js` | 유지. 작업대 재작성 때 재사용 |
-| `src/data/quest-{cat,portrait,seal,dock}.js` | 유지. 새 노드 ID로 매핑 필요(6-4) |
-| `scripts/scoring.js` | 유지 |
-| `scripts/score-manager.js`, `scripts/clip-*.js` | 폐기 스펙. 미사용으로 남겨 둠 |
-
-### 3-3. 스크립트 로드 순서
-
-의존성이 있다. 이 순서를 지켜야 한다.
-
-```html
-<script src="src/screen.js"></script>       <!-- PixelScreen -->
-<script src="src/office.js"></script>       <!-- Office (PixelScreen 필요) -->
-<script src="src/data/quest-graph.js"></script>
-<script src="src/branchmap.js"></script>    <!-- 위 셋 전부 필요 -->
+```text
+index.html                      제품 진입점. 이것 하나다
+src/
+├── app/                        bootstrap · game-director · game-shell
+├── core/                       progress-store(v2) · artwork-store · migration-v1-v2 · asset-loader
+├── data/                       quest-graph · questimage-quests · completion-bundles · quest-registry
+├── screens/                    title · cutscene · board · workbench · finale
+├── cutscenes/
+│   ├── cutscene-player.js      재생·입력·타자·조건부 beat
+│   ├── cutscene-text.js        대화 상자·이름표·줄바꿈
+│   ├── cutscene-registry.js    장면 ID → beats/legacy driver
+│   ├── legacy-opening.js       C0·C0B adapter
+│   ├── data/beats-*.js         6묶음 승인본 (l0-l1 … l6-ending)
+│   └── renderers/*.js          6묶음 시각 코드
+├── workbench/                  closed-regions · paint-history · highres-canvas
+│                               restoration-scorer · workbench-controller
+├── screen.js office.js         640×384 픽셀 프레임 (공용)
+├── branchmap.js workbench.js   증거판·작업대 표현 계층
+└── cutscene-c0-intro.js c0b.js 오프닝 두 장면(아직 자체 재생 루프)
 ```
 
----
+`dev/`는 검토 도구 전용이다. 모든 검토 페이지가 이제 **제품 모듈을 호출한다** —
+데이터 사본이 없으므로 여기서 시각 회귀를 잡을 수 있다.
 
-## 4. 코드 API
-
-### `PixelScreen` (`src/screen.js`)
-
-```js
-PixelScreen.W // 640
-PixelScreen.H // 384
-PixelScreen.PAL          // 전 화면 공용 팔레트. 색은 여기에만 추가한다
-PixelScreen.mount(container, { reserveWidth, reserveHeight })
-  // → { root, canvas, ctx, hits, fit, hotspot, clearHotspots, say }
-
-// 그리기
-PixelScreen.px(ctx, x, y, w, h, color)
-PixelScreen.dither(ctx, x, y, w, h, color, density)          // density 0~1
-PixelScreen.fade(ctx, x, y, w, h, color, from, to, steps, vertical)
-PixelScreen.glow(ctx, cx, cy, rx, ry, color, peak, steps)
-PixelScreen.chamfer(ctx, x, y, w, h, color, cut)             // 모서리 깎은 사각형
-PixelScreen.panel(ctx, x, y, w, h)                           // HUD·대화창 공용 패널
-
-// 텍스트 (기본은 3배 해상도. y 는 글자 윗변)
-PixelScreen.text(ctx, str, x, y, {
-  size, color, align, outline, weight, mode, boxHeight,
-  angle, rotateX, rotateY, // 기울어진 종이처럼 글자 블록 전체를 같은 원점에서 회전
-})
-// mode: "pixel"일 때만 기존 1비트 글씨
-// boxHeight: 글자의 실제 획 영역을 주어진 높이 안에 수직 중앙 정렬
-PixelScreen.textWidth(str, size, weight)
-```
-
-`mount()`가 돌려주는 것:
-
-```js
-screen.ctx                      // 640×384 컨텍스트
-screen.textCanvas               // 1920×1152 투명 글씨 레이어
-screen.clearText()              // 화면을 다시 그리기 전에 글씨 레이어 초기화
-screen.hotspot(x, y, w, h, { label, disabled, onClick })  // 투명 DOM 버튼
-screen.clearHotspots()
-screen.say(message)             // 스크린 리더용 role=status
-screen.fit()                    // 창 크기 변경 시 자동 호출됨
-```
-
-### `Office` (`src/office.js`)
-
-```js
-Office.WALL_TOP    // 0
-Office.WALL_BOTTOM // 292
-Office.DESK_TOP    // 300
-Office.WIN         // { x:12, y:62, w:78, h:116 }
-
-Office.drawRoom(ctx, { fog, clock }) // 벽+창+아날로그 시계+몰딩+책상+소품 한 번에
-// 개별 함수도 노출돼 있다: drawWall, drawWindow, drawWallClock, drawMolding,
-//                          drawDesk, drawLamp, drawDeskProps
-```
-
-`fog` 1 = 아무것도 안 보인다, 0 = 지붕선과 가로등까지 또렷하다.
-
-### `BranchMap` (`src/branchmap.js`)
-
-```js
-BranchMap.mount(el, { onSelect(nodeId), reserveWidth, reserveHeight })
-BranchMap.render(State, { clock })              // State.has(flag) 만 읽는다
-BranchMap.setThumbnail(nodeId, canvasOrImage)   // 복원 통과 시 결과 축소본
-BranchMap.BOARD                                 // 판 사각형
-```
-
-### `QuestGraph` (`src/data/quest-graph.js`)
-
-```js
-QuestGraph.NODES          // 15개. layer/route/kind/title/gridSize/parents/cutscene
-QuestGraph.UNLOCKS        // 컷신 → 해금 노드
-QuestGraph.EPILOGUE_CUTS  // 후일담 변주 조건
-QuestGraph.get(id) / children(id) / nodesInLayer(n) / mainRoute()
-QuestGraph.statusOf(id, State)   // "locked" | "open" | "cleared"
-QuestGraph.edges()               // { from, to, thread: "red"|"white" }
-QuestGraph.openUnplayed(State)   // 엔딩 진입 전 확인창용
-QuestGraph.validate()            // 대본과 데이터 정합성. 부팅 시 1회 호출할 것
-```
-
-### 진행 플래그 규약
-
-- `NODE_CLEARED_<노드ID>` — 복원 통과
-- `CUTSCENE_SEEN_<컷신ID>` — 컷신 종료. **해금의 실제 트리거**
-
-해금은 「부모 통과」가 아니라 「부모의 컷신 종료」로 일어난다.
-
----
-
-## 5. 새 화면을 만들 때 지킬 것 (프레임 규칙)
-
-`docs/QUEST_BRANCH.md` 3.3절이 정본이다. **어기면 화면이 다시 쪼개진다.**
-
-- **HTML 패널을 섞지 말 것.** 640×384 캔버스 한 장 안에서 끝낸다
-- **글자는 `PixelScreen.text()`.** 작은 한글의 획 뭉침을 막기 위해 글씨만 3배 해상도
-  투명 캔버스에 그린다. 배경과 사물은 여전히 640×384 픽셀 밀도를 유지한다.
-  장식용 1비트 글씨가 필요할 때만 `{ mode: "pixel" }`을 지정한다
-- **음영은 `fade`/`glow`.** 한 색을 넓게 디더로 깔면 계조가 아니라 **체커보드**로 보인다.
-  가까운 톤을 여러 겹 쌓아야 한다(코르크 오른쪽 어두운 면은
-  `corkDark → corkGrain → corkHole` 3겹이다). 실제로 겪고 고친 함정이다
-- **확대는 정수배만.** 소수 배율은 픽셀을 들쭉날쭉하게 만든다. `PixelScreen`이
-  1·2·3배 중 하나로만 키우고 남는 공간은 여백으로 둔다
-- **색은 `PixelScreen.PAL`에만 추가한다.** 즉흥으로 만들지 않는다
-- **난수는 씨앗 고정.** 코르크 알갱이·나뭇결·종이 기울기가 다시 그릴 때마다 달라지면
-  화면이 떨린다
-- **누를 수 있는 것은 `screen.hotspot()`.** 보이는 것은 캔버스, 누르는 것은 그 위의
-  투명 DOM 버튼이다. 키보드·스크린 리더가 그대로 동작한다.
-  포커스 표시는 캔버스에 도트로 그린다 — CSS `outline`을 쓰면 거기만 웹처럼 보인다
-
----
-
-## 6. 다음 작업
-
-### 6-0. 확정된 초기 작업 순서
-
-사용자가 다음 순서를 확정했다. 이 순서를 바꾸지 않는다.
-
-1. **증거판 디자인을 기준 이상으로 구축** — 완료. 화면 디자인 평가 에이전트로
-   플레이어 관점 평가·수정 루프 4회 진행, 종합 8.5/10로 합격
-2. **작업대 화면을 픽셀 프레임 디자인으로 재작성** — 완료. 표현 계층과 색·도구 선택,
-   물리적 행동물의 핫스팟까지만 구현. 그리기 기능·타깃·유사도는 의도대로 미연결
-3. **컷신 16개 데이터화 및 재생기 구현 + 게임 루프 연결** — 다음 작업
-4. 그 뒤에 복원 기능·타깃 아트·유사도 기준을 구체화한다
-
-복원 타깃 아트 방향은 9장에 기록돼 있지만, 현재 화면 디자인 단계의 선행 조건은 아니다.
-
-### 6-1. 컷신 재생기 — `src/cutscene.js` + `src/data/cutscenes.js`
-
-대본 16개(`docs/script/07_CUTSCENES.md`)를 데이터로 옮기고 재생기를 만든다.
-**`PixelScreen` + `Office`를 그대로 쓴다.**
-
-데이터 스키마 (`QUEST_BRANCH.md` 4.3):
-
-```js
-{
-  id: "C3A_SEAL_DRAWN",
-  place: "police-station",
-  beats: [{ who, face, text, ms, sfx }],
-  grants: ["EV_CARVER_SEAL_4WAVES"],
-  unlocks: ["Q3A_SEAL", "Q3B_TATTOO"],
-}
-```
-
-지켜야 할 것:
-
-- **선택지 없음. 자동 진행.** 비트마다 `ms`가 정해져 있다
-- 클릭/스페이스: 타이핑 즉시 완료 → 한 번 더 누르면 다음 비트
-- ESC: 전체 스킵. **그 컷신을 한 번 끝까지 본 뒤에만** 활성화
-- **`grants`는 종료 시점에 일괄 적용.** 중간에 스킵해도 유실되면 안 된다
-- `unlocks`는 `QuestGraph.UNLOCKS`와 일치해야 한다(`validate()`가 검사)
-- 화면: 배경 1장 + 좌하단 플레이어 초상 + 우상단 상대 초상 + 하단 대화창.
-  초상 64×64 원본, 화면에서 96×96. 표정 3종 `calm`/`tense`/`high`.
-  대화창은 `PixelScreen.panel()`, 대사는 `PixelScreen.text()`
-- 배경 키 10종은 `GAME_DESIGN` 7.3에 있다. 사무소는 `Office.drawRoom()` 재사용
-
-### 6-2. 작업대를 같은 프레임으로 재작성 — 완료
-
-`workbench.html` + `src/workbench.js`로 640×384 표현 계층을 독립 구현했다. 중앙 캔버스,
-왼쪽 책상 위에 직접 붙인 목격자 메모지, 오른쪽 실물 팔레트와 연필·가는 붓·넓은 붓·채우기 병·지우개,
-중앙의 반투명 타원형 황색광, 이젤 받침, 제출 봉투가 한 장면 안에 있다. 모든 조작은 투명 DOM 핫스팟과
-aria-label을 갖고 선택 색·도구는 금색 링/들림으로 표시한다. `setArtwork()`는 외부 그림을
-작업면에 contain+clip한다. `restoration.js`·`artwork.js`·`feedback.js`는 건드리지 않았다.
-
-```js
-Workbench.mount(container, { onAction })
-// render({ title, quotes, palette, activeColor, activeTool, brushSize,
-//          canUndo, canRedo, isSubmitting, feedback, artwork })
-// setArtwork(canvasOrImage)
-// onAction({ type: "back-to-board" }) // 왼쪽 아래 코르크 표찰
-```
-
-현재는 디자인 검토용 preview state만 바뀐다. 실제 그림 좌표 변환, undo stack, flood fill,
-채점과 제출 결과는 후속 엔진 어댑터에서 기존 `Restoration`을 단일 진실 원천으로 연결한다.
-
-### 6-3. `game.js` 재작성 — 3화면 전환
-
-대화 시스템을 걷어내고 **증거판 ↔ 컷신 ↔ 작업대**로 바꾼다.
-증거판은 이미 있으므로 `BranchMap.mount(el, { onSelect })`를 붙이고,
-복원 통과 시 `BranchMap.setThumbnail(id, 결과캔버스)`를 부르면 된다.
-
-### 6-4. 기존 퀘스트 4개를 새 노드 ID로 매핑
-
-| 새 노드 | 기존 파일 | 조치 |
-| --- | --- | --- |
-| `Q2A_TRUE_FACE` | `quest-portrait.js` (`REST1`) | 그대로 승계 |
-| `Q3A_SEAL` | `quest-seal.js` (`REST2`) | **분할.** `three-waves`·`seal-border`·`incomplete-seal`만 |
-| `Q3B_TATTOO` | `quest-seal.js` | **분할 신설.** `anchor-original`·`fresh-tattoo` |
-| `Q5A_DOCK` | `quest-dock.js` (`REST3`) | 승계 + `fourth-wave`를 여기로 이동 |
-| `Q2B_CAT` | `quest-cat.js` | 그대로 승계 |
-
-### 6-5. 신규 복원 퀘스트 9개
-
-`Q0`, `Q1A`, `Q1B`, `Q2C`, `Q3C`, `Q4A`, `Q4B`, `Q4C`, `Q5B`.
-9장의 결정이 선행돼야 한다.
-
-### 6-6. 실제 완주 1회 + 소요 시간 측정
-
-**아직 한 번도 안 했다.** 구간별 상태 주입으로만 검증해 왔다.
-
----
-
-## 7. 확정된 설계 — 되돌리지 말 것
-
-### 이야기
-
-- **인장 파도 세 줄/네 줄** → 2-3
-- **단일 엔딩.** 가지는 결정적 증거를 절대 주지 않는다. 후일담 컷으로 보상한다
-- **컷신에 선택지 없음.** 증거는 종료 시 일괄 적용되므로 놓칠 수 없다
-
-### 시스템
-
-- **복원 결과에 숫자를 절대 노출하지 않는다.** 정성 피드백 4단계만
-- **네이티브 `confirm()`/`alert()` 금지.** 차단 환경에서 조용히 실패한다.
-  `src/ui.js`의 `UI.confirm()`을 쓸 것
-- **CLIP 제외.** 외부 네트워크 의존 0
-- **복원 목표는 설계 용어가 아니라 목격담으로 표시한다**
-  ```
-  이전: ◆ 왼눈썹 비대칭
-  이후: "웃을 때요, 왼쪽 눈썹만 유독 위로 올라갔습니다." — 홀트
-  ```
-- **진행 화면은 디에게틱해야 한다.** 퀘스트 가지 맵 = 사무소 벽의 코르크 증거판.
-  이 화면이 곧 엔딩 이미지다
-
-### 사용자가 직접 고른 결정
-
-| 질문 | 선택 | 함의 |
-| --- | --- | --- |
-| 256²에서 무엇을 그리는가 | 큰 초상·정밀 문서·넓은 현장 | Q1A·Q2A·Q3C·Q4A·Q5A. 세부는 `RESTORATION_QUEST_SPEC` |
-| 정답 그림은 무엇으로 만드는가 | 제한 팔레트 평면 픽셀 아트 | 생성 원본은 재구성·양자화 후에만 사용 |
-
----
-
-## 8. 함정 (실제로 겪은 것들)
-
-- **`python3 -m http.server`를 쓰면 브라우저 캐시 때문에 수정이 반영되지 않는다.**
-  "고쳤는데 안 고쳐졌다"고 여러 번 오판했다. 반드시 `serve.py`를 쓸 것
-- **한 색을 넓게 디더로 깔면 체커보드가 된다** → `fade`/`glow`
-- **저해상도 캔버스의 `fillText`는 작은 한글 획을 뭉갠다** → 3배 해상도 레이어를
-  쓰는 `PixelScreen.text()`
-- **부모가 flex 면 `parent.clientWidth`가 0이 되어 배율이 1로 잠긴다.**
-  `PixelScreen`은 창 기준으로 재도록 고쳐 뒀다
-- **라벨을 클릭 영역 안에 넣으면 두 줄로 접히며 그림을 덮는다.** 라벨은 종이 바깥에
-- **외곽선 색은 양자화 팔레트에 자동 추가된다**(빠뜨리면 선화가 안 생긴다)
-- 검증할 때 `window.confirm`을 덮어쓰거나 상태를 주입해 UI를 우회하면
-  **실제 사용자가 겪는 결함을 스스로 가리게 된다.** 실제 클릭으로 확인할 것
-
-### 복원 시스템의 눈에 안 띄는 구현 결정
-
-- **채우기 도구는 영역 데이터가 없어도 동작한다.** `regionOf`가 있으면 그것을,
-  없으면 런타임 flood fill(`restoration.js`의 `regionCells`)
-- **색을 골라도 도구가 바뀌지 않는다.** 지우개·스포이드였을 때만 채우기로 복귀
-- **격자는 칸이 6px 미만이면 자동으로 숨는다**
-- **256²에서는 기본 도구가 채우기**, 그 이하에서는 연필
-
-### 퀘스트 데이터 스키마 (256² 기준)
-
-```js
-window.QuestPortrait = Object.freeze({
-  id: "REST1", gridSize: 256,
-  source: drawFn,          // (ctx, size, {loadImage}) => void, async 가능
-  outline: "#241C17",      // 선화 색 (플레이어가 고를 수 없음)
-  minRegion: 24,
-  palette: [{ name, hex }],
-  requiredFeatures: [{
-    id, clue|always, color,   // color → 그 색으로 칠할 픽셀이 자동 산출됨
-    label, speaker, quote, missNote,
-  }],
-  weights, passingScore,
-});
-```
-
----
-
-## 9. 🚧 막힌 지점 — 복원 타깃 아트 방향
-
-이전 세션부터 이어진 미결이다. **신규 퀘스트 9개 전부에 영향을 준다.**
-
-`assets/`의 회화풍 초상은 채우기식 복원에 쓸 수 없다는 것이 실측으로 확인됐다.
-상위 10색이 전부 미세하게 다른 갈색이고 최대 영역이 16,381px라 클릭 한 번에 대부분이
-칠해진다. 밀랍 봉인(`20-broken-wax-seal.png`)처럼 평면적인 자산만 정상 분해된다
-(선화 15,488px, 영역 3개). **파이프라인은 정상이고 원본 아트가 조건 미달이다.**
-
-선택지:
-
-1. **절차 생성으로 평면 초상을 그린다** ← 유력.
-   영역·특징 위치를 정확히 통제할 수 있다. 복원 대상은 「증언으로 재구성한 그림」이라
-   사실적일 필요가 없고, 평면 도트가 오히려 콘셉트에 맞는다
-2. 평면 채색 아트를 따로 준비한다 (품질 최선, 아트 작업 선행)
-3. 회화풍 원본을 포스터화 + 윤곽검출로 평면화 (결과가 지저분할 가능성 높음)
-
-`quest-portrait.js`의 `drawSource()`를 통째로 교체하면 된다.
-`source`가 `(ctx, size, {loadImage}) => void` 계약만 지키면 `artwork.js`·
-`restoration.js`는 손대지 않아도 된다.
-
----
-
-## 10. 실행과 검증
+### 실행
 
 ```bash
 python3 serve.py 8124
 ```
 
-- `http://localhost:8124/board.html` — 증거판. 단계를 앞뒤로 밀며 순차 공개 확인
-- `http://localhost:8124/` — 옛 그레이박스(레거시)
+`http://localhost:8124/` — 게임. `python3 -m http.server`는 캐시 때문에 쓰지 말 것.
 
-그래프 데이터만 빠르게 검증할 때:
+### 테스트
 
 ```bash
-node -e "global.window={};require('./src/data/quest-graph.js');console.log(window.QuestGraph.validate())"
+for t in tests/*.test.cjs; do node "$t" || echo "FAIL $t"; done
+node tests/full-game-main-route.e2e.cjs
 ```
-
-### 이번 세션에서 확인한 것
-
-`node`로 `quest-graph.js`를 직접 돌린 결과:
-
-```
-정합성 문제: 0 · 노드 15 · 레이어당 본선 정확히 1개
-도달 가능 노드: 15/15
-가지만 플레이 시 엔딩: locked  ← 본선 루트가 하나임이 코드로 보장됨
-실: 붉은 6 / 흰 8
-```
-
-증거판은 브라우저에서 1배·2배 양쪽으로 직접 눌러 확인했다(콘솔 에러 0):
-
-```
-인트로만 봄 → Q0 하나만 보인다. L1~L6 없음 (핫스팟 1개)
-Q0 클리어  → L1의 Q1A·Q1B 두 장이 나타난다
-Q1A 클리어 → L2에 Q2A·Q2C 만 나타난다. Q2B는 Q1B를 안 했으므로 없다
-열린 종이 클릭 → onSelect(nodeId) 정상
-본선을 밟을수록 창밖 안개가 걷혀 지붕선과 가로등이 드러난다
-```
-
-**단, 처음부터 끝까지 이어서 플레이한 적은 없다.** 구간별 상태 주입으로 검증했다.
 
 ---
 
-## 11. 그래프 (한눈에)
+## 3. 다음 작업 — 최종 정리
+
+### 3-1. 단계 10 · 최종 QA 매트릭스 (먼저 할 것)
+
+계획서 10장의 매트릭스 중 **본선 완주만** 자동화돼 있다. 남은 것:
+
+| 경로 | 현재 | 할 일 |
+| --- | --- | --- |
+| 본선 완주 | ✅ `tests/full-game-main-route.e2e.cjs` | — |
+| 선술집 가지 | ❌ | Q1B→Q2B→Q3C→Q4B→Q5B E2E 추가 |
+| 단발 가지 | ❌ | Q2C·Q3B·Q4C 독립 완료 E2E |
+| 후일담 5종 조합 | 데이터만 | 완료 가지에 따라 엔딩 beat가 갈리는 E2E |
+| 재개 | 부분 ✅ | 작업대 draft·통과 직후·컷신 도중·Q6 도중 — 앞 셋은 수동 확인만 |
+| 실패 | ❌ | 이미지 404 · IndexedDB 실패 · 저장 quota |
+| 접근성 | ❌ | 키보드 완주 · reduced motion · live region · 포커스 복귀 |
+| 화면 | ❌ | 1280×720 / 1440×900 / 좁은 화면 / 고DPI |
+
+E2E 작성법은 `tests/full-game-main-route.e2e.cjs`를 그대로 본떠라. 진짜
+`GameDirector`·`ProgressStore`·번들을 쓰고 화면 어댑터만 대역으로 갈아 끼운다.
+
+### 3-2. 통과선 실측
+
+실제 붓질로 통과까지 해 본 것은 **Q0(82.4)·Q1A(62.6)뿐**이다. 나머지 12개는
+통과선 60이 적절한지 확인되지 않았다. 계획서 7.4가 예고한 조정 대상이다.
+
+- 조정할 때는 `src/data/questimage-quests.js`의 `DEFAULT_SCORING`이나 퀘스트별
+  `scoring` override만 고친다. **scorer 코드는 건드리지 않는다.**
+- `window.HAVEN_DEBUG = true`로 켜면 제출 시 콘솔에 점수가 찍힌다.
+
+### 3-3. 단계 9 · 호환 파일 제거 (사용자 승인 필요)
+
+`docs/LEGACY_DELETION_MANIFEST.md`의 A등급은 **삭제 권고이지 허가가 아니다.**
+범주별로 사용자에게 경로·용량·남은 참조 0건 증거·복구 명령을 제시하고 승인을 받아라.
+
+지금은 제품이 로드하지 않지만 아직 저장소에 있는 것:
+
+```text
+board.html, workbench.html          단일 셸 전환 완료. dev/ 이동 또는 삭제 대상
+src/intro.js                        TitleScreen·GameDirector가 대체
+src/index-workbench.js              WorkbenchScreen이 대체
+src/workbench-flow.js               Director가 대체
+src/workbench-runtime.js            고해상도 controller가 대체
+src/workbench-entry.js, board-entry.js
+src/data/workbench-quests.js, src/data/workbench/q0-montage.js
+scripts/montage-scoring.js, scripts/scoring.js
+assets/q0-montage/                  ⚠ L0→L1 컷신의 수배 전단이 아직 참조한다
+구 월드·대화 코드 18개               LEGACY_DELETION_MANIFEST 2.3
+```
+
+`assets/q0-montage/montage-target.png`는 `src/cutscenes/renderers/l0-l1.js`가
+쓰고 있으므로 **지금 지우면 컷신이 깨진다.** 다른 자산으로 바꾸거나 남겨야 한다.
+
+### 3-4. 남은 계약 구멍
+
+- **`grants`가 전부 빈 배열이다.** `src/data/completion-bundles.js`의 16개 번들이
+  증거 플래그를 하나도 주지 않는다. 어느 정본 문서에도 번들별 명세가 없어서
+  임의로 만들지 않았다. 대본에서 확정되면 그 파일 한 곳만 고치면 된다.
+- 오프닝 두 장면(C0_INTRO·C0B_THE_JOB)은 아직 자체 재생 루프를 쓰는 legacy
+  adapter다. 계획서 5.3의 마지막 단계로, 나머지가 안정되면 beats로 흡수한다.
+
+---
+
+## 4. 이 통합에서 새로 생긴 계약 (되돌리면 깨진다)
+
+### 4-1. 통과와 해금은 다른 사건
 
 ```
- L0        L1              L2                L3                 L4              L5             L6
-
-                     ┌─ 2C 닫힌 방 ●
-                     │
-      ┌─ 1A 미화된 ──┼─ 2A 진짜 ──┬─ 3A 봉인의 ──┬─ 4A 번진 ── 5A 안개 낀 ── 6 증거의 방
-      │    초상 ◆    │   얼굴 ◆   │    세 줄 ◆   │   장부 ◆      부두 ◆          ★
-0 튜토┤                           │              └─ 4C 광장의 내기 ●
- 리얼 │                           └─ 3B 너무 새것인 닻 ●
-  ▲   └─ 1B 선술집 ── 2B 안개를 ── 3C 창고의 ── 4B 잃어버린 ── 5B 세이렌 호의 밤 ●
-           벽의 얼굴 ●  찾습니다 ●   불빛 ●       항해일지 ●
-
-▲ 빨강(시작)   ◆ 주황(본선)   ● 파랑(가지)   ★ 초록(엔딩)
+그림 통과  → progressStore.beginQuestCompletion(questId, bundleId)
+             = clearedQuestIds 추가 + pending 예약, 한 번의 저장
+             ⚠ 이 시점에 자식은 열리지 않는다
+번들 종료  → progressStore.completeBundle(bundleId)
+             = completedBundleIds·seenSceneIds·grants 적용 + pending 제거
+             ⚠ 자식 해금은 여기서만 일어난다
 ```
 
-본선: `Q0 → Q1A → Q2A → Q3A → Q4A → Q5A → Q6` — **엔딩까지 이어지는 유일한 루트**
+통과 직후 창을 닫아도 다음 실행이 완료 컷신부터 재개된다. 이걸 깨면 진행이 영구히 막힌다.
+
+### 4-2. 퀘스트 등록은 데이터뿐
+
+`src/data/quest-registry.js`가 세 정본을 join해 descriptor를 만든다.
+**퀘스트별 분기 코드는 어디에도 없다.** 새 퀘스트를 열려면:
+
+| 넣을 것 | 어디에 |
+| --- | --- |
+| 이미지 쌍·증언·팔레트 | `questimage-quests.js` |
+| 붓·확대·선 임계값 | `DEFAULT_TOOLS` (필요할 때만 퀘스트별 override) |
+| 가중치·통과선 | `DEFAULT_SCORING` (필요할 때만 override) |
+| 완료 번들·장면·해금 | `completion-bundles.js` |
+| 레이어·부모·순서 | `quest-graph.js` |
+
+`QuestRegistry.validate()`가 부팅 시, `tests/quest-registry.test.cjs`가 CI에서 검사한다.
+
+### 4-3. 조건부 beat
+
+형제 노드를 어떤 순서로 깼는지에 따라 대사가 갈리는 곳이 5개 있다.
+검토본은 URL fixture로 흉내 냈지만 **제품은 실제 통과 기록으로 판정한다.**
+
+```js
+{ ...beat, when: { cleared: ["Q3A_SEAL"] } }      // 통과했을 때만
+{ ...beat, when: { notCleared: ["Q3A_SEAL"] } }   // 아직일 때만
+```
+
+`CE_ENDING`의 후일담 5종도 같은 방식이다(`QuestGraph.EPILOGUE_CUTS`와 일치해야 한다).
+
+### 4-4. Q6는 복원 퀘스트가 아니다
+
+증거의 방은 그림을 그리지 않는다. 본선 여섯 장을 여섯 주장에 잇는다.
+**여섯 연결이 모두 맞아야** 엔딩이 예약된다. `FinaleScreen.isSolved()`가 단일 기준이다.
+
+### 4-5. 엔딩 후 저장 상태
+
+`GameDirector.getCompletionState()`가 네 가지를 한곳에서 말한다.
+`allRequiredCleared` / `endingCompleted` / `continueBehaviour` / `canStartNewGame`.
+
+- 가지는 엔딩 필수가 아니다. 엔딩 뒤 계속하기는 증거판으로 간다.
+- "새 이야기 시작"은 엔딩을 본 저장에서만 나타나고, 확인창을 거쳐 진행과 그림을 함께 지운다.
+
+---
+
+## 5. 문서 간 충돌 — 해소된 것과 남은 것
+
+| 충돌 | 해소 |
+| --- | --- |
+| CLIP 제외(구 handoff) vs CLIP 15%(계획서 7.4) | **계획서 채택.** CLIP은 선택적 보조 신호이고 실패해도 제출을 막지 않는다 |
+| 64·128·256 격자(구 handoff) vs 1254 원본(계획서·SPEC) | **계획서 채택.** 전 퀘스트 1254² 원본, 1px 붓 없음 |
+| `quest-graph.cutscene` ID 16개 vs 제작본 장면 ID 16개 | `completion-bundles.js`가 잇고, 옛 ID는 `legacyCutsceneId`로만 남는다 |
+| 인수인계가 지목한 `QUESTIMAGE_RESTORATION_REWRITE_PLAN.md`·`WORKBENCH_PRODUCTION_SPEC.md` | 저장소에 없다. 각각 `HIGH_RES_RESTORATION_REWRITE_PLAN.md`·`RESTORATION_QUEST_SPEC.md`가 대응한다 |
+| 번들별 `grants` | **미해소.** 3-4 참조 |
+
+---
+
+## 6. 되돌리면 안 되는 이야기·시스템 결정
+
+### 🔴 인장 설정 — 이 이야기의 심장
+
+- 아셔튼 **본가** 인장 = 초승달 아래 파도 **세 줄**. 엘리너가 12년째 보관
+- 줄리언은 **방계**. 그의 마차·문구류 문장은 파도 **네 줄**
+- 줄리언은 본가 인장 실물을 본 적이 없어, 카버에게 자기 마차 문양을 가르쳤다
+
+배후를 지목하는 것은 증언이 아니라 **플레이어가 직접 칠한 두 복원물의 대조**다
+(`Q3A_SEAL` 세 줄 ↔ `Q5A_DOCK` 네 줄). 되돌리면 추리가 무너진다.
+
+### 시스템
+
+- **복원 결과에 숫자를 노출하지 않는다.** 정성 피드백 4단계만
+- **네이티브 `confirm()`/`alert()` 금지.** 차단 환경에서 조용히 실패한다
+- **복원 목표는 설계 용어가 아니라 목격담으로 표시한다**
+- **진행 화면은 디에게틱하다.** 증거판 = 사무소 벽의 코르크판
+- **단일 엔딩.** 가지는 결정적 증거를 주지 않고 후일담 컷으로 보상한다
+- **컷신에 선택지 없음.** 증거는 번들 종료 시 일괄 적용
+- **파도 세 줄과 마차 문양은 예외 없이 본선 복원으로만 드러난다**
+
+### 화면 프레임 규칙 (`QUEST_BRANCH.md` 3.3이 정본)
+
+- HTML 패널을 섞지 말 것. 640×384 캔버스 한 장 안에서 끝낸다
+  - 예외: 고해상도 작업면은 DOM 캔버스를 작업대 사각형 위에 정확히 겹친다
+- 글자는 `PixelScreen.text()` (3배 해상도 레이어). 저해상도 `fillText`는 한글 획을 뭉갠다
+- 음영은 `fade`/`glow`. 한 색을 넓게 디더로 깔면 체커보드가 된다
+- 확대는 정수배만. 색은 `PixelScreen.PAL`에만 추가
+- 난수는 씨앗 고정. 누르는 것은 `screen.hotspot()`의 투명 DOM 버튼
+
+---
+
+## 7. 함정 (실제로 겪은 것들)
+
+- **`python3 -m http.server`는 캐시 때문에 수정이 반영되지 않는다.** `serve.py`를 쓸 것
+- **`Workbench.render()`는 핫스팟 층을 통째로 비운다.** 그 위에 얹은 그리기 표면을
+  render마다 다시 붙여야 한다(`workbench-controller.js`의 `render()`)
+- **1초마다 핫스팟을 새로 만들면 클릭이 씹힌다.** mousedown과 mouseup 사이에 버튼이
+  사라지면 click 이벤트가 발생하지 않는다. `branchmap.js`는 노드 구성이 바뀔 때만 다시 만든다
+- **1254² ImageData 전체를 이력에 쌓지 말 것.** 한 장이 6.3MB다.
+  `paint-history.js`는 실제로 지나간 64px 타일만 뜬다
+- **미리보기 창(`document.hidden`)에서는 rAF가 멈춘다.** 캔버스 백킹 스토어는 갱신되는데
+  화면 래스터가 안 바뀐다. 실제 사용자에게는 해당 없음. 확인할 때 transform을 살짝 흔들면 반영된다
+- **검증할 때 상태를 주입해 UI를 우회하면 실제 결함을 스스로 가린다.** 실제 클릭으로 확인할 것
+- 외곽선 색은 양자화 팔레트에 자동 추가된다(빠뜨리면 선화가 안 생긴다)
+
+---
+
+## 8. 커밋 기록 (이번 통합)
+
+| 커밋 | 내용 |
+| --- | --- |
+| `173558a` | 단계 1 — 완료 컷신 번들 계약과 부팅 검증기 |
+| `ef0d2b4` | 단계 2 — ProgressStore v2 · ArtworkStore · v1 마이그레이션 |
+| `1c588c1` | 단계 3·4 — 공통 컷신 플레이어와 단일 `index.html` 셸 |
+| `7842a33` | 현황표와 문서 충돌 기록 |
+| `edae4d0` | 단계 5 — Q0·Q1A를 questimage 고해상도 작업대에 연결 |
+| `b25af43` | 단계 7 — 데이터 기반 등록부, Q1B~Q5B 등록 |
+| `860b35d` | 단계 8 — Q6 증거의 방과 `B_AFTER_Q6` → `CE_ENDING` |
