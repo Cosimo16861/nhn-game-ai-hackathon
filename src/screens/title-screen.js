@@ -22,6 +22,8 @@
     const startButton = container.querySelector('[data-action="start"]');
     const replayButton = container.querySelector('[data-action="replay"]');
     const startLabel = container.querySelector('[data-role="start-label"]');
+    const newGameButton = container.querySelector('[data-action="new-game"]');
+    const confirmPanel = container.querySelector('[data-role="new-game-confirm"]');
 
     ctx.imageSmoothingEnabled = false;
 
@@ -139,15 +141,41 @@
       frame = global.requestAnimationFrame(render);
     }
 
+    function setConfirmVisible(visible) {
+      if (!confirmPanel) return;
+      const wasOpen = !confirmPanel.hidden;
+      confirmPanel.hidden = !visible;
+      if (visible) {
+        confirmPanel.querySelector('[data-action="new-game-cancel"]')?.focus();
+      } else if (wasOpen && !disposed) {
+        // 닫을 때만 포커스를 되돌린다. 화면 정리 중에는 건드리지 않는다.
+        newGameButton?.focus();
+      }
+    }
+
     function onClick(event) {
       const action = event.target.closest("[data-action]")?.dataset.action;
       if (action === "start") options.onStart?.();
       if (action === "replay") options.onReplayPrologue?.();
+      // 새 게임은 그림까지 지운다. 확인을 한 번 받는다.
+      if (action === "new-game") setConfirmVisible(true);
+      if (action === "new-game-cancel") setConfirmVisible(false);
+      if (action === "new-game-confirm") {
+        setConfirmVisible(false);
+        options.onNewGame?.();
+      }
     }
 
     function onKeydown(event) {
+      if (event.key === "Escape" && confirmPanel && !confirmPanel.hidden) {
+        event.preventDefault();
+        setConfirmVisible(false);
+        return;
+      }
       if (event.key !== "Enter" && event.key !== " ") return;
       if (event.target.matches("button")) return;
+      // 확인창이 떠 있으면 ENTER 가 게임을 시작하지 않는다.
+      if (confirmPanel && !confirmPanel.hidden) return;
       event.preventDefault();
       options.onStart?.();
     }
@@ -162,11 +190,20 @@
         if (startLabel) startLabel.textContent = resumable ? "이어하기" : "새 이야기";
         if (replayButton) replayButton.hidden = !resumable;
       },
+      /**
+       * 엔딩을 본 저장에서만 "새 이야기 시작"을 노출한다.
+       * 그전에는 실수로 진행을 지울 방법이 없다.
+       */
+      setEndingCompleted(completed) {
+        if (newGameButton) newGameButton.hidden = !completed;
+        if (!completed) setConfirmVisible(false);
+      },
       focus() {
         startButton?.focus();
       },
       dispose() {
         disposed = true;
+        setConfirmVisible(false);
         if (frame) global.cancelAnimationFrame(frame);
         frame = 0;
         container.removeEventListener("click", onClick);

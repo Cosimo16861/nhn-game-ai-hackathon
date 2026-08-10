@@ -60,3 +60,34 @@
 }
 
 .shell-overlay--fatal button:hover { background: #33291f; }
+
+/*
+ * 새 게임 확인 — 네이티브 confirm() 은 차단 환경에서 조용히 실패한다.
+ * (SESSION_HANDOFF 7장 "네이티브 confirm/alert 금지")
+ */
+.title-confirm {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 14px 20px;
+  max-width: 70%;
+  background: rgba(7, 9, 10, 0.94);
+  border: 1px solid rgba(216, 169, 75, 0.42);
+  color: #e9dfc9;
+  font-size: clamp(9px, 1.05vw, 13px);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.title-confirm[hidden] { display: none; }
+.title-confirm p { margin: 0; }
+
+.title-confirm-actions {
+  display: flex;
+  gap: 14px;
+}

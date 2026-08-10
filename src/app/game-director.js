@@ -72,8 +72,11 @@
         const screen = global.TitleScreen.mount(container, {
           onStart: () => continueGame(),
           onReplayPrologue: () => playBundle(bundles.OPENING_BUNDLE_ID),
+          onNewGame: () => startNewGame(),
         });
         screen.setResumable(hasProgress());
+        // 엔딩을 본 저장에서만 "새 이야기 시작"을 보여 준다.
+        screen.setEndingCompleted(hasCompletedEnding());
         return screen;
       });
     }
@@ -160,9 +163,40 @@
       );
     }
 
+    /**
+     * Q6 증거의 방. 여섯 연결이 모두 맞아야 엔딩이 예약된다.
+     * 그전에는 CE_ENDING 이 재생되지 않는다 — GAME_INTEGRATION_PLAN 9.1.
+     */
     function openFinale() {
-      // Q6 증거의 방은 단계 8 에서 붙인다. 그때까지는 완료 번들만 재생한다.
+      progressStore.selectQuest("Q6_FINALE");
+
+      // 이미 여섯 연결을 마쳤는데 엔딩을 못 본 상태면 바로 엔딩부터 재개한다.
+      if (global.FinaleScreen.isSolved(progressStore) &&
+          !progressStore.isQuestCleared("Q6_FINALE")) {
+        return completeFinale();
+      }
+
+      return transition({ name: "finale" }, (container) =>
+        global.FinaleScreen.mount(container, {
+          progressStore,
+          artworkStore,
+          onBackToBoard: () => showBoard(),
+          onSolved: () => completeFinale(),
+        }),
+      );
+    }
+
+    /** 여섯 연결 완료. 통과와 엔딩 예약을 한 번의 저장으로 남긴 뒤 재생한다. */
+    function completeFinale() {
       const bundle = bundles.forQuest("Q6_FINALE");
+      try {
+        if (!progressStore.isQuestCleared("Q6_FINALE")) {
+          progressStore.beginQuestCompletion("Q6_FINALE", bundle.id);
+        }
+      } catch (error) {
+        fatal(error, () => completeFinale());
+        return Promise.resolve(null);
+      }
       return playBundle(bundle.id);
     }
 
@@ -198,6 +232,13 @@
         snapshot.seenSceneIds.length > 0;
     }
 
+    const ENDING_BUNDLE_ID = bundles.forQuest("Q6_FINALE").id;
+
+    /** 엔딩까지 봤는가. 저장 상태가 "완주"인지 판단하는 단일 기준이다. */
+    function hasCompletedEnding() {
+      return progressStore.isBundleCompleted(ENDING_BUNDLE_ID);
+    }
+
     /** 재개 우선순위 — GAME_INTEGRATION_PLAN 3.3 */
     function resumeTarget() {
       const pending = progressStore.getPendingTransition();
@@ -207,19 +248,67 @@
       if (!progressStore.isBundleCompleted(opening.id)) {
         return { kind: "cutscene", bundleId: opening.id };
       }
+      // 엔딩을 본 뒤에는 남은 가지를 자유롭게 이어서 한다.
+      if (hasCompletedEnding()) return { kind: "board", afterEnding: true };
+      // 증거의 방을 열어 두고 나갔다면 거기부터.
+      if (graph.statusOf("Q6_FINALE", progressStore) === graph.OPEN) {
+        return { kind: "finale" };
+      }
       return { kind: "board" };
     }
 
     function continueGame() {
       const target = resumeTarget();
       if (target.kind === "cutscene") return playBundle(target.bundleId);
+      if (target.kind === "finale") return openFinale();
       return showBoard();
     }
 
-    function startNewGame() {
+    /**
+     * 새 게임. 진행 저장과 그림 저장을 함께 지운다 — GAME_INTEGRATION_PLAN 9.2.
+     * 확인 절차는 호출자(TitleScreen)가 맡는다. 여기서는 되돌릴 수 없다.
+     */
+    async function startNewGame() {
       progressStore.reset();
-      artworkStore?.clearAll?.();
+      try {
+        await artworkStore?.clearAll?.();
+      } catch (error) {
+        console.warn("[director] 이전 그림을 지우지 못했습니다.", error);
+      }
       return playBundle(bundles.OPENING_BUNDLE_ID);
+    }
+
+    /**
+     * 저장된 게임 상태 요약. 엔딩 후 무엇이 확정됐는지 한곳에서 읽는다.
+     * E2E·진단용이며 제품 UI 는 이 값을 화면에 그대로 뿌리지 않는다.
+     */
+    function getCompletionState() {
+      const snapshot = progressStore.getSnapshot();
+      const required = graph.mainRoute();
+      const clearedRequired = required.filter((id) => progressStore.isQuestCleared(id));
+      const optional = graph.NODES
+        .filter((node) => node.route === "branch")
+        .map((node) => node.id);
+
+      return Object.freeze({
+        // 1. 모든 필수 퀘스트 완료
+        requiredQuestIds: Object.freeze(required.slice()),
+        requiredCleared: Object.freeze(clearedRequired.slice()),
+        allRequiredCleared: clearedRequired.length === required.length,
+        // 가지는 엔딩 필수가 아니다 — 계획서 14장 계약.
+        optionalQuestIds: Object.freeze(optional),
+        optionalCleared: Object.freeze(optional.filter((id) => progressStore.isQuestCleared(id))),
+        // 2. 엔딩 완료
+        endingBundleId: ENDING_BUNDLE_ID,
+        endingCompleted: hasCompletedEnding(),
+        endingSceneSeen: progressStore.isSceneSeen("CE_ENDING"),
+        // 3. 계속하기 동작
+        continueBehaviour: resumeTarget(),
+        // 4. 새 게임으로 초기화 가능
+        canStartNewGame: true,
+        pending: snapshot.pending,
+        updatedAt: snapshot.updatedAt,
+      });
     }
 
     /** 통과 직후 새로고침 등으로 남은 완료 컷신을 복구한다. */
@@ -252,6 +341,8 @@
       handleQuestPassed,
       recoverPendingTransition,
       resumeTarget,
+      hasCompletedEnding,
+      getCompletionState,
       disposeCurrentScreen,
       hasProgress,
       isRestorationQuest,

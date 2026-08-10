@@ -34,8 +34,24 @@
               <span class="diamond" aria-hidden="true">◆</span>
               프롤로그 다시 보기
             </button>
+            <button class="menu-button" type="button" data-action="new-game" hidden>
+              <span class="diamond" aria-hidden="true">◆</span>
+              새 이야기 시작
+            </button>
           </nav>
           <p class="press-key">ENTER / SPACE</p>
+
+          <!-- 새 게임은 그린 그림까지 지운다. 되돌릴 수 없으므로 한 번 더 묻는다. -->
+          <div class="title-confirm" data-role="new-game-confirm" role="alertdialog"
+               aria-labelledby="new-game-confirm-text" hidden>
+            <p id="new-game-confirm-text">
+              지금까지의 진행과 그린 그림을 모두 지우고 처음부터 시작합니다.
+            </p>
+            <div class="title-confirm-actions">
+              <button class="menu-button" type="button" data-action="new-game-confirm">지우고 시작</button>
+              <button class="menu-button" type="button" data-action="new-game-cancel">그만두기</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -70,10 +86,8 @@
       <p class="index-workbench-help" data-role="workbench-help"></p>
     </main>
 
-    <main class="game-shell" data-screen="finale" aria-label="증거의 방" hidden>
-      <section class="game-frame">
-        <canvas class="art-layer" data-role="art" width="640" height="384" aria-hidden="true"></canvas>
-      </section>
+    <main class="board-screen" data-screen="finale" aria-label="증거의 방" hidden>
+      <div class="board-stage" data-role="finale-stage"></div>
     </main>
 
     <div class="shell-overlay" data-role="loading-overlay" role="status" hidden>불러오는 중…</div>
@@ -116,6 +130,8 @@
     <script src="src/cutscenes/data/beats-l4-l5.js"></script>
     <script src="src/cutscenes/renderers/l5-l6.js"></script>
     <script src="src/cutscenes/data/beats-l5-l6.js"></script>
+    <script src="src/cutscenes/renderers/l6-ending.js"></script>
+    <script src="src/cutscenes/data/beats-l6-ending.js"></script>
     <script src="src/cutscenes/cutscene-player.js"></script>
 
     <script src="scripts/highres-restoration-scoring.js"></script>
@@ -130,6 +146,7 @@
     <script src="src/screens/cutscene-screen.js"></script>
     <script src="src/screens/board-screen.js"></script>
     <script src="src/screens/workbench-screen.js"></script>
+    <script src="src/screens/finale-screen.js"></script>
 
     <script src="src/app/game-shell.js"></script>
     <script src="src/app/game-director.js"></script>

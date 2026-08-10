@@ -57,7 +57,11 @@ function harness() {
 
   win.TitleScreen = {
     mount() {
-      return { setResumable() {}, dispose: () => disposed.push("title") };
+      return {
+        setResumable() {},
+        setEndingCompleted() {},
+        dispose: () => disposed.push("title"),
+      };
     },
   };
   win.BoardScreen = {
@@ -75,6 +79,8 @@ function harness() {
     },
   };
   // 고해상도 작업대로 이식이 끝난 것은 Q0·Q1A 뿐인 현재 상태를 흉내 낸다.
+  // 증거의 방은 tests/finale-and-ending.test.cjs 가 따로 본다. 여기서는 대역만 둔다.
+  win.FinaleScreen = { isSolved: () => false, mount: () => ({ dispose() {} }) };
   win.WorkbenchScreen = {
     isSupported: (questId) => ["Q0_MONTAGE", "Q1A_IDEALIZED"].includes(questId),
     mount(container, options) {

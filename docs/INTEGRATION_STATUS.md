@@ -1,6 +1,6 @@
 # 통합 구현 현황표
 
-> 기준일: 2026-08-10 · 기준 커밋: 단계 7 등록 완료 시점
+> 기준일: 2026-08-10 · 기준 커밋: 단계 8 Q6·엔딩 완료 시점
 > 정본: `docs/GAME_INTEGRATION_PLAN.md`
 > 이 문서는 계획서의 단계별 진척만 기록한다. 설계 결정은 계획서에 있다.
 
@@ -14,11 +14,11 @@
 | 3 | 공통 컷신 플레이어 세로 슬라이스 | **완료** | `src/cutscenes/**`, L0→L1 추출, 검토 페이지 역전 |
 | 4 | 단일 셸 | **완료** | `index.html`, `src/app/**`, `src/screens/**` |
 | 5 | Q1A 고해상도 본편 이식 | **완료** | `src/workbench/**`, Q0·Q1A 이식 |
-| 6 | 나머지 컷신 묶음 이전 | 진행 중 | L1→L2 … L5→L6 완료. 엔딩(CE_ENDING) 1묶음 남음 |
+| 6 | 나머지 컷신 묶음 이전 | **완료** | 16개 번들 전부 제품 런타임 |
 | 7 | 14개 복원 퀘스트 등록 | **완료** | `src/data/quest-registry.js`. 퀘스트별 코드 없음 |
-| 8 | Q6 · 엔딩 | 미착수 | `finale` 화면은 컨테이너만 존재 |
+| 8 | Q6 · 엔딩 | **완료** | `src/screens/finale-screen.js`, `beats-l6-ending.js` |
 | 9 | 호환 파일 제거 | 미착수 | 승인 필요 |
-| 10 | 최종 QA 매트릭스 | 미착수 | — |
+| 10 | 최종 QA 매트릭스 | 진행 중 | 본선 완주 E2E 완료. 가지·실패·접근성 경로 남음 |
 
 ## 2. 계획서 요구와 현재 코드 대조
 
@@ -26,10 +26,10 @@
 | --- | --- |
 | 제품 진입점 루트 `index.html` 하나 | 충족. `board.html`·`workbench.html` 은 fallback 으로만 남음 |
 | 제품 코드에 `location.href` 화면 이동 없음 | 충족. `src/board-entry.js` 의 이동은 board.html fallback 전용 |
-| 화면 다섯 종류 | 충족. `finale` 은 컨테이너만 있고 단계 8에서 채운다 |
+| 화면 다섯 종류 | 충족. `finale` 은 증거의 방이다 |
 | 진행 저장 v2 + pending | 충족 |
 | 그림 Blob 은 IndexedDB | 충족. draft 자동 저장, 통과 시 final(1254 PNG)·thumbnail(160) 저장 |
-| 완료 컷신 번들 16개 | 16개 중 15개 재생 가능. `B_AFTER_Q6`(엔딩)만 단계 8 |
+| 완료 컷신 번들 16개 | 16개 전부 재생 가능 |
 | 복원 퀘스트는 `assets/questimage` 만 사용 | 충족. 14개 전부 questimage 쌍만 쓴다 |
 | 1254 원본 유지, 붓·채우기·되돌리기 | 충족. 14개 전부. 붓·확대·선 임계값은 계약 데이터에서 온다 |
 | 색 유사도 + 의미 유사도 결합 판정 | 충족. 색 70/채색 15/CLIP 15, CLIP 불가 시 82/18, 통과선 60 |
@@ -55,8 +55,10 @@
 | `B_AFTER_Q5A` | `C6_EVIDENCE_WALL` | `data/beats-l5-l6.js` | `cutscene-review-l5-l6.html` |
 | `B_AFTER_Q5B` | `C5B_THAT_NIGHT_CLOSING` | `data/beats-l5-l6.js` | 같은 페이지 `?bundle=q5b` |
 
-남은 것은 `B_AFTER_Q6`(`CE_ENDING`) 하나이며 단계 8에서 Q6 증거의 방과 함께 이전한다.
-`CutsceneRegistry` 에 없는 장면을 재생하려 하면 조용히 넘어가지 않고 오류를 낸다.
+| `B_AFTER_Q6` | `CE_ENDING` | `data/beats-l6-ending.js` | `cutscene-review-l6-ending.html` |
+
+16개 번들이 모두 제품 런타임에 있다. `CutsceneRegistry` 에 없는 장면을 재생하려 하면
+조용히 넘어가지 않고 오류를 낸다.
 
 ### 조건부 beat
 
@@ -69,6 +71,7 @@
 | `C3B_TOO_NEW_CLOSING` | `Q3A_SEAL` 통과 여부 | `?main=q3a-complete` |
 | `C4C_PAINTER_CLOSING` | `Q5A_DOCK` 통과 여부 | `?q5a=1` |
 | `C5B_THAT_NIGHT_CLOSING` | `Q5A_DOCK` 통과 여부 | `?q5a=complete` |
+| `CE_ENDING` 후일담 5종 | Q2C·Q3B·Q3C·Q4C·Q5B 통과 여부 | `?fixture=…` |
 
 ## 4. 문서 간 충돌 기록
 
@@ -122,4 +125,39 @@
 - `tests/quest-registry.test.cjs` — 필수 여섯 항목, 등록 순서, 중복 없는 join
 - `tests/quest-image-paths.test.cjs` — 이미지 실존·해상도·이름 정규화·index.html 로드 목록
 - `tests/quest-completion-contract.test.cjs` — 계획서 4장 연결표, 장면 실존, 해금 사슬
+
+## 7. Q6 와 엔딩
+
+`src/screens/finale-screen.js` 가 증거의 방이다. Q6 는 복원 퀘스트가 아니므로
+questimage 계약 대상이 아니고, 이미 그린 본선 여섯 장을 주장에 잇는다.
+
+| 증거(본선 복원 결과) | 증명하는 주장 |
+| --- | --- |
+| Q0 골목의 손 | 말이 아니라 그림이 사람을 찾는다 |
+| Q1A 미화된 초상 | 어머니의 기억은 미화됐다 |
+| Q2A 기억되지 않은 얼굴 | 카버는 에드먼드가 아니다 |
+| Q3A 봉인의 세 줄 | 진품 인장은 파도 세 줄 |
+| Q4A 번진 장부 | 넉 달 동안 T.C.에게 지급됐다 |
+| Q5A 안개 낀 부두 | 카버가 외운 문양은 마차의 네 줄 |
+
+- 카드 그림은 `ArtworkStore` 썸네일이고, 없으면
+  `assets/cutscenes/l5-l6/evidence` 를 쓴다(계획서 9.1).
+- 연결 상태는 `Q6_LINKED_<questId>` 플래그로 남는다. 도중에 나가도 잃지 않는다.
+- **여섯 연결이 모두 맞아야** `beginQuestCompletion("Q6_FINALE", "B_AFTER_Q6")` 가
+  실행된다. 그전에는 엔딩이 예약되지도, 재생되지도 않는다.
+
+### 엔딩 후 저장 상태
+
+`GameDirector.getCompletionState()` 가 네 가지를 한곳에서 말한다.
+
+| 항목 | 값 |
+| --- | --- |
+| 모든 필수 퀘스트 완료 | `allRequiredCleared` — 본선 7개(Q0·Q1A·Q2A·Q3A·Q4A·Q5A·Q6) |
+| 엔딩 완료 | `endingCompleted` — `B_AFTER_Q6` 가 completedBundleIds 에 있는가 |
+| 계속하기 동작 | `continueBehaviour` — 엔딩 후에는 `{ kind: "board", afterEnding: true }` |
+| 새 게임 초기화 가능 | `canStartNewGame` — 진행과 그림을 함께 지운다 |
+
+가지는 엔딩 필수가 아니다. 엔딩 뒤 계속하기는 증거판으로 가서 남은 가지를 이어서 한다.
+"새 이야기 시작" 메뉴는 엔딩을 본 저장에서만 나타나며, 네이티브 confirm() 대신
+화면 안 확인창을 한 번 거친다.
 

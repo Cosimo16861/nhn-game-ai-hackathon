@@ -105,19 +105,9 @@ const availableRenderers = new Set(
     .map((name) => name.replace(/\.js$/, "")),
 );
 
-/**
- * 런타임 존재를 요구하는 번들: 오프닝 + 등록된 복원 퀘스트 14개의 완료 번들.
- * Q6 는 복원 퀘스트가 아니라 증거의 방이며 단계 8에서 이전한다.
- */
-const RUNTIME_BUNDLE_IDS = new Set(
-  [bundles.OPENING_BUNDLE_ID].concat(
-    registry.list().map((quest) => quest.completion.bundleId),
-  ),
-);
-
+// 모든 번들의 장면이 제품 런타임에 있어야 한다. 엔딩까지 포함한다.
 const missing = [];
 for (const bundle of bundles.list()) {
-  if (!RUNTIME_BUNDLE_IDS.has(bundle.id)) continue;
   for (const sceneId of bundle.sceneIds) {
     if (LEGACY_SCENES.has(sceneId)) continue;
     const entry = productScenes.get(sceneId);
@@ -152,16 +142,33 @@ assert.deepEqual(
   `제품 런타임에 없는 장면이 있습니다:\n  ${missing.join("\n  ")}`,
 );
 
-// 아직 이전하지 않은 Q6 엔딩도 데이터 계약은 갖춰져 있어야 한다.
+// ── Q6 와 엔딩 ─────────────────────────────────────────────────────
 const finaleBundle = bundles.forQuest("Q6_FINALE");
 assert.ok(finaleBundle, "Q6 완료 번들이 없습니다.");
 assert.deepEqual(finaleBundle.sceneIds.slice(), ["CE_ENDING"]);
-assert.ok(
-  fs.readdirSync(path.join(root, "dev/cutscenes"))
-    .filter((name) => name.endsWith(".js"))
-    .some((name) => fs.readFileSync(path.join(root, "dev/cutscenes", name), "utf8")
-      .includes('id: "CE_ENDING"')),
-  "CE_ENDING 제작본이 dev/cutscenes 에 없습니다.",
+assert.ok(productScenes.has("CE_ENDING"), "CE_ENDING 이 제품 런타임에 없습니다.");
+
+// Q6 는 복원 퀘스트가 아니다 — 계획서 9장.
+assert.equal(QuestGraph.get("Q6_FINALE").kind, "finale");
+assert.equal(registry.get("Q6_FINALE"), null, "Q6 는 복원 퀘스트로 등록되면 안 됩니다.");
+
+// 후일담은 완료한 가지로만 갈린다 — 계획서 9.2, QuestGraph.EPILOGUE_CUTS.
+const endingBeats = productScenes.get("CE_ENDING").scene.beats;
+const epilogueQuestIds = new Set(
+  endingBeats.filter((beat) => beat.when).map((beat) => beat.when.cleared[0]),
+);
+assert.deepEqual(
+  Array.from(epilogueQuestIds).sort(),
+  QuestGraph.EPILOGUE_CUTS.map((cut) => cut.requires).sort(),
+  "엔딩 후일담 조건이 QuestGraph.EPILOGUE_CUTS 와 다릅니다.",
+);
+// 본선만 밟아도 엔딩은 끝까지 재생돼야 한다(가지는 엔딩 필수가 아니다).
+const mainOnly = endingBeats.filter((beat) => !beat.when);
+assert.ok(mainOnly.length >= 20, "본선만 밟았을 때 엔딩이 너무 짧습니다.");
+assert.equal(
+  mainOnly[mainOnly.length - 1].view,
+  "title",
+  "본선만 밟아도 엔딩의 마지막 컷까지 도달해야 합니다.",
 );
 
 // ── 4. 통과 → 번들 → 해금 사슬 ─────────────────────────────────────

@@ -120,6 +120,14 @@ const MIGRATED = [
     sharedModuleSceneIds: ["C5B_THAT_NIGHT_CLOSING"],
   },
   {
+    bundleId: "B_AFTER_Q6",
+    module: "src/cutscenes/data/beats-l6-ending.js",
+    renderer: "src/cutscenes/renderers/l6-ending.js",
+    rendererId: "l6-ending",
+    // 조건부 11개를 포함한 수. 본선만 밟으면 실제 재생은 25개다.
+    beatCounts: { CE_ENDING: 36 },
+  },
+  {
     bundleId: "B_AFTER_Q5B",
     module: "src/cutscenes/data/beats-l5-l6.js",
     renderer: "src/cutscenes/renderers/l5-l6.js",
@@ -207,7 +215,7 @@ const reviewPage = fs.readFileSync(
   path.join(root, "dev/cutscenes/cutscene-review-l0-l1.html"),
   "utf8",
 );
-for (const layer of ["l1-l2", "l2-l3", "l3-l4", "l4-l5", "l5-l6"]) {
+for (const layer of ["l1-l2", "l2-l3", "l3-l4", "l4-l5", "l5-l6", "l6-ending"]) {
   const page = fs.readFileSync(
     path.join(root, `dev/cutscenes/cutscene-review-${layer}.html`),
     "utf8",
@@ -231,6 +239,7 @@ for (const required of [
 for (const name of [
   "cutscene-review-l0-l1", "cutscene-review-l1-l2", "cutscene-review-l2-l3",
   "cutscene-review-l3-l4", "cutscene-review-l4-l5", "cutscene-review-l5-l6",
+  "cutscene-review-l6-ending",
 ]) {
   const reviewScript = fs.readFileSync(
     path.join(root, `dev/cutscenes/${name}.js`),
