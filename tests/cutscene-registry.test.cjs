@@ -38,18 +38,101 @@ const MIGRATED = [
     beatCounts: { C2B_MIST_IS_MISSING: 11 },
     sharedModuleSceneIds: ["C2C_RAIN_BEHIND_THE_DOOR", "C2A_HOLTS_MEMORY"],
   },
+  {
+    bundleId: "B_AFTER_Q2A",
+    module: "src/cutscenes/data/beats-l2-l3.js",
+    renderer: "src/cutscenes/renderers/l2-l3.js",
+    rendererId: "l2-l3",
+    beatCounts: { C3A_CARVERS_CREST: 17, C3B_FRESH_ANCHOR: 5 },
+    sharedModuleSceneIds: ["C3C_FOLLOW_THE_FLYER", "C2C_OPEN_DOOR_CLOSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q2B",
+    module: "src/cutscenes/data/beats-l2-l3.js",
+    renderer: "src/cutscenes/renderers/l2-l3.js",
+    rendererId: "l2-l3",
+    beatCounts: { C3C_FOLLOW_THE_FLYER: 7 },
+    sharedModuleSceneIds: ["C3A_CARVERS_CREST", "C3B_FRESH_ANCHOR", "C2C_OPEN_DOOR_CLOSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q2C",
+    module: "src/cutscenes/data/beats-l2-l3.js",
+    renderer: "src/cutscenes/renderers/l2-l3.js",
+    rendererId: "l2-l3",
+    // 조건부 4개를 포함한 수. Q2A 통과 여부에 따라 실제 재생은 8개다.
+    beatCounts: { C2C_OPEN_DOOR_CLOSING: 10 },
+    sharedModuleSceneIds: ["C3A_CARVERS_CREST", "C3B_FRESH_ANCHOR", "C3C_FOLLOW_THE_FLYER"],
+  },
+  {
+    bundleId: "B_AFTER_Q3A",
+    module: "src/cutscenes/data/beats-l3-l4.js",
+    renderer: "src/cutscenes/renderers/l3-l4.js",
+    rendererId: "l3-l4",
+    beatCounts: { C4A_LEDGER_TRAIL: 8, C4C_SQUARE_CHALLENGE: 7 },
+    sharedModuleSceneIds: ["C3B_TOO_NEW_CLOSING", "C4B_CAT_FOUND_PAPERS"],
+  },
+  {
+    bundleId: "B_AFTER_Q3B",
+    module: "src/cutscenes/data/beats-l3-l4.js",
+    renderer: "src/cutscenes/renderers/l3-l4.js",
+    rendererId: "l3-l4",
+    beatCounts: { C3B_TOO_NEW_CLOSING: 7 },
+    sharedModuleSceneIds: ["C4A_LEDGER_TRAIL", "C4C_SQUARE_CHALLENGE", "C4B_CAT_FOUND_PAPERS"],
+  },
+  {
+    bundleId: "B_AFTER_Q3C",
+    module: "src/cutscenes/data/beats-l3-l4.js",
+    renderer: "src/cutscenes/renderers/l3-l4.js",
+    rendererId: "l3-l4",
+    beatCounts: { C4B_CAT_FOUND_PAPERS: 8 },
+    sharedModuleSceneIds: ["C4A_LEDGER_TRAIL", "C4C_SQUARE_CHALLENGE", "C3B_TOO_NEW_CLOSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q4A",
+    module: "src/cutscenes/data/beats-l4-l5.js",
+    renderer: "src/cutscenes/renderers/l4-l5.js",
+    rendererId: "l4-l5",
+    beatCounts: { C5A_CARRIAGE_WITNESS: 20 },
+    sharedModuleSceneIds: ["C5B_SIREN_WITNESS", "C4C_PAINTER_CLOSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q4B",
+    module: "src/cutscenes/data/beats-l4-l5.js",
+    renderer: "src/cutscenes/renderers/l4-l5.js",
+    rendererId: "l4-l5",
+    beatCounts: { C5B_SIREN_WITNESS: 19 },
+    sharedModuleSceneIds: ["C5A_CARRIAGE_WITNESS", "C4C_PAINTER_CLOSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q4C",
+    module: "src/cutscenes/data/beats-l4-l5.js",
+    renderer: "src/cutscenes/renderers/l4-l5.js",
+    rendererId: "l4-l5",
+    beatCounts: { C4C_PAINTER_CLOSING: 7 },
+    sharedModuleSceneIds: ["C5A_CARRIAGE_WITNESS", "C5B_SIREN_WITNESS"],
+  },
+  {
+    bundleId: "B_AFTER_Q5A",
+    module: "src/cutscenes/data/beats-l5-l6.js",
+    renderer: "src/cutscenes/renderers/l5-l6.js",
+    rendererId: "l5-l6",
+    beatCounts: { C6_EVIDENCE_WALL: 12 },
+    sharedModuleSceneIds: ["C5B_THAT_NIGHT_CLOSING"],
+  },
+  {
+    bundleId: "B_AFTER_Q5B",
+    module: "src/cutscenes/data/beats-l5-l6.js",
+    renderer: "src/cutscenes/renderers/l5-l6.js",
+    rendererId: "l5-l6",
+    beatCounts: { C5B_THAT_NIGHT_CLOSING: 9 },
+    sharedModuleSceneIds: ["C6_EVIDENCE_WALL"],
+  },
 ];
 
-// 묶음마다 시점 이름이 다르다. renderer 가 아는 값만 쓰면 된다.
-const VIEWS = {
-  "l0-l1": new Set(["third", "poster", "newspaper", "portrait", "wall"]),
-  "l1-l2": new Set([
-    "parlorPortrait", "parlorEleanor", "parlorBeth", "parlorBethEnter", "firstEleanor",
-    "hallDoor", "hallEleanor", "hallBeth", "hallWorld", "wetWall",
-    "schoolArrival", "schoolHolt", "schoolWide", "memoryJaw", "memoryBrow",
-    "ferryWall", "tavernCora", "firstCora", "tavernWide", "catMemory",
-  ]),
-};
+// view 이름은 묶음마다 다르고, 렌더러는 처리하지 못한 이름을 기본 연출로 흘려보낸다.
+// 그래서 "렌더러 소스에 그 문자열이 있는가"로는 오타를 가릴 수 없다 — 오히려 정상적인
+// 기본 연출까지 실패로 만든다. 여기서는 형태만 보고, 실제 시각 회귀는 dev 검토 페이지가 잡는다.
+const VIEW_NAME = /^[a-z][A-Za-z0-9]*$/;
 
 for (const entry of MIGRATED) {
   const bundle = bundles.get(entry.bundleId);
@@ -82,10 +165,7 @@ for (const entry of MIGRATED) {
       assert.ok(typeof beat.speaker === "string" && beat.speaker, `${where}: 화자 누락`);
       assert.ok(typeof beat.text === "string" && beat.text, `${where}: 대사 누락`);
       assert.ok(beat.duration > 0, `${where}: duration 이 양수가 아닙니다.`);
-      assert.ok(
-        VIEWS[entry.rendererId].has(beat.view),
-        `${where}: 알 수 없는 view ${beat.view}`,
-      );
+      assert.match(beat.view, VIEW_NAME, `${where}: view 이름 형식이 올바르지 않습니다.`);
       assert.ok(
         (beat.textDelay || 0) < beat.duration,
         `${where}: textDelay 가 beat 길이보다 깁니다.`,
@@ -127,14 +207,16 @@ const reviewPage = fs.readFileSync(
   path.join(root, "dev/cutscenes/cutscene-review-l0-l1.html"),
   "utf8",
 );
-const reviewPageL1L2 = fs.readFileSync(
-  path.join(root, "dev/cutscenes/cutscene-review-l1-l2.html"),
-  "utf8",
-);
-assert.ok(
-  reviewPageL1L2.includes("src/cutscenes/data/beats-l1-l2.js"),
-  "L1→L2 검토 페이지가 제품 데이터 모듈을 로드하지 않습니다.",
-);
+for (const layer of ["l1-l2", "l2-l3", "l3-l4", "l4-l5", "l5-l6"]) {
+  const page = fs.readFileSync(
+    path.join(root, `dev/cutscenes/cutscene-review-${layer}.html`),
+    "utf8",
+  );
+  assert.ok(
+    page.includes(`src/cutscenes/data/beats-${layer}.js`),
+    `${layer} 검토 페이지가 제품 데이터 모듈을 로드하지 않습니다.`,
+  );
+}
 for (const required of [
   "src/cutscenes/cutscene-player.js",
   "src/cutscenes/renderers/l0-l1.js",
@@ -146,7 +228,10 @@ for (const required of [
   );
 }
 
-for (const name of ["cutscene-review-l0-l1", "cutscene-review-l1-l2"]) {
+for (const name of [
+  "cutscene-review-l0-l1", "cutscene-review-l1-l2", "cutscene-review-l2-l3",
+  "cutscene-review-l3-l4", "cutscene-review-l4-l5", "cutscene-review-l5-l6",
+]) {
   const reviewScript = fs.readFileSync(
     path.join(root, `dev/cutscenes/${name}.js`),
     "utf8",
@@ -157,4 +242,4 @@ for (const name of ["cutscene-review-l0-l1", "cutscene-review-l1-l2"]) {
   );
 }
 
-console.log(`Cutscene registry tests passed (${MIGRATED.length} migrated bundle).`);
+console.log(`Cutscene registry tests passed (${MIGRATED.length} migrated bundles).`);

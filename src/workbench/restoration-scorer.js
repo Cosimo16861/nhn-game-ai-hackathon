@@ -51,7 +51,7 @@
 
   /**
    * @param {object} input
-   *   contract           questimage 계약
+   *   quest              QuestRegistry descriptor (scoring·clipPrompts 를 갖는다)
    *   targetImageData    완성본(내부용, 저장하지 않는다)
    *   restoredImageData  플레이어 합성본
    *   evaluationMask     선 픽셀을 제외한 채점 대상
@@ -59,13 +59,14 @@
    */
   async function score(input) {
     const engine = global.HighResRestorationScoring;
-    const scoring = input.contract.scoring || {};
+    // 가중치와 통과선은 계약 데이터에서만 온다. 이 파일은 통과선 조정 때 바뀌지 않는다.
+    const scoring = input.quest.scoring;
 
     let clipScore = null;
     if (typeof input.evaluateClip === "function") {
       // CLIP 실패·지연은 제출 자체를 실패시키지 않는다.
       clipScore = await withTimeout(
-        input.evaluateClip({ contract: input.contract }),
+        input.evaluateClip({ quest: input.quest }),
         input.clipTimeoutMs || CLIP_TIMEOUT_MS,
       );
     }

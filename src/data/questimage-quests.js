@@ -4,6 +4,28 @@
   const ROOT = "assets/questimage";
   const RESOLUTION = 1254;
 
+  /**
+   * 전 퀘스트 공통 도구 계약 — docs/RESTORATION_QUEST_SPEC.md 3.3
+   * 1px 붓·픽셀 격자는 쓰지 않는다. 퀘스트가 다르게 가야 하면 tools 로 덮어쓴다.
+   */
+  const DEFAULT_TOOLS = Object.freeze({
+    brushSizes: Object.freeze([16, 36, 72]),
+    defaultTool: "fill",
+    defaultBrushSize: 36,
+    zoom: Object.freeze({ min: 0.6, max: 1.6, step: 0.2 }),
+    lineLuminanceThreshold: 205,
+  });
+
+  /**
+   * 전 퀘스트 공통 채점 계약 — docs/GAME_INTEGRATION_PLAN.md 7.4
+   * 통과선을 조정할 때는 이 데이터만 고친다. scorer 코드는 건드리지 않는다.
+   */
+  const DEFAULT_SCORING = Object.freeze({
+    passingScore: 60,
+    weights: Object.freeze({ color: 0.70, coverage: 0.15, clip: 0.15 }),
+    fallbackWeights: Object.freeze({ color: 0.82, coverage: 0.18 }),
+  });
+
   const palette = (...entries) => Object.freeze(entries.map(([name, hex]) =>
     Object.freeze({ name, hex }),
   ));
@@ -326,8 +348,25 @@
 
   const api = Object.freeze({
     resolution: RESOLUTION,
+    DEFAULT_TOOLS,
+    DEFAULT_SCORING,
     list: () => QUESTS,
     get: (id) => byId.get(id) || null,
+    /** 퀘스트별 override 를 공통 계약 위에 얹는다. 없는 퀘스트는 공통 계약 그대로다. */
+    toolsFor(id) {
+      return Object.freeze({ ...DEFAULT_TOOLS, ...(byId.get(id)?.tools || {}) });
+    },
+    scoringFor(id) {
+      const override = byId.get(id)?.scoring || {};
+      return Object.freeze({
+        passingScore: override.passingScore ?? DEFAULT_SCORING.passingScore,
+        weights: Object.freeze({ ...DEFAULT_SCORING.weights, ...(override.weights || {}) }),
+        fallbackWeights: Object.freeze({
+          ...DEFAULT_SCORING.fallbackWeights,
+          ...(override.fallbackWeights || {}),
+        }),
+      });
+    },
   });
 
   global.QuestImageContracts = api;

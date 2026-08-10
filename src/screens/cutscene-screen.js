@@ -25,6 +25,8 @@
       live: container.querySelector('[data-role="cutscene-live"]'),
       progress: container.querySelector('[data-role="progress"]'),
       isSceneSeen: (sceneId) => progressStore.isSceneSeen(sceneId),
+      // 조건부 beat 는 URL fixture 가 아니라 실제 통과 기록으로 판정한다.
+      isQuestCleared: (questId) => progressStore.isQuestCleared(questId),
       onBeat(scene) {
         if (skipHint) skipHint.hidden = !progressStore.isSceneSeen(scene.id);
       },

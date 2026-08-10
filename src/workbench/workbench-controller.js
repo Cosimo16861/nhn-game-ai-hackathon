@@ -22,13 +22,24 @@
   const THUMBNAIL_SIZE = 160;
   const DRAFT_DEBOUNCE_MS = 1200;
 
-  const HIGHRES_TOOLS = Object.freeze([
-    Object.freeze({ id: "brush16", icon: "pencil", label: "가는 붓 · 16px", tool: "brush", size: 16 }),
-    Object.freeze({ id: "brush36", icon: "brush", label: "중간 붓 · 36px", tool: "brush", size: 36 }),
-    Object.freeze({ id: "brush72", icon: "broad", label: "넓은 붓 · 72px", tool: "brush", size: 72 }),
-    Object.freeze({ id: "fill", icon: "fill", label: "물감 채우기", tool: "fill", size: null }),
-    Object.freeze({ id: "eraser", icon: "eraser", label: "지우개", tool: "eraser", size: null }),
-  ]);
+  // 도구 슬롯은 다섯 개다. 붓 지름은 퀘스트 계약(tools.brushSizes)에서 온다.
+  const BRUSH_ICONS = Object.freeze(["pencil", "brush", "broad"]);
+  const BRUSH_NAMES = Object.freeze(["가는 붓", "중간 붓", "넓은 붓"]);
+
+  /** 계약의 붓 크기 목록을 작업대 화면의 도구 슬롯으로 바꾼다. */
+  function buildTools(brushSizes) {
+    const brushes = brushSizes.slice(0, BRUSH_ICONS.length).map((size, index) => Object.freeze({
+      id: `brush${size}`,
+      icon: BRUSH_ICONS[index],
+      label: `${BRUSH_NAMES[index]} · ${size}px`,
+      tool: "brush",
+      size,
+    }));
+    return Object.freeze(brushes.concat([
+      Object.freeze({ id: "fill", icon: "fill", label: "물감 채우기", tool: "fill", size: null }),
+      Object.freeze({ id: "eraser", icon: "eraser", label: "지우개", tool: "eraser", size: null }),
+    ]));
+  }
 
   function loadImage(source) {
     return global.AssetLoader.loadImage(source);
@@ -61,34 +72,36 @@
   }
 
   /**
+   * 퀘스트 하나를 연다. 퀘스트별 분기는 없다 — 모든 차이는 descriptor 안에 있다.
+   *
    * @param {HTMLElement} stage    작업대를 붙일 요소
    * @param {object} options
-   *   contract, artworkStore, onPassed, onFailed, onBackToBoard, evaluateClip
+   *   quest(QuestRegistry descriptor), artworkStore,
+   *   onPassed, onFailed, onBackToBoard, evaluateClip
    */
   function mount(stage, options) {
-    const contract = options.contract;
-    const resolution = contract.resolution;
+    const quest = options.quest;
+    const resolution = quest.images.resolution;
+    const tools = quest.tools;
     const artworkStore = options.artworkStore || null;
+    const toolSlots = buildTools(tools.brushSizes);
 
     const view = {
-      title: contract.title,
-      quotes: contract.witnessNotes.map((note) => ({
-        speaker: note.speaker,
-        text: note.text,
-      })),
-      visibleHintCount: Math.min(3, contract.witnessNotes.length),
+      title: quest.title,
+      quotes: quest.notes.map((note) => ({ speaker: note.speaker, text: note.text })),
+      visibleHintCount: Math.min(3, quest.notes.length),
       showBackButton: true,
       externalArtwork: true,
-      tools: HIGHRES_TOOLS,
-      palette: contract.palette.map((entry) => ({ name: entry.name, hex: entry.hex })),
-      activeColor: contract.palette[0].hex,
-      activeTool: "fill",
-      brushSize: 36,
+      tools: toolSlots,
+      palette: quest.palette.map((entry) => ({ name: entry.name, hex: entry.hex })),
+      activeColor: quest.palette[0].hex,
+      activeTool: tools.defaultTool,
+      brushSize: tools.defaultBrushSize,
       zoom: 1,
       canUndo: false,
       canRedo: false,
       isSubmitting: false,
-      feedback: "1254 원본과 폐곡선을 준비하는 중…",
+      feedback: `${resolution} 원본과 폐곡선을 준비하는 중…`,
     };
 
     const history = global.PaintHistory.create();
@@ -126,7 +139,7 @@
       try {
         const blob = await canvasToBlob(surface.canvas);
         if (!blob) return;
-        await artworkStore.saveDraft(contract.id, blob, {
+        await artworkStore.saveDraft(quest.id, blob, {
           width: resolution, height: resolution,
         });
       } catch (error) {
@@ -187,7 +200,7 @@
           .getImageData(0, 0, resolution, resolution);
 
         const result = await global.RestorationScorer.score({
-          contract,
+          quest,
           targetImageData,
           restoredImageData,
           evaluationMask: regions.evaluationMask,
@@ -195,8 +208,8 @@
         });
         if (disposed) return;
 
-        global.AssetLoader.mark(`submit_scored:${contract.id}`);
-        if (global.HAVEN_DEBUG) console.info("[workbench] 채점", contract.id, result.debug);
+        global.AssetLoader.mark(`submit_scored:${quest.id}`);
+        if (global.HAVEN_DEBUG) console.info("[workbench] 채점", quest.id, result.debug);
 
         if (!result.cleared) {
           // 실패해도 그림은 그대로 남는다.
@@ -204,14 +217,14 @@
           view.isSubmitting = false;
           surface.setLocked(false);
           say(result.feedback);
-          options.onFailed?.({ questId: contract.id, tier: result.tier });
+          options.onFailed?.({ questId: quest.id, tier: result.tier });
           return;
         }
 
         await persistResult(composite);
         if (disposed) return;
         say(result.feedback);
-        options.onPassed?.({ questId: contract.id, tier: result.tier });
+        options.onPassed?.({ questId: quest.id, tier: result.tier });
       } catch (error) {
         console.error("[workbench] 제출에 실패했습니다.", error);
         submitting = false;
@@ -227,17 +240,17 @@
       try {
         const finalBlob = await canvasToBlob(composite);
         if (finalBlob) {
-          await artworkStore.saveFinal(contract.id, finalBlob, {
+          await artworkStore.saveFinal(quest.id, finalBlob, {
             width: resolution, height: resolution,
           });
         }
         const thumbBlob = await canvasToBlob(thumbnailOf(composite));
         if (thumbBlob) {
-          await artworkStore.saveThumbnail(contract.id, thumbBlob, {
+          await artworkStore.saveThumbnail(quest.id, thumbBlob, {
             width: THUMBNAIL_SIZE, height: THUMBNAIL_SIZE,
           });
         }
-        await artworkStore.removeDraft(contract.id);
+        await artworkStore.removeDraft(quest.id);
       } catch (error) {
         console.warn("[workbench] 완성본을 저장하지 못했습니다.", error);
       }
@@ -252,8 +265,8 @@
         surface?.setColor(action.hex);
         // 색만 골라도 도구는 바뀌지 않는다. 지우개였을 때만 채우기로 돌아온다.
         if (view.activeTool === "eraser") {
-          view.activeTool = "fill";
-          surface?.setTool("fill");
+          view.activeTool = tools.defaultTool;
+          surface?.setTool(tools.defaultTool);
         }
         render();
         return;
@@ -269,8 +282,8 @@
       if (action.type === "undo") { undo(); return; }
       if (action.type === "redo") { redo(); return; }
       if (action.type === "reset") { reset(); return; }
-      if (action.type === "zoom-in") { surface?.zoomBy(0.2); render(); return; }
-      if (action.type === "zoom-out") { surface?.zoomBy(-0.2); render(); return; }
+      if (action.type === "zoom-in") { surface?.zoomBy(tools.zoom.step); render(); return; }
+      if (action.type === "zoom-out") { surface?.zoomBy(-tools.zoom.step); render(); return; }
       if (action.type === "submit") { submit(); return; }
       if (action.type === "back-to-board") {
         if (submitting) return;
@@ -288,23 +301,27 @@
       render();
 
       const [targetImage, outlineImage] = await Promise.all([
-        loadImage(contract.targetSource),
-        loadImage(contract.outlineSource),
+        loadImage(quest.images.target),
+        loadImage(quest.images.outline),
       ]);
       if (disposed) return;
 
       const outlineImageData = imageDataOf(outlineImage, resolution);
       targetImageData = imageDataOf(targetImage, resolution);
 
-      global.AssetLoader.mark(`quest_assets_ready:${contract.id}`);
-      regions = global.ClosedRegions.analyze(outlineImageData);
-      global.AssetLoader.mark(`region_map_ready:${contract.id}`);
+      global.AssetLoader.mark(`quest_assets_ready:${quest.id}`);
+      regions = global.ClosedRegions.analyze(outlineImageData, tools.lineLuminanceThreshold);
+      global.AssetLoader.mark(`region_map_ready:${quest.id}`);
       if (disposed) return;
 
       surface = global.HighResCanvas.create(app.screen.hits, {
         resolution,
         regions,
         initialColor: view.activeColor,
+        brushSizes: tools.brushSizes,
+        defaultTool: tools.defaultTool,
+        defaultBrushSize: tools.defaultBrushSize,
+        zoom: tools.zoom,
         onStrokeCommitted,
         onZoomChanged: () => { view.zoom = surface.getZoom(); },
       });
@@ -325,7 +342,7 @@
     async function restoreDraft() {
       if (!artworkStore) return false;
       try {
-        const record = await artworkStore.loadDraft(contract.id);
+        const record = await artworkStore.loadDraft(quest.id);
         if (!record?.blob || disposed) return false;
         const bitmap = typeof global.createImageBitmap === "function"
           ? await global.createImageBitmap(record.blob)
@@ -347,7 +364,7 @@
     });
 
     return Object.freeze({
-      questId: contract.id,
+      questId: quest.id,
       ready,
       getRegionCount: () => regions?.regionCount || 0,
       getHistoryDepth: () => history.depth(),
@@ -367,5 +384,5 @@
     });
   }
 
-  global.HighResWorkbench = Object.freeze({ HIGHRES_TOOLS, THUMBNAIL_SIZE, mount });
+  global.HighResWorkbench = Object.freeze({ THUMBNAIL_SIZE, buildTools, mount });
 })(typeof window !== "undefined" ? window : globalThis);

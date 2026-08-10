@@ -20,6 +20,28 @@
   const INPUT_LOCK_MS = 120;
   const SCENE_GAP_MS = 720;
 
+  /**
+   * 조건부 beat — 형제 노드를 어떤 순서로 깼는지에 따라 대사가 달라진다.
+   * 검토본은 URL fixture(`?q5a=1`)로 흉내 냈지만 제품은 실제 진행 상태를 쓴다
+   * (GAME_INTEGRATION_PLAN 9.2 "fixture 제거").
+   *
+   *   when: { cleared: ["Q3A_SEAL"] }     그 퀘스트를 통과했을 때만 재생
+   *   when: { notCleared: ["Q3A_SEAL"] }  아직 통과하지 않았을 때만 재생
+   */
+  function beatApplies(beat, isQuestCleared) {
+    const when = beat.when;
+    if (!when) return true;
+    if (when.cleared && !when.cleared.every((id) => isQuestCleared(id))) return false;
+    if (when.notCleared && when.notCleared.some((id) => isQuestCleared(id))) return false;
+    return true;
+  }
+
+  /** 조건을 적용해 이번 재생에 실제로 나올 beat 목록을 확정한다. */
+  function resolveBeats(scene, isQuestCleared) {
+    if (!scene.beats.some((beat) => beat.when)) return scene.beats;
+    return scene.beats.filter((beat) => beatApplies(beat, isQuestCleared));
+  }
+
   function totalDuration(scene) {
     return scene.beats.reduce((sum, beat) => sum + beat.duration, 0);
   }
@@ -58,6 +80,8 @@
     const registry = options.registry || global.CutsceneRegistry;
     const assetLoader = options.assetLoader || global.AssetLoader;
     const isSceneSeen = options.isSceneSeen || (() => false);
+    // 조건부 beat 판정에 쓰는 진행 상태. 검토 페이지는 항상 false 를 준다.
+    const isQuestCleared = options.isQuestCleared || (() => false);
 
     ctx.imageSmoothingEnabled = false;
     textCtx.imageSmoothingEnabled = false;
@@ -207,7 +231,12 @@
         return;
       }
 
-      scene = entry.scene;
+      // 조건부 beat 를 이번 재생 기준으로 확정한다.
+      const source = entry.scene;
+      scene = Object.freeze({
+        ...source,
+        beats: resolveBeats(source, isQuestCleared),
+      });
       activeRenderer = registry.renderer(scene.renderer);
       await activeRenderer.preload(assetLoader);
       assetLoader.mark?.(`cutscene_assets_ready:${scene.id}`);
@@ -339,11 +368,14 @@
         sceneId: scene?.id || null,
         playlistIndex,
         beatIndex,
+        beatCount: scene?.beats?.length ?? null,
         elapsed: running ? global.performance.now() - startedAt : null,
         duration: scene?.beats?.length ? totalDuration(scene) : null,
       }),
     });
   }
 
-  global.CutscenePlayer = Object.freeze({ create, totalDuration, beatAt, SCENE_GAP_MS });
+  global.CutscenePlayer = Object.freeze({
+    create, totalDuration, beatAt, resolveBeats, beatApplies, SCENE_GAP_MS,
+  });
 })(typeof window !== "undefined" ? window : globalThis);

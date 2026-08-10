@@ -19,6 +19,8 @@
   "use strict";
 
   const WHITE = Object.freeze([255, 255, 255, 255]);
+  // 아래 값은 계약이 없을 때의 최후 기본값이다. 정상 경로에서는 퀘스트 계약
+  // (questimage-quests.js 의 DEFAULT_TOOLS / 퀘스트별 override)이 넘어온다.
   const BRUSH_SIZES = Object.freeze([16, 36, 72]);
   const ZOOM_MIN = 0.6;
   const ZOOM_MAX = 1.6;
@@ -41,6 +43,9 @@
     const onStrokeCommitted = options.onStrokeCommitted || (() => {});
     const onZoomChanged = options.onZoomChanged || (() => {});
     const tilesPerRow = Math.ceil(resolution / TILE);
+    // 확대 범위와 붓 크기는 퀘스트 계약에서 온다.
+    const zoomBounds = options.zoom || { min: ZOOM_MIN, max: ZOOM_MAX, step: ZOOM_STEP };
+    const brushSizes = options.brushSizes || BRUSH_SIZES;
 
     const viewport = global.document.createElement("div");
     viewport.className = "highres-viewport";
@@ -70,9 +75,9 @@
 
     const paintContext = paintCanvas.getContext("2d", { willReadFrequently: true });
     let imageData = paintContext.createImageData(resolution, resolution);
-    let tool = "fill";
+    let tool = options.defaultTool || "fill";
     let color = options.initialColor;
-    let brushSize = BRUSH_SIZES[1];
+    let brushSize = options.defaultBrushSize || brushSizes[Math.floor(brushSizes.length / 2)];
     let zoom = 1;
     let panX = 0.5;
     let panY = 0.5;
@@ -441,7 +446,7 @@
     return Object.freeze({
       element: viewport,
       canvas: paintCanvas,
-      BRUSH_SIZES,
+      brushSizes,
 
       initialize(outlineImageData) {
         drawOutline(outlineImageData);
@@ -467,8 +472,9 @@
       },
 
       zoomBy(delta) {
-        const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX,
-          Math.round((zoom + delta) * 100) / 100));
+        const step = delta || zoomBounds.step;
+        const next = Math.max(zoomBounds.min, Math.min(zoomBounds.max,
+          Math.round((zoom + step) * 100) / 100));
         if (next === zoom) return zoom;
         zoom = next;
         applyZoom();

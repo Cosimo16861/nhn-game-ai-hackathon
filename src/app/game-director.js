@@ -137,8 +137,7 @@
       if (!node) return Promise.reject(new Error(`알 수 없는 퀘스트: ${questId}`));
       if (node.kind === "finale") return openFinale();
 
-      // 아직 이식하지 않은 노드(GAME_INTEGRATION_PLAN 단계 7 대상)는
-      // 막다른 오류로 두지 않고 증거판으로 되돌아갈 수 있게 한다.
+      // 등록되지 않은 노드는 막다른 오류로 두지 않고 증거판으로 되돌아가게 한다.
       if (!global.WorkbenchScreen.isSupported(questId)) {
         fatal(
           new Error(`${node.title} 작업대는 아직 준비되지 않았습니다.`),
@@ -232,6 +231,11 @@
 
     function boot() {
       graph.validate();
+      // 퀘스트 등록부 부팅 검증 — GAME_INTEGRATION_PLAN 7.5.
+      const problems = global.QuestRegistry?.validate?.() || [];
+      if (problems.length) {
+        console.error("[quest-registry] 계약 문제\n" + problems.join("\n"));
+      }
       global.AssetLoader?.mark?.("app_boot");
       return showTitle();
     }
